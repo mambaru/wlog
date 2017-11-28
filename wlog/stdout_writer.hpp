@@ -12,11 +12,11 @@
 namespace wlog{
 
 class stdout_writer
-  : public iwriter
+  //: public iwriter
 {
 public:
   stdout_writer(const std::string& stdout);
-  virtual void write(const std::string& str) override;
+  void write(const std::string& str);
   
 private:
   std::ostream* _out;

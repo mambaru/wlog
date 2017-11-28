@@ -24,5 +24,7 @@ typedef std::function<std::string(
 
 typedef std::function<void(const std::string& str)> writer_fun;
 
+typedef std::function<void(const std::string& type, const std::string& str)> syslog_fun;
+
 
 }

@@ -36,11 +36,11 @@ namespace{
   }
 }
   
-formatter::formatter(bool milliseconds, const std::vector< std::string >& deny)
+formatter::formatter(bool milliseconds, const std::set< std::string >& deny)
   : _milliseconds(milliseconds)
   , _deny(deny)
 {
-  std::sort( _deny.begin(), _deny.end() );
+  //std::sort( _deny.begin(), _deny.end() );
 }
 
 std::string formatter::format(const std::string& name, const std::string& ident, const std::string& str)

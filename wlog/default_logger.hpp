@@ -18,17 +18,27 @@ public:
   void write(const std::string& name, const std::string& ident, std::string str);
   
 private:
-  formatter_fun get_formatter_(const std::string& name, const std::string& ident) const;
-  writer_fun get_file_writer_(const std::string& name, const std::string& ident) const;
-  writer_fun get_stdout_writer_(const std::string& name, const std::string& ident) const;
-  writer_fun get_syslog_writer_(const std::string& name, const std::string& ident) const;
+  formatter_fun get_formatter_(const std::string& name) ;
+  writer_fun get_file_writer_(const std::string& name) ;
+  writer_fun get_stdout_writer_(const std::string& name) ;
+  syslog_fun get_syslog_writer_(const std::string& name) ;
 private:
+  typedef std::string key_type;
+  typedef std::map<key_type, formatter_fun> formatter_map;
+  typedef std::map<key_type, writer_fun> writer_map;
+  typedef std::map<key_type, syslog_fun> syslog_map;
+  
   options _opt;
   typedef std::mutex mutex_type;
   formatter_fun _default_formatter;
   writer_fun _default_file_writer;
   writer_fun _default_stdout_writer;
-  writer_fun _default_syslog_writer;
+  syslog_fun _default_syslog_writer;
+  
+  formatter_map _formatter_map;
+  writer_map _file_map;
+  writer_map _stdout_map;
+  syslog_map _syslog_map;
   mutex_type _mutex;
 };
 

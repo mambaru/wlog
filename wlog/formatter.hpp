@@ -8,21 +8,21 @@
 
 #include <wlog/iformatter.hpp>
 #include <string>
-#include <vector>
+#include <set>
 
 namespace wlog{
 
 class formatter
-  : public iformatter
+  //: public iformatter
 {
 public:
-  formatter(bool milliseconds, const std::vector< std::string >& deny);
-  virtual std::string format(const std::string& name, const std::string& ident, const std::string& str) = 0;
+  formatter(bool milliseconds, const std::set< std::string >& deny);
+  std::string format(const std::string& name, const std::string& ident, const std::string& str);
 private:
   bool is_deny_(const std::string& some) const;
 private:
   bool _milliseconds;
-  std::vector< std::string > _deny;
+  std::set< std::string > _deny;
 };
 
 }
