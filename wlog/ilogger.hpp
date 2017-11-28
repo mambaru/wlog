@@ -3,11 +3,6 @@
 
 namespace wlog{
   
-struct ilog_formatter
-{
-  virtual ~ilog_formatter(){}
-  virtual std::string format(const std::string& name, const std::string& ident, const std::string& str) = 0;
-};
 
 // TODO
 struct ifile_writer

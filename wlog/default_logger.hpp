@@ -5,30 +5,31 @@
 //
 
 #pragma once
-
-#include <wlog/ilogger.hpp>
 #include <wlog/logger_options.hpp>
+#include <wlog/logger_fun.hpp>
+#include <mutex>
 
 namespace wlog{
 
 class default_logger
-  : public ilogger
 {
 public:
-  void initialize( const logger_options& opt);
-  logger_options options() const;
-  // ilogger
-  virtual void write(const std::string& name, const std::string& ident, std::string str) override;
-
-private:
-  bool is_deny_(const std::string& some) const;
-  void write_to_file_(const std::string& name, const std::string& ident,  const std::string& str);
-  void write_to_stdout_(const std::string& name, const std::string& ident,  const std::string& str);
-  void write_to_syslog_( const std::string& ident,  const std::string& str);
+  void initialize( const options& opt);
+  void write(const std::string& name, const std::string& ident, std::string str);
   
 private:
-  std::string _filename;
-  logger_options _conf;
+  formatter_fun get_formatter_(const std::string& name, const std::string& ident) const;
+  writer_fun get_file_writer_(const std::string& name, const std::string& ident) const;
+  writer_fun get_stdout_writer_(const std::string& name, const std::string& ident) const;
+  writer_fun get_syslog_writer_(const std::string& name, const std::string& ident) const;
+private:
+  options _opt;
+  typedef std::mutex mutex_type;
+  formatter_fun _default_formatter;
+  writer_fun _default_file_writer;
+  writer_fun _default_stdout_writer;
+  writer_fun _default_syslog_writer;
+  mutex_type _mutex;
 };
 
 }

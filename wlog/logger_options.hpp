@@ -8,10 +8,12 @@
 
 #include <string>
 #include <vector>
+#include <map>
+#include <set>
 
 namespace wlog{
 
-struct logger_options
+struct basic_options
 {
   /// Включает вывод миллисекунд в поле времени лога
   bool milliseconds = false;
@@ -20,13 +22,23 @@ struct logger_options
   /// Сохрянать лог перед очисткой в <<path>>.log.old
   bool save_old = true;
   /// Перефикс пути к файлу лога. Пустая строка - в файл записи не будет
+  /// Если пустая строка в custom_map, то в базовый файл
   std::string path = "";
   /// Вывод в stdout (cout, cerr, clog). Пустая строка - без вывода 
   std::string stdout = "clog";
   /// Имя для системного лога для лога syslog ("" - не используется)
   std::string syslog = "";
   /// Список запрещенных логов или типов сообщений (без учета регистра)
-  std::vector< std::string > deny;
+  std::set< std::string > deny;
 };
+
+struct options
+  : basic_options
+{
+  typedef std::map<std::string, basic_options> custom_map;
+  bool multilog = true;
+  custom_map custom;
+};
+
 
 }

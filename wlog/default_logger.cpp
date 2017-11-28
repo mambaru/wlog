@@ -5,6 +5,73 @@
 //
 
 #include "default_logger.hpp"
+#include "file_writer.hpp"
+#include <memory>
+namespace wlog{
+  
+void default_logger::initialize( const options& opt)
+{
+  std::lock_guard<mutex_type> lk(_mutex);
+  
+  // TODO:
+  _opt = opt;
+  if ( opt.path.empty() )
+    this->_default_file_writer = nullptr;
+  else if ( !opt.multilog )
+  {
+    using namespace std::placeholders;
+    auto fw = std::make_shared<file_writer>(opt.path, opt.limit, opt.save_old);
+    this->_default_file_writer = std::bind( &file_writer::write, fw, _1);
+  }
+    
+}
+
+void default_logger::write(const std::string& name, const std::string& ident, std::string str)
+{
+  formatter_fun formatter;
+  writer_fun file_writer;
+  writer_fun stdout_writer;
+  writer_fun syslog_writer;
+
+  {
+    std::lock_guard<mutex_type> lk(_mutex);
+    formatter = this->get_formatter_(name, ident);
+    if ( formatter == nullptr )
+      return;
+    file_writer = this->get_file_writer_(name, ident);
+    stdout_writer = this->get_stdout_writer_(name, ident);
+    syslog_writer = this->get_syslog_writer_(name, ident);
+  }
+  std::string logstr = formatter(name, ident, str);
+  if ( logstr.empty() ) return;
+  if ( file_writer!=nullptr ) file_writer(logstr);
+  if ( stdout_writer!=nullptr ) stdout_writer(logstr);
+  if ( syslog_writer!=nullptr ) syslog_writer(logstr);
+}
+
+formatter_fun default_logger::get_formatter_(const std::string& name, const std::string& ident) const
+{
+  return _default_formatter;
+}
+
+writer_fun default_logger::get_file_writer_(const std::string& name, const std::string& ident) const
+{
+  return this->_default_file_writer;
+}
+
+writer_fun default_logger::get_stdout_writer_(const std::string& name, const std::string& ident) const
+{
+  return this->_default_stdout_writer;
+}
+
+writer_fun default_logger::get_syslog_writer_(const std::string& name, const std::string& ident) const
+{
+  return this->_default_syslog_writer;
+}
+
+}
+/*
+#include "default_logger.hpp"
 #include "aux.hpp"
 
 #include <string>
@@ -114,5 +181,7 @@ void default_logger::write_to_syslog_(const std::string& ident, const std::strin
 {
   aux::syslog_write(_conf.syslog, ident, str);
 }
+
+*/
 
 }
