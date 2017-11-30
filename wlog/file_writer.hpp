@@ -8,15 +8,18 @@
 
 #include <wlog/iwriter.hpp>
 #include <mutex>
+#include <memory>
 
 namespace wlog{
 
 class file_writer
-  : public iwriter
+  //: public iwriter
 {
 public:
+  file_writer(const file_writer&);
+  file_writer(file_writer&&);
   file_writer(const std::string& path, size_t limit, bool save_old);
-  virtual void write(const std::string& str) override;
+  void operator()(const std::string& str);
   
 private:
   typedef std::mutex mutex_type;
@@ -25,7 +28,7 @@ private:
   bool _save_old;
   size_t _summary;
   std::string _starttime;
-  mutable mutex_type _mutex;
+  mutable std::shared_ptr<mutex_type> _mutex;
 };
 
 }

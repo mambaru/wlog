@@ -53,20 +53,23 @@ std::string logstream::str() const
 
 bool logstream::write()
 {
+  bool flag = false;
   std::string msg = _ss.str();
   if ( msg.empty() )
-    return false;
+    return flag;
   
-  if ( writer_==nullptr || !writer_(_name, _type, _ss.str()) )
+  if ( writer_ != nullptr )
   {
-#ifndef WLOG_DISABLE_CLOG
-    std::clog << _name << " " << _type << " " << _ss.str();
-#endif
-    return false;
+    flag = writer_(_name, _type, msg);
   }
-
+#ifndef WLOG_ENABLE_CLOG
+  else
+  {
+    std::clog << _name << " " << _type << " " << msg;
+  }
+#endif
   _ss.clear();
-  return true;
+  return flag;
 }
 
 

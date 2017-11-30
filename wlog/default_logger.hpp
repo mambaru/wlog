@@ -14,8 +14,8 @@ namespace wlog{
 class default_logger
 {
 public:
-  void initialize( const options& opt);
-  void write(const std::string& name, const std::string& ident, std::string str);
+  default_logger( const options& opt);
+  bool operator()(const std::string& name, const std::string& ident, std::string str);
   
 private:
   formatter_fun get_formatter_(const std::string& name) ;
@@ -39,7 +39,6 @@ private:
   writer_map _file_map;
   writer_map _stdout_map;
   syslog_map _syslog_map;
-  mutex_type _mutex;
 };
 
 }

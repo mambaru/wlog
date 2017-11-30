@@ -1,6 +1,9 @@
 #include <wlog/logstream.hpp>
 #include "test.hpp"
 
+int test1();
+int test2();
+
 
 
 int test1()

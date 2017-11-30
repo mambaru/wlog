@@ -6,18 +6,16 @@
 
 #pragma once
 
-#include <wlog/iwriter.hpp>
-#include <mutex>
+#include <string>
+#include <ostream>
 
 namespace wlog{
 
 class stdout_writer
-  //: public iwriter
 {
 public:
   stdout_writer(const std::string& stdout);
-  void write(const std::string& str);
-  
+  void operator()(const std::string& str);
 private:
   std::ostream* _out;
 };

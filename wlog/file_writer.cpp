@@ -11,7 +11,9 @@
 #include <memory>
 #include <iostream>
 #include <fstream>
-#include <boost/filesystem.hpp>
+#include <cstdio>
+
+//#include <boost/filesystem.hpp>
 
 namespace wlog{
   
@@ -24,7 +26,7 @@ namespace{
     localtime_r(&ts, &t1);
     char buf[100];
     int sz = strftime(buf,sizeof(buf), "%Y-%m-%d %H:%M:%S",&t1);
-    return std::string(buf,sz);
+    return std::string(buf, static_cast<std::string::size_type>(sz) );
   }
 }
 
@@ -36,12 +38,34 @@ file_writer::file_writer(const std::string& path, size_t limit, bool save_old)
   , _save_old(save_old)
   , _summary(0)
   , _starttime( mkdate() )
+  , _mutex(std::make_shared<mutex_type>() )
 {
 }
 
-void file_writer::write( const std::string& str)
+file_writer::file_writer(file_writer&& other)
 {
-  std::lock_guard<mutex_type> lk(_mutex);
+  _path = std::move(other._path);
+  _limit = std::move(other._limit);
+  _save_old = std::move(other._save_old);
+  _summary = std::move(other._summary);
+  _starttime = std::move(other._starttime);
+  _mutex = std::move(other._mutex);
+}
+
+file_writer::file_writer(const file_writer& other)
+  : _path(other._path)
+  , _limit(other._limit)
+  , _save_old(other._save_old)
+  , _summary(other._summary)
+  , _starttime(other._starttime)
+  , _mutex(other._mutex)
+
+{
+}
+
+void file_writer::operator()( const std::string& str)
+{
+  std::lock_guard<mutex_type> lk(*_mutex);
   std::ofstream oflog( _path, std::ios_base::app );
   if ( !oflog ) return;
   
@@ -55,13 +79,9 @@ void file_writer::write( const std::string& str)
       oflog.close();
       if ( _save_old )
       {
-        boost::system::error_code ec;
-        boost::filesystem::rename( _path, _path + ".old", ec);
-        if ( ec )
+        if ( 0 != std::rename(_path.c_str(), (_path + ".old").c_str() ) )
         {
-          std::cerr << "_conf.limit=" <<  _limit << " size=" << size << std::endl;
-          std::cerr << _path << "->" << _path + ".old" << std::endl;
-          std::cerr << ec.message() << std::endl;
+          perror( "Error renaming current log file" );
         }
       }
       

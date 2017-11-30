@@ -6,6 +6,7 @@
 
 #include "syslog_writer.hpp"
 #include <syslog.h>
+#include <vector>
 
 namespace wlog{
 
@@ -31,10 +32,10 @@ syslog_writer::syslog_writer(const std::string& sysname)
 {
 }
 
-void syslog_writer::write( const std::string& idend, const std::string& str)
+void syslog_writer::operator()( const std::string& idend, const std::string& str)
 {
   ::openlog( _sysname.c_str(), 0, LOG_USER);
-  ::syslog( ident2pri(idend), str.c_str());
+  ::syslog( ident2pri(idend), "%s", str.c_str() );
   ::closelog();
 }
 

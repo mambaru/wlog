@@ -16,7 +16,7 @@ class syslog_writer
 {
 public:
   syslog_writer(const std::string& sysname);
-  void write(const std::string& ident, const std::string& str);
+  void operator()(const std::string& ident, const std::string& str);
 private:
   const std::string _sysname;
 };

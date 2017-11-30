@@ -2,6 +2,10 @@
 #include <wlog/logger.hpp>
 #include "test.hpp"
 
+int test1();
+int test2();
+int test3();
+
 int test1()
 {
   std::string message;

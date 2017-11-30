@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <sstream>
 #include <chrono>
+#include <iostream>
 
 namespace wlog{
   
@@ -32,7 +33,7 @@ namespace{
     localtime_r(&ts, &t1);
     char buf[100];
     int sz = strftime(buf,sizeof(buf), "%Y-%m-%d %H:%M:%S",&t1);
-    return std::string(buf,sz);
+    return std::string(buf, static_cast<std::string::size_type>(sz) );
   }
 }
   
@@ -43,7 +44,7 @@ formatter::formatter(bool milliseconds, const std::set< std::string >& deny)
   //std::sort( _deny.begin(), _deny.end() );
 }
 
-std::string formatter::format(const std::string& name, const std::string& ident, const std::string& str)
+std::string formatter::operator()(const std::string& name, const std::string& ident, const std::string& str)
 {
   if (is_deny_(name) || is_deny_(ident))
     return "";
@@ -60,8 +61,8 @@ bool formatter::is_deny_(const std::string& some) const
 {
   if ( _deny.empty() )
     return false;
-  
-  return std::find( _deny.begin(), _deny.end(), some ) != _deny.end();
+
+  return _deny.find(some) != _deny.end();
 }
 
   

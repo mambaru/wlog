@@ -17,7 +17,7 @@ class formatter
 {
 public:
   formatter(bool milliseconds, const std::set< std::string >& deny);
-  std::string format(const std::string& name, const std::string& ident, const std::string& str);
+  std::string operator()(const std::string& name, const std::string& ident, const std::string& str);
 private:
   bool is_deny_(const std::string& some) const;
 private:

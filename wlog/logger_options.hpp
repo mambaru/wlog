@@ -36,7 +36,7 @@ struct options
   : basic_options
 {
   typedef std::map<std::string, basic_options> custom_map;
-  bool multilog = true;
+  bool multilog = false;
   custom_map custom;
 };
 
