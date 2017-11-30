@@ -5,7 +5,7 @@
 //
 
 #pragma once
-#include <wlog/logger_options.hpp>
+#include <wlog/options.hpp>
 #include <wlog/logger_fun.hpp>
 #include <mutex>
 

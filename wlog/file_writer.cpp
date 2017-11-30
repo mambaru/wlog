@@ -5,7 +5,6 @@
 //
 
 #include "file_writer.hpp"
-#include "aux.hpp"
 
 #include <string>
 #include <memory>

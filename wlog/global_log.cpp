@@ -6,6 +6,7 @@
 
 
 #include "global_log.hpp"
+#include "default_logger.hpp"
 #include <mutex>
 
 namespace wlog{
@@ -15,11 +16,28 @@ mutex_type log_mutex;
 
 static logger_fun global_writer = nullptr;
 
-void init_log(const logger_fun& writer)
+void init_log(const logger_fun& log)
 {
   std::lock_guard<mutex_type> lk(log_mutex);
-  global_writer = writer;
+  global_writer = log;
 }
+
+void init_log(const options& opt)
+{
+  std::lock_guard<mutex_type> lk(log_mutex);
+  global_writer = default_logger(opt);
+}
+
+void init_log(const std::string& path, const std::string& stdout, bool milliseconds)
+{
+  std::lock_guard<mutex_type> lk(log_mutex);
+  options opt;
+  opt.path = path;
+  opt.stdout = stdout;
+  opt.milliseconds = milliseconds;
+  global_writer = default_logger(opt);
+}
+
 
 bool log_status()
 {

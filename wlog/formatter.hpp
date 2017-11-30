@@ -6,14 +6,12 @@
 
 #pragma once
 
-#include <wlog/iformatter.hpp>
 #include <string>
 #include <set>
 
 namespace wlog{
 
 class formatter
-  //: public iformatter
 {
 public:
   formatter(bool milliseconds, const std::set< std::string >& deny);

@@ -7,12 +7,16 @@
 #pragma once
 
 #include <wlog/logstream.hpp>
+#include <wlog/options.hpp>
 #include <wlog/logger_fun.hpp>
 #include <string>
 
 namespace wlog{
   
-void init_log(const logger_fun& writer);
+void init_log(const logger_fun& log);
+void init_log(const options& opt);
+void init_log(const std::string& path, bool milliseconds, const std::string& stdout = "clog");
+
 bool log_status();
 logstream global_log(const std::string& name, const std::string& type);
 

@@ -6,13 +6,11 @@
 
 #pragma once
 
-#include <wlog/iwriter.hpp>
 #include <mutex>
 
 namespace wlog{
 
 class syslog_writer
-  //: public iwriter
 {
 public:
   syslog_writer(const std::string& sysname);
