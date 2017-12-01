@@ -28,7 +28,7 @@ void init_log(const options& opt)
   global_writer = default_logger(opt);
 }
 
-void init_log(const std::string& path, const std::string& stdout, bool milliseconds)
+void init_log(const std::string& path, bool milliseconds, const std::string& stdout)
 {
   std::lock_guard<mutex_type> lk(log_mutex);
   options opt;

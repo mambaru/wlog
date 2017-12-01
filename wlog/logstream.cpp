@@ -22,15 +22,16 @@ logstream::logstream(logstream&& ll)
 {
 }
 
+/*
 logstream& logstream::operator = (logstream&& ll)
 {
   _name = std::move(ll._name);
   _type = std::move(ll._type);
   _ss.clear();
-  writer_ = std::move(ll.writer_);
+  writer_ = ll.writer_;
   return *this;
 }
-
+*/
 
 logstream::logstream(const std::string& name, const std::string& type, const logger_fun& writer)
   : _name(name)

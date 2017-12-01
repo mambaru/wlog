@@ -18,10 +18,10 @@ public:
   bool operator()(const std::string& name, const std::string& ident, std::string str);
   
 private:
-  formatter_fun get_formatter_(const std::string& name) ;
-  writer_fun get_file_writer_(const std::string& name) ;
-  writer_fun get_stdout_writer_(const std::string& name) ;
-  syslog_fun get_syslog_writer_(const std::string& name) ;
+  const formatter_fun& get_formatter_(const std::string& name) ;
+  const writer_fun& get_file_writer_(const std::string& name) ;
+  const writer_fun& get_stdout_writer_(const std::string& name) ;
+  const syslog_fun& get_syslog_writer_(const std::string& name) ;
 private:
   typedef std::string key_type;
   typedef std::map<key_type, formatter_fun> formatter_map;

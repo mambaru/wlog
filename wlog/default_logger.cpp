@@ -38,39 +38,91 @@ default_logger::default_logger( const options& opt)
 {
   _opt = opt;
   
-  _default_formatter = formatter(opt.milliseconds, opt.deny);
-  this->_default_file_writer = nullptr;
-  if ( !opt.path.empty() && !opt.multilog )
-    this->_default_file_writer = file_writer(opt.path, opt.limit, opt.save_old);
-  this->_default_stdout_writer = nullptr;
-  if ( !opt.stdout.empty() )
-    this->_default_stdout_writer = stdout_writer(opt.stdout);
-
-  this->_default_syslog_writer = nullptr;
-  if ( !opt.syslog.empty() )
-    this->_default_syslog_writer = syslog_writer(opt.syslog);
-
-  for ( auto o : opt.custom )
+  if ( _opt.formatter != nullptr )
   {
-    const auto& op = o.second;
-    _formatter_map.emplace( o.first, formatter(o.second.milliseconds, o.second.deny) );
+    _opt.allow.clear();
+    _opt.deny.clear();
+    _default_formatter = _opt.formatter;
+  }
+  
+  if ( _default_formatter == nullptr )
+    _default_formatter = formatter(_opt.milliseconds, _opt.deny, _opt.allow);
+  
+  std::string path = _opt.path;
+  if ( _opt.file_writer != nullptr )
+  {
+    _opt.path.clear();
+    _opt.multilog = false;
+    _default_file_writer = opt.file_writer;
+  }
+  
+  if ( !_opt.path.empty() && !_opt.multilog )
+    _default_file_writer = file_writer( _opt.path, _opt.limit, _opt.save_old);
+  
+  _default_stdout_writer = _opt.stdout_writer;
+  if ( _default_stdout_writer == nullptr && !_opt.stdout.empty() )
+    _default_stdout_writer = stdout_writer(_opt.stdout);
 
-    if ( !o.second.path.empty() )
-      _file_map.emplace( o.first, file_writer( expanse_path( op.path, o.first, opt.multilog), op.limit, op.save_old));
-    else if ( !opt.path.empty() )
-      _file_map.emplace( o.first, file_writer( expanse_path( opt.path, o.first, opt.multilog), o.second.limit, o.second.save_old));
-    else
-      _file_map.emplace( o.first, nullptr );
+  _default_syslog_writer = _opt.syslog_writer;
+  if ( _default_syslog_writer==nullptr  && !opt.syslog.empty() )
+    _default_syslog_writer = syslog_writer(opt.syslog);
 
-    if ( !o.second.stdout.empty() )
-      _stdout_map.emplace( o.first, stdout_writer(o.second.stdout));
+  for ( const auto& p : opt.custom )
+  {
+    const std::string& name = p.first;
+    const basic_options& op = p.second;
+    
+    if ( op.formatter != nullptr )
+    {
+      _formatter_map.emplace(name, op.formatter);
+    }
     else
-      _stdout_map.emplace( o.first, nullptr );
+    {
+      _formatter_map.emplace(name, formatter(op.milliseconds, op.deny, op.allow) );
+    }
 
-    if ( !o.second.syslog.empty() )
-      _syslog_map.emplace( o.first, syslog_writer(o.second.syslog));
+    if ( op.file_writer != nullptr)
+    {
+      _file_map.emplace( name, op.file_writer);
+    }
+    else if ( !op.path.empty() )
+    {
+      _file_map.emplace( name, file_writer( expanse_path( op.path, name, opt.multilog), op.limit, op.save_old));
+    }
+    else if ( !_opt.path.empty() )
+    {
+      _file_map.emplace( name, file_writer( expanse_path( opt.path, name, opt.multilog), op.limit, op.save_old));
+    }
     else
-      _syslog_map.emplace( o.first, nullptr );
+    {
+      _file_map.emplace( name, nullptr );
+    }
+
+    if ( op.stdout_writer != nullptr )
+    {
+      _stdout_map.emplace( name, op.stdout_writer);
+    }
+    else if ( !op.stdout.empty() )
+    {
+      _stdout_map.emplace( name, stdout_writer(op.stdout));
+    }
+    else
+    {
+      _stdout_map.emplace( name, nullptr );
+    }
+
+    if ( op.syslog_writer != nullptr )
+    {
+      _syslog_map.emplace( name, op.syslog_writer);
+    }
+    else if ( !op.syslog.empty() )
+    {
+      _syslog_map.emplace( name, syslog_writer(op.syslog));
+    }
+    else
+    {
+      _syslog_map.emplace( name, nullptr );
+    }
   }
 }
 
@@ -78,7 +130,7 @@ bool default_logger::operator()(const std::string& name, const std::string& iden
 {
   std::lock_guard<mutex_type> lk(log_mutex);
   
-  formatter_fun formatter = this->get_formatter_(name);
+  const formatter_fun& formatter = this->get_formatter_(name);
   if ( formatter == nullptr )
     return false;
 
@@ -86,18 +138,18 @@ bool default_logger::operator()(const std::string& name, const std::string& iden
   if ( logstr.empty() ) 
     return false;
 
-  if ( writer_fun file_writer = this->get_file_writer_(name) )
+  
+  if ( const writer_fun& file_writer = this->get_file_writer_(name) )
     file_writer(logstr);
   
-  if ( writer_fun stdout_writer = this->get_stdout_writer_(name) )
+  if ( const writer_fun& stdout_writer = this->get_stdout_writer_(name) )
     stdout_writer(logstr);
-  
-  if ( syslog_fun syslog_writer = this->get_syslog_writer_(name) )
+  if ( const syslog_fun& syslog_writer = this->get_syslog_writer_(name) )
     syslog_writer(ident, str);
   return true;
 }
 
-formatter_fun default_logger::get_formatter_(const std::string& name)
+const formatter_fun& default_logger::get_formatter_(const std::string& name)
 {
   if ( _formatter_map.empty() )
     return _default_formatter;
@@ -107,7 +159,7 @@ formatter_fun default_logger::get_formatter_(const std::string& name)
   return _default_formatter;
 }
 
-writer_fun default_logger::get_file_writer_(const std::string& name)
+const writer_fun& default_logger::get_file_writer_(const std::string& name)
 {
   if ( _file_map.empty() && _opt.multilog==false)
     return this->_default_file_writer;
@@ -117,7 +169,10 @@ writer_fun default_logger::get_file_writer_(const std::string& name)
     return itr->second;
   
   if ( !_opt.multilog )
-    return nullptr;
+  {
+    static writer_fun nulfun = nullptr;
+    return nulfun;
+  }
  
   if ( !_opt.path.empty() )
     _file_map.emplace( name, file_writer( expanse_path( _opt.path, name, _opt.multilog), _opt.limit, _opt.save_old));
@@ -127,7 +182,7 @@ writer_fun default_logger::get_file_writer_(const std::string& name)
   return _file_map[name];
 }
 
-writer_fun default_logger::get_stdout_writer_(const std::string& name) 
+const writer_fun& default_logger::get_stdout_writer_(const std::string& name) 
 {
   if ( _stdout_map.empty() )
     return _default_stdout_writer;
@@ -139,7 +194,7 @@ writer_fun default_logger::get_stdout_writer_(const std::string& name)
   return _default_stdout_writer;
 }
 
-syslog_fun default_logger::get_syslog_writer_(const std::string& name) 
+const syslog_fun& default_logger::get_syslog_writer_(const std::string& name) 
 {
   if ( _syslog_map.empty() )
     return _default_syslog_writer;

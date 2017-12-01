@@ -37,11 +37,11 @@ namespace{
   }
 }
   
-formatter::formatter(bool milliseconds, const std::set< std::string >& deny)
+formatter::formatter(bool milliseconds, const std::set< std::string >& deny, const std::set< std::string >& allow)
   : _milliseconds(milliseconds)
   , _deny(deny)
+  , _allow(allow)
 {
-  //std::sort( _deny.begin(), _deny.end() );
 }
 
 std::string formatter::operator()(const std::string& name, const std::string& ident, const std::string& str)
@@ -59,10 +59,13 @@ std::string formatter::operator()(const std::string& name, const std::string& id
 
 bool formatter::is_deny_(const std::string& some) const
 {
-  if ( _deny.empty() )
-    return false;
+  if ( !_deny.empty() && _deny.find(some) != _deny.end() )
+    return true;
 
-  return _deny.find(some) != _deny.end();
+  if ( !_allow.empty() && _allow.find(some) == _allow.end() )
+    return true;
+  
+  return false;
 }
 
   

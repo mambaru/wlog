@@ -24,7 +24,7 @@ public:
   
   logstream(logstream&& ll);
 
-  logstream& operator = (logstream&& ll);
+  logstream& operator = (logstream&& ll) = delete;
   
   logstream(const std::string& name, const std::string& type, const logger_fun& writer);
 
@@ -45,7 +45,7 @@ private:
   std::string _name;
   std::string _type;
   std::stringstream _ss;
-  logger_fun writer_;
+  const logger_fun& writer_;
 };
 
 }

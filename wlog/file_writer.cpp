@@ -31,10 +31,11 @@ namespace{
 
   
 
-file_writer::file_writer(const std::string& path, size_t limit, bool save_old)
+file_writer::file_writer(const std::string& path, size_t limit, int save_old)
   : _path(path)
   , _limit(limit)
   , _save_old(save_old)
+  , _save_count(0)
   , _summary(0)
   , _starttime( mkdate() )
   , _mutex(std::make_shared<mutex_type>() )
@@ -46,6 +47,7 @@ file_writer::file_writer(file_writer&& other)
   _path = std::move(other._path);
   _limit = std::move(other._limit);
   _save_old = std::move(other._save_old);
+  _save_count = std::move(other._save_count);
   _summary = std::move(other._summary);
   _starttime = std::move(other._starttime);
   _mutex = std::move(other._mutex);
@@ -55,10 +57,10 @@ file_writer::file_writer(const file_writer& other)
   : _path(other._path)
   , _limit(other._limit)
   , _save_old(other._save_old)
+  , _save_count(other._save_count)
   , _summary(other._summary)
   , _starttime(other._starttime)
   , _mutex(other._mutex)
-
 {
 }
 
@@ -75,10 +77,26 @@ void file_writer::operator()( const std::string& str)
     if ( pos!=static_cast<std::ofstream::pos_type>(-1) && size > _limit )
     {
       _summary += size;
+      oflog << "---------------- truncate with " << size 
+            << " summary size " << _summary 
+            << " ( start time: " << _starttime << ")"
+            << " ----------------" << std::endl;
       oflog.close();
-      if ( _save_old )
+      std::string old_name;
+      if ( _save_old != 0 )
       {
-        if ( 0 != std::rename(_path.c_str(), (_path + ".old").c_str() ) )
+        if ( _save_count >= _save_old  )
+        {
+          std::string del_file = _path + ".old-" + std::to_string(_save_count - _save_old);
+          //std::cout << "del:" << del_file << std::endl;
+          if ( 0!=std::remove( del_file.c_str() ) )
+          {
+            perror( (std::string("Error remove old log file (") + del_file +")").c_str() );
+          }
+        }
+
+        old_name = _path + ".old-" + std::to_string(_save_count);
+        if ( 0 != std::rename(_path.c_str(), old_name.c_str() ) )
         {
           perror( "Error renaming current log file" );
         }
@@ -89,6 +107,11 @@ void file_writer::operator()( const std::string& str)
             << " summary size " << _summary 
             << " ( start time: " << _starttime << ")"
             << " ----------------" << std::endl;
+      if ( _save_old != 0 )
+      {
+        oflog << "Previous log: " << old_name << std::endl;
+        ++_save_count;
+      }
     }
   }
   oflog << str;
