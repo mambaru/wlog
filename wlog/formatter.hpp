@@ -15,13 +15,13 @@ class formatter
 {
 public:
   formatter(bool milliseconds, const std::set< std::string >& deny, const std::set< std::string >& allow);
-  std::string operator()(const std::string& name, const std::string& ident, const std::string& str);
+  std::string operator()(const std::string& name, const std::string& ident, const std::string& str) const;
 private:
   bool is_deny_(const std::string& some) const;
 private:
-  bool _milliseconds;
-  std::set< std::string > _deny;
-  std::set< std::string > _allow;
+  const bool _milliseconds;
+  const std::set< std::string > _deny;
+  const std::set< std::string > _allow;
 };
 
 }

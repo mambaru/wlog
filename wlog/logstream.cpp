@@ -13,7 +13,7 @@ logstream::~logstream()
 {
   this->write();
 }
-
+/*
 logstream::logstream(logstream&& ll)
   : _name(std::move(ll._name))
   , _type(std::move(ll._type))
@@ -21,6 +21,7 @@ logstream::logstream(logstream&& ll)
   , writer_(std::move(ll.writer_))
 {
 }
+*/
 
 /*
 logstream& logstream::operator = (logstream&& ll)

@@ -42,6 +42,7 @@ file_writer::file_writer(const std::string& path, size_t limit, int save_old)
 {
 }
 
+/*
 file_writer::file_writer(file_writer&& other)
 {
   _path = std::move(other._path);
@@ -63,6 +64,7 @@ file_writer::file_writer(const file_writer& other)
   , _mutex(other._mutex)
 {
 }
+*/
 
 void file_writer::operator()( const std::string& str)
 {

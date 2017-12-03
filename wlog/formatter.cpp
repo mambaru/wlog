@@ -44,7 +44,7 @@ formatter::formatter(bool milliseconds, const std::set< std::string >& deny, con
 {
 }
 
-std::string formatter::operator()(const std::string& name, const std::string& ident, const std::string& str)
+std::string formatter::operator()(const std::string& name, const std::string& ident, const std::string& str) const 
 {
   if (is_deny_(name) || is_deny_(ident))
     return "";

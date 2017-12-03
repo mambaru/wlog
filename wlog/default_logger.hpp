@@ -15,18 +15,20 @@ class default_logger
 {
 public:
   default_logger( const options& opt);
-  bool operator()(const std::string& name, const std::string& ident, std::string str);
+  bool operator()(const std::string& name, const std::string& ident, std::string str) const;
   
 private:
-  const formatter_fun& get_formatter_(const std::string& name) ;
-  const writer_fun& get_file_writer_(const std::string& name) ;
-  const writer_fun& get_stdout_writer_(const std::string& name) ;
-  const syslog_fun& get_syslog_writer_(const std::string& name) ;
+  const formatter_fun& get_formatter_(const std::string& name) const;
+  const writer_fun& get_file_writer_(const std::string& name) const;
+  const writer_fun& get_stdout_writer_(const std::string& name) const;
+  const syslog_fun& get_syslog_writer_(const std::string& name) const;
+  const std::vector<after_fun>& get_after_(const std::string& name) const;
 private:
   typedef std::string key_type;
   typedef std::map<key_type, formatter_fun> formatter_map;
   typedef std::map<key_type, writer_fun> writer_map;
   typedef std::map<key_type, syslog_fun> syslog_map;
+  typedef std::map<key_type, std::vector<after_fun> > after_map;
   
   options _opt;
   typedef std::mutex mutex_type;
@@ -39,6 +41,7 @@ private:
   writer_map _file_map;
   writer_map _stdout_map;
   syslog_map _syslog_map;
+  after_map  _after_map;
 };
 
 }
