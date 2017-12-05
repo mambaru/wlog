@@ -31,15 +31,24 @@ namespace{
 
   
 
-file_writer::file_writer(const std::string& path, size_t limit, int save_old)
+file_writer::file_writer(const std::string& path, bool sync, long limit, int save_old)
   : _path(path)
+  , _sync(sync)
   , _limit(limit)
   , _save_old(save_old)
   , _save_count(0)
   , _summary(0)
   , _starttime( mkdate() )
   , _mutex(std::make_shared<mutex_type>() )
+  
 {
+  _oflog.open( _path, std::ios_base::app );
+  if (_save_old != 0 )
+    this->save_old_(_oflog, 0);
+  if ( _sync )
+    _oflog.close();
+  
+  //_poflog = std::make_shared<std::ofstream>( _path, std::ios_base::app );
 }
 
 /*
@@ -66,59 +75,103 @@ file_writer::file_writer(const file_writer& other)
 }
 */
 
-void file_writer::operator()( const std::string& str)
+
+  
+void file_writer::operator()( 
+  const formatter_fun& fmt,
+  const char* name, 
+  const char* ident,
+  const std::string& str
+)
 {
+  //this->write(fmt, name, ident, str);
   std::lock_guard<mutex_type> lk(*_mutex);
-  std::ofstream oflog( _path, std::ios_base::app );
+  
+  if ( _sync )
+  {
+    std::ofstream oflog( _path, std::ios_base::app );
+    this->write_(oflog, fmt, name, ident, str);
+    oflog.flush();
+    oflog.close();
+  }
+  else
+    this->write_( _oflog, fmt, name, ident, str );
+    
+}
+
+
+void file_writer::save_old_( std::ofstream& oflog, long limit)
+{
+  std::ofstream::pos_type pos = oflog.tellp();
+  if ( pos!=static_cast<std::ofstream::pos_type>(-1) && pos > limit )
+  {
+    if ( limit > 0)
+    {
+      _summary += pos;
+      oflog << "---------------- truncate with " << pos
+            << " summary size " << _summary 
+            << " ( start time: " << _starttime << ")"
+            << " ----------------" << std::endl;
+    }
+    oflog.close();
+    std::string old_name;
+    if ( _save_old > 0 )
+    {
+      if ( _save_count >= _save_old  )
+      {
+        std::string del_file = _path + ".old-" + std::to_string(_save_count - _save_old);
+        if ( 0!=std::remove( del_file.c_str() ) )
+        {
+          perror( (std::string("Error remove old log file (") + del_file +")").c_str() );
+        }
+      }
+
+      old_name = _path + ".old-" + std::to_string(_save_count);
+      if ( 0 != std::rename(_path.c_str(), old_name.c_str() ) )
+      {
+        perror( "Error renaming current log file" );
+      }
+    }
+    oflog.open(_path);
+    if ( limit > 0 )
+    {
+      oflog << "---------------- truncate with " << pos 
+            << " summary size "    << _summary 
+            << " ( start time: "   << _starttime << ")"
+            << " ----------------" << std::endl;
+    }
+    if ( _save_old != 0 )
+    {
+      oflog << "Previous log: " << old_name << std::endl;
+      ++_save_count;
+    }
+  }
+}
+
+void file_writer::write_(  
+  std::ofstream& oflog,
+  const formatter_fun& fmt,
+  const char* name, 
+  const char* ident,
+  const std::string& str
+)
+{
+  //std::ofstream oflog( _path, std::ios_base::app );
+  //std::ofstream& oflog = _oflog;
   if ( !oflog ) return;
   
   if ( _limit > 0 )
   {
-    std::ofstream::pos_type pos = oflog.tellp();
-    size_t size = static_cast<size_t>(pos);
-    if ( pos!=static_cast<std::ofstream::pos_type>(-1) && size > _limit )
-    {
-      _summary += size;
-      oflog << "---------------- truncate with " << size 
-            << " summary size " << _summary 
-            << " ( start time: " << _starttime << ")"
-            << " ----------------" << std::endl;
-      oflog.close();
-      std::string old_name;
-      if ( _save_old != 0 )
-      {
-        if ( _save_count >= _save_old  )
-        {
-          std::string del_file = _path + ".old-" + std::to_string(_save_count - _save_old);
-          //std::cout << "del:" << del_file << std::endl;
-          if ( 0!=std::remove( del_file.c_str() ) )
-          {
-            perror( (std::string("Error remove old log file (") + del_file +")").c_str() );
-          }
-        }
-
-        old_name = _path + ".old-" + std::to_string(_save_count);
-        if ( 0 != std::rename(_path.c_str(), old_name.c_str() ) )
-        {
-          perror( "Error renaming current log file" );
-        }
-      }
-      
-      oflog.open(_path);
-      oflog << "---------------- truncate with " << size 
-            << " summary size " << _summary 
-            << " ( start time: " << _starttime << ")"
-            << " ----------------" << std::endl;
-      if ( _save_old != 0 )
-      {
-        oflog << "Previous log: " << old_name << std::endl;
-        ++_save_count;
-      }
-    }
+    this->save_old_(_oflog, _limit);
   }
-  oflog << str;
-  oflog.flush();
-  oflog.close();
+  //oflog << str;
+  if ( fmt != nullptr )
+    fmt(oflog, name, ident, str);
+  else
+    oflog << name << " " << ident << " " << str;
+
+  //oflog.flush();
+  //oflog.close();
 }
 
 }

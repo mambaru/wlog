@@ -28,7 +28,7 @@ int test1()
 int test2()
 {
   std::string message;
-  wlog::init_log(nullptr);
+  wlog::init_log();
   
   wlog::global_log("test", "message") << "hello " << 1 << 2;
 

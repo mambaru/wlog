@@ -1,5 +1,5 @@
 //
-// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015
+// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015, 2017
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -7,6 +7,7 @@
 #include "formatter.hpp"
 #include <iomanip>
 #include <string>
+#include <cstring>
 #include <algorithm>
 #include <sstream>
 #include <chrono>
@@ -26,47 +27,115 @@ namespace{
     return ss.str();
   }
 
-  std::string mkdate()
+  std::string mktime(time_t ts)
   {
-    time_t ts = time(0);
     struct tm t1;
     localtime_r(&ts, &t1);
     char buf[100];
-    int sz = strftime(buf,sizeof(buf), "%Y-%m-%d %H:%M:%S",&t1);
+    int sz = strftime(buf,sizeof(buf), "%H:%M:%S",&t1);
+    return std::string(buf, static_cast<std::string::size_type>(sz) );
+  }
+
+  std::string mkdate(time_t ts)
+  {
+    struct tm t1;
+    localtime_r(&ts, &t1);
+    char buf[100];
+    int sz = strftime(buf,sizeof(buf), "%Y-%m-%d",&t1);
     return std::string(buf, static_cast<std::string::size_type>(sz) );
   }
 }
   
-formatter::formatter(bool milliseconds, const std::set< std::string >& deny, const std::set< std::string >& allow)
+file_formatter::file_formatter(bool milliseconds)
   : _milliseconds(milliseconds)
-  , _deny(deny)
-  , _allow(allow)
 {
 }
 
-std::string formatter::operator()(const std::string& name, const std::string& ident, const std::string& str) const 
+void file_formatter::operator()(
+    std::ostream& os, 
+    const char* name, 
+    const char* ident,
+    const std::string& str
+  ) const
 {
-  if (is_deny_(name) || is_deny_(ident))
-    return "";
-  
-  std::stringstream ss;
-  ss << mkdate();
+  time_t ts = time(0);
+  os << mkdate(ts) << " " << mktime(ts);
   if ( _milliseconds )
-    ss << "." << mkms();
-  ss << " " << name << " " << ident << " " << str;
-  return ss.str();
+    os << "." << mkms();
+  os << " " << name << " " << ident << " " << str;
 }
 
-bool formatter::is_deny_(const std::string& some) const
+stdout_formatter::stdout_formatter(bool milliseconds, bool colorized)
+  : _milliseconds(milliseconds)
+  , _colorized(colorized)
 {
-  if ( !_deny.empty() && _deny.find(some) != _deny.end() )
-    return true;
-
-  if ( !_allow.empty() && _allow.find(some) == _allow.end() )
-    return true;
-  
-  return false;
 }
 
+void stdout_formatter::operator()(
+    std::ostream& os, 
+    const char* name, 
+    const char* ident,
+    const std::string& str
+  ) const
+{
+  time_t ts = time(0);
+  if ( _colorized )
+    os << "\033[32m" ;
+  os << mkdate(ts) << " ";
+  if ( _colorized )
+    os << "\033[92m" ;
+  os << mktime(ts);
+  
+
+  if ( _milliseconds )
+  {
+    if ( _colorized )
+      os << "\033[32m" ;
+    os << "." << mkms();
+  }
+  if ( _colorized )
+    os << "\033[94m" ;
+
+  os << " " << name;
+
+  if ( _colorized )
+  {
+    if ( 0==strcmp(ident,"MESSAGE") )
+      os << "\033[97m" ;
+    else if ( 0==strcmp(ident,"WARNING"))
+      os << "\033[93m" ;
+    else if ( 0==strcmp(ident,"TRACE"))
+      os << "\033[90m" ;
+    else if ( 0==strcmp(ident,"DEBUG"))
+      os << "\033[33m" ;
+    else if ( 0==strcmp(ident,"ERROR"))
+      os << "\033[91m" ;
+    else if ( 0==strcmp(ident,"FATAL"))
+      os << "\033[31m" ;
+    else if ( 0==strcmp(ident,"BEGIN") || 0==strcmp(ident,"END") || 0==strcmp(ident,"PROGRESS"))
+      os << "\033[96m" ;
+    else
+      os << "\033[0m" ;
+  }
+
+  os << " " << ident;
+  os << " " << str;
+  if ( _colorized )
+    os << "\033[0m" ;
+}
+
+syslog_formatter::syslog_formatter()
+{
+}
+
+void syslog_formatter::operator()(
+    std::ostream& os, 
+    const char* , 
+    const char* ,
+    const std::string& str
+  ) const
+{
+  os << str;
+}
   
 }

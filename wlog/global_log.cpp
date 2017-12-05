@@ -16,6 +16,18 @@ mutex_type log_mutex;
 
 static logger_fun global_writer = nullptr;
 
+void release_log()
+{
+  std::lock_guard<mutex_type> lk(log_mutex);
+  global_writer = nullptr;
+}
+
+void init_log()
+{
+  std::lock_guard<mutex_type> lk(log_mutex);
+  global_writer = default_logger( options() );
+}
+
 void init_log(const logger_fun& log)
 {
   std::lock_guard<mutex_type> lk(log_mutex);
@@ -28,12 +40,13 @@ void init_log(const options& opt)
   global_writer = default_logger(opt);
 }
 
-void init_log(const std::string& path, bool milliseconds, const std::string& stdout)
+void init_log(const std::string& path, bool milliseconds, const std::string& stdout, bool colorized)
 {
   std::lock_guard<mutex_type> lk(log_mutex);
   options opt;
   opt.path = path;
   opt.stdout = stdout;
+  opt.colorized = colorized;
   opt.milliseconds = milliseconds;
   global_writer = default_logger(opt);
 }
@@ -45,10 +58,10 @@ bool log_status()
   return global_writer!=nullptr;
 }
   
-logstream global_log(const std::string& name, const std::string& type)
+logstream global_log(const char* name, const char* ident)
 {
   std::lock_guard<mutex_type> lk(log_mutex);
-  return logstream( name,  type,  global_writer);
+  return logstream( name,  ident,  global_writer);
 }
 
 }

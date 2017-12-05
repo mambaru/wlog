@@ -11,17 +11,46 @@
 
 namespace wlog{
 
-class formatter
+class file_formatter
 {
 public:
-  formatter(bool milliseconds, const std::set< std::string >& deny, const std::set< std::string >& allow);
-  std::string operator()(const std::string& name, const std::string& ident, const std::string& str) const;
-private:
-  bool is_deny_(const std::string& some) const;
+  file_formatter(bool milliseconds);
+  void operator()(
+    std::ostream& os, 
+    const char* name, 
+    const char* ident,
+    const std::string& str
+  ) const;
 private:
   const bool _milliseconds;
-  const std::set< std::string > _deny;
-  const std::set< std::string > _allow;
 };
+
+class stdout_formatter
+{
+public:
+  stdout_formatter(bool milliseconds, bool colorized);
+  void operator()(
+    std::ostream& os, 
+    const char* name, 
+    const char* ident,
+    const std::string& str
+  ) const;
+private:
+  const bool _milliseconds;
+  const bool _colorized;
+};
+
+class syslog_formatter
+{
+public:
+  syslog_formatter();
+  void operator()(
+    std::ostream& os, 
+    const char* name, 
+    const char* ident,
+    const std::string& str
+  ) const;
+};
+
 
 }

@@ -13,27 +13,8 @@ logstream::~logstream()
 {
   this->write();
 }
-/*
-logstream::logstream(logstream&& ll)
-  : _name(std::move(ll._name))
-  , _type(std::move(ll._type))
-  , _ss()
-  , writer_(std::move(ll.writer_))
-{
-}
-*/
 
 /*
-logstream& logstream::operator = (logstream&& ll)
-{
-  _name = std::move(ll._name);
-  _type = std::move(ll._type);
-  _ss.clear();
-  writer_ = ll.writer_;
-  return *this;
-}
-*/
-
 logstream::logstream(const std::string& name, const std::string& type, const logger_fun& writer)
   : _name(name)
   , _type(type)
@@ -47,6 +28,13 @@ logstream::logstream(std::string&& name, std::string&& type, const logger_fun& w
   , writer_(writer)
 {
 }
+*/
+
+logstream::logstream(const char* name, const char* ident, const logger_fun& writer)
+  : _name( name )
+  , _ident( ident )
+  , writer_(writer)
+{}
 
 std::string logstream::str() const
 {
@@ -62,12 +50,12 @@ bool logstream::write()
   
   if ( writer_ != nullptr )
   {
-    flag = writer_(_name, _type, msg);
+    flag = writer_(_name, _ident, msg);
   }
 #ifndef WLOG_ENABLE_CLOG
   else
   {
-    std::clog << _name << " " << _type << " " << msg;
+    std::clog << _name << " " << _ident << " " << msg;
   }
 #endif
   _ss.clear();

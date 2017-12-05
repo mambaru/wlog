@@ -14,8 +14,7 @@ int test1()
   opt.deny.insert("WARNING");
   opt.deny.insert("MYLOG2");
   opt.path = "./test3.log";
-  opt.multilog = false;
-  opt.custom["MYLOG"].milliseconds = true;
+  opt.customize["MYLOG"].milliseconds = true;
   wlog::init_log( wlog::default_logger(opt) );
   WLOG_MESSAGE("Привет MESSAGE");
   WLOG_WARNING("Привет WARNING");

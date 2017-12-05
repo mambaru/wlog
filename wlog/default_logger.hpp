@@ -8,40 +8,34 @@
 #include <wlog/options.hpp>
 #include <wlog/logger_fun.hpp>
 #include <mutex>
+#include <memory>
 
 namespace wlog{
+
+class file_writer;
 
 class default_logger
 {
 public:
-  default_logger( const options& opt);
-  bool operator()(const std::string& name, const std::string& ident, std::string str) const;
+  explicit default_logger( const options& opt);
+  bool operator()(    const char* name, 
+    const char* ident,
+std::string str) const;
   
 private:
-  const formatter_fun& get_formatter_(const std::string& name) const;
-  const writer_fun& get_file_writer_(const std::string& name) const;
-  const writer_fun& get_stdout_writer_(const std::string& name) const;
-  const syslog_fun& get_syslog_writer_(const std::string& name) const;
-  const std::vector<after_fun>& get_after_(const std::string& name) const;
-private:
+  void init_handlers_(customize_handlers& handlers, const basic_options& opt) ;
+  void inherit_options_(const std::string& name, basic_options& bopt, const basic_options& opt);
+
+private:  
   typedef std::string key_type;
-  typedef std::map<key_type, formatter_fun> formatter_map;
-  typedef std::map<key_type, writer_fun> writer_map;
-  typedef std::map<key_type, syslog_fun> syslog_map;
   typedef std::map<key_type, std::vector<after_fun> > after_map;
-  
-  options _opt;
-  typedef std::mutex mutex_type;
-  formatter_fun _default_formatter;
-  writer_fun _default_file_writer;
-  writer_fun _default_stdout_writer;
-  syslog_fun _default_syslog_writer;
-  
-  formatter_map _formatter_map;
-  writer_map _file_map;
-  writer_map _stdout_map;
-  syslog_map _syslog_map;
+  typedef std::map<key_type, customize_handlers > handler_map;
+  customize_handlers _default_handlers;
+  handler_map _handler_map;
   after_map  _after_map;
+
+  typedef std::shared_ptr<file_writer> file_writer_ptr;
+  std::map< std::string, file_writer_ptr > _file_writer;
 };
 
 }

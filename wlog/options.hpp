@@ -13,6 +13,19 @@
 #include <wlog/logger_fun.hpp>
 
 namespace wlog{
+  
+struct customize_handlers
+{
+  formatter_fun file_formatter;
+  formatter_fun stdout_formatter;
+  formatter_fun syslog_formatter;
+  
+  writer_fun file_writer;
+  writer_fun stdout_writer;
+  writer_fun syslog_writer;
+  
+  std::vector<after_fun> after;
+};
 
 struct basic_options
 {
@@ -26,6 +39,8 @@ struct basic_options
   /// -1 наследуется или не сохранять
   /// 0 не сохранять
   long save_old = -1;
+  bool sync = true;
+  bool colorized = true;
   /// Файл лога. Пустая строка - в файл записи не будет
   /// Если пустая строка в custom_map, то в базовый файл
   std::string path = "";
@@ -40,28 +55,14 @@ struct basic_options
   
   // Пользовательский варианты формирования сообщений и записи
   // Если заданы, то используються они, а соответствующие опции игнорируются
-  
-  // Если задан, то игнорируются: deny, allow, milliseconds
-  formatter_fun file_formatter;
-  formatter_fun stdout_formatter;
-  formatter_fun syslog_formatter;
-  
-  // Если задан, то игнорируются: path, save_old, limit
-  writer_fun file_writer;
-  // Если задан, то игнорируются: stdout
-  writer_fun stdout_writer;
-  // Если задан, то игнорируются: syslog
-  writer_fun syslog_writer;
-  
-  std::vector<after_fun> after;
+  customize_handlers handlers;
 };
 
 struct options
   : basic_options
 {
-  typedef std::map<std::string, basic_options> custom_map;
-  /*bool multilog = false;*/
-  custom_map custom;
+  typedef std::map<std::string, basic_options> customize_map;
+  customize_map customize;
 };
 
 

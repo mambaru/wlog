@@ -26,24 +26,32 @@ public:
 
   logstream& operator = (logstream&& ll) = delete;
   
+  /*
   logstream(const std::string& name, const std::string& type, const logger_fun& writer);
 
   logstream(std::string&& name, std::string&& type, const logger_fun& writer);
+  */
 
+  logstream(const char* name, const char* ident, const logger_fun& writer);
+  
   std::string str() const;
   
   bool write();
 
-  template<typename V>
-  std::stringstream& operator << ( const V&  v)
+  template<typename T>
+  std::stringstream& operator << ( T&& arg)
   {
-    _ss<<v;
+    _ss << std::forward<T>(arg);
     return _ss;
   }
 
 private:
-  std::string _name;
-  std::string _type;
+  /*
+  const std::string& _name;
+  const std::string& _type;
+  */
+  const char* _name;
+  const char* _ident;
   std::stringstream _ss;
   const logger_fun& writer_;
 };

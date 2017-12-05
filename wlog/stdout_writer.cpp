@@ -11,6 +11,8 @@
 
 namespace wlog{
   
+extern std::mutex stdout_mutex;
+  
 stdout_writer::stdout_writer(const std::string& stdout)
   : _out(nullptr)
 {
@@ -22,11 +24,20 @@ stdout_writer::stdout_writer(const std::string& stdout)
     _out = &std::cerr;
 }
 
-void stdout_writer::operator()( const std::string& str)
+void stdout_writer::operator()(
+  const formatter_fun& fmt,
+  const char* name, 
+  const char* ident,
+  const std::string& str
+)
 {
   if ( _out != nullptr )
   {
-    (*_out) << str;
+    std::lock_guard<std::mutex> lk(stdout_mutex);
+    if ( fmt!=nullptr )
+      fmt( *_out, name, ident, str);
+    else
+      (*_out) << name << " " <<ident<< " " << str;
     _out->flush();
   }
 }
