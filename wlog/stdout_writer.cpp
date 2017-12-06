@@ -19,8 +19,9 @@ stdout_writer::~stdout_writer()
     _out->flush();
 }
 
-stdout_writer::stdout_writer(const std::string& stdout)
+stdout_writer::stdout_writer(const std::string& stdout, bool sync)
   : _out(nullptr)
+  , _sync(sync)
 {
   if (stdout=="cout")
     _out = &std::cout;
@@ -31,20 +32,24 @@ stdout_writer::stdout_writer(const std::string& stdout)
 }
 
 void stdout_writer::operator()(
+  const time_point& tp,
   const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
   const std::string& str
-)
+) const
 {
   if ( _out != nullptr )
   {
+    if ( !_out->good() )
+      return;
     std::lock_guard<std::mutex> lk(stdout_mutex);
     if ( fmt!=nullptr )
-      fmt( *_out, name, ident, str);
+      fmt( *_out, tp, name, ident, str);
     else
       (*_out) << name << " " <<ident<< " " << str;
-    _out->flush();
+    if ( _sync )
+      _out->flush();
   }
 }
 

@@ -12,9 +12,11 @@
 #include <sstream>
 #include <chrono>
 #include <iostream>
+#include <ctime>
 
 namespace wlog{
-  
+
+/*  
 namespace{
 
   std::string mkms()
@@ -45,82 +47,171 @@ namespace{
     return std::string(buf, static_cast<std::string::size_type>(sz) );
   }
 }
+*/
   
-file_formatter::file_formatter(bool milliseconds)
-  : _milliseconds(milliseconds)
+void formatter::date(std::ostream& os,const time_point& tp)
+{
+  time_t ts = time_point::clock::to_time_t(tp);
+  struct tm t1;
+  localtime_r(&ts, &t1);
+  char buf[100];
+  int sz = strftime(buf,sizeof(buf), "%Y-%m-%d",&t1);
+  os << std::string(buf, static_cast<std::string::size_type>(sz) );
+}
+
+void formatter::time(std::ostream& os,const time_point& tp)
+{
+  time_t ts = time_point::clock::to_time_t(tp);
+  struct tm t1;
+  localtime_r(&ts, &t1);
+  char buf[100];
+  int sz = strftime(buf,sizeof(buf), "%H:%M:%S",&t1);
+  os << std::string(buf, static_cast<std::string::size_type>(sz) );
+}
+
+namespace{
+  
+template<typename Ratio>
+void msx(std::ostream& os, const time_point& tp)
+{
+  auto d = tp.time_since_epoch();
+  auto ts = std::chrono::duration_cast< std::chrono::duration<long, Ratio>  >(d).count();
+  auto tsr = (ts/Ratio::den) * Ratio::den;
+  int w = 0;
+  for ( long R = Ratio::den; R!=0; R/=10, ++w );
+  os <<std::setfill('0') << std::setw(w-1)<< ts - tsr;
+}
+
+}
+
+
+void formatter::ms(std::ostream& os, const time_point& tp, long resolution)
+{
+  if ( resolution >= std::nano::den )
+    msx<std::nano>(os, tp);
+  else if ( resolution >= std::micro::den )
+    msx<std::micro>(os, tp);
+  else if ( resolution >= std::milli::den )
+    msx<std::milli>(os, tp);
+  else if ( resolution >= std::centi::den )
+    msx<std::centi>(os, tp);
+  else if ( resolution >= std::deci::den )
+    msx<std::deci>(os, tp);
+  
+/*
+  auto duration = tp.time_since_epoch();
+  size_t ts = 0;
+  size_t tsr = 0;
+  if ( resolution >= 1000000000 )
+  {
+    ts = std::chrono::duration_cast< std::chrono::duration<long, std::deci>  >(duration).count();
+    tsr = (ts/1000000000) * 1000000000;
+  }
+  auto secround = (millis/10) * 10;
+  os <<std::setfill('0') << std::setw(1)<< millis - secround ;
+  */
+}
+
+file_formatter::file_formatter(resolutions resolution, datetime_formatter_fun date_fmt, datetime_formatter_fun time_fmt)
+  : _resolution(resolution)
+  , _date_fmt(date_fmt)
+  , _time_fmt(time_fmt)
+
 {
 }
 
 void file_formatter::operator()(
     std::ostream& os, 
+    const time_point& tp,
     const std::string& name, 
     const std::string& ident,
     const std::string& str
   ) const
 {
-  time_t ts = time(0);
+  /*time_t ts = time(0);
   os << mkdate(ts) << " " << mktime(ts);
-  if ( _milliseconds )
-    os << "." << mkms();
+  */
+  formatter::date(os, tp);
+  os << " ";
+  formatter::time(os, tp);
+
+  if ( _resolution != resolutions::seconds )
+  {
+    formatter::ms(os, tp, static_cast<long>(_resolution) );
+  }
+    //os << "." << mkms();
   os << " " << name << " " << ident << " " << str;
 }
 
-stdout_formatter::stdout_formatter(bool milliseconds, bool colorized)
-  : _milliseconds(milliseconds)
-  , _colorized(colorized)
+stdout_formatter::stdout_formatter(resolutions resolution, long colorized)
+  : _resolution(resolution != resolutions::inherited ? resolution : resolutions::milliseconds )
+  , _colorized(colorized > 0 ? colorized : 3)
 {
 }
 
 void stdout_formatter::operator()(
     std::ostream& os, 
+    const time_point& tp,
     const std::string& name, 
     const std::string& ident,
     const std::string& str
   ) const
 {
-  time_t ts = time(0);
-  if ( _colorized )
-    os << "\033[32m" ;
-  os << mkdate(ts) << " ";
-  if ( _colorized )
-    os << "\033[92m" ;
-  os << mktime(ts);
   
+  //time_t ts = time(0);
+  if ( _colorized > 2 )
+    os << "\033[32m" ;
+  
+  formatter::date(os, tp);
+  os << " ";
+  //os << mkdate(ts) << " ";
+  if ( _colorized > 2 )
+    os << "\033[92m" ;
+  //os << mktime(ts);
+  formatter::time(os, tp);
 
-  if ( _milliseconds )
+  if ( _resolution != resolutions::seconds )
   {
-    if ( _colorized )
+    if ( _colorized > 2 )
       os << "\033[32m" ;
-    os << "." << mkms();
+    os << ".";
+    formatter::ms(os, tp, static_cast<long>(_resolution) );
+    //os << "." << mkms();
   }
-  if ( _colorized )
+  if ( _colorized > 2 )
     os << "\033[94m" ;
 
   os << " " << name;
 
-  if ( _colorized )
+  if ( _colorized > 0 )
   {
-    if ( ident=="MESSAGE" || ident=="INFO")
-      os << "\033[97m" ;
-    else if ( ident=="WARNING"  || ident=="ALERT")
+    if ( ident=="WARNING" )
       os << "\033[93m" ;
-    else if ( ident=="TRACE")
-      os << "\033[90m" ;
-    else if ( ident=="DEBUG")
-      os << "\033[33m" ;
     else if ( ident=="ERROR")
       os << "\033[91m" ;
     else if ( ident=="FATAL" || ident=="EMERG" || ident=="CRIT" || ident=="ALERT" )
       os << "\033[31m" ;
-    else if ( ident=="BEGIN" || ident=="END" || ident=="PROGRESS")
-      os << "\033[96m" ;
+    else if ( _colorized > 1 )
+    {
+      if ( ident=="MESSAGE" || ident=="INFO")
+        os << "\033[97m" ;
+      else if ( ident=="TRACE")
+        os << "\033[90m" ;
+      else if ( ident=="DEBUG")
+        os << "\033[33m" ;
+      else if ( ident=="BEGIN" || ident=="END" || ident=="PROGRESS")
+        os << "\033[96m" ;
+      else
+        os << "\033[0m" ;
+    }
     else
       os << "\033[0m" ;
+      
   }
 
   os << " " << ident;
   os << " " << str;
-  if ( _colorized )
+  if ( _colorized > 0 )
     os << "\033[0m" ;
 }
 
@@ -130,6 +221,7 @@ syslog_formatter::syslog_formatter()
 
 void syslog_formatter::operator()(
     std::ostream& os, 
+    const time_point& ,
     const std::string& , 
     const std::string& ,
     const std::string& str

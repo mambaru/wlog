@@ -17,8 +17,9 @@ class file_writer final
 {
 public:
   ~file_writer();
-  file_writer(const std::string& path, bool sync, long limit, int save_old);
+  file_writer(const std::string& path, bool sync, long limit, long save_old);
   void operator()(  
+    const time_point& tp,
     const formatter_fun& fmt,
     const std::string& name, 
     const std::string& ident,
@@ -28,6 +29,7 @@ public:
 private:
   void write_(  
     std::ofstream& oflog,
+    const time_point& tp,
     const formatter_fun& fmt,
     const std::string& name, 
     const std::string& ident,
@@ -42,10 +44,10 @@ private:
   const bool _sync;
   const long _limit;
   const int _save_old;
-  int _save_count;
+  long _save_count;
   long _summary;
   const std::string _starttime;
-  /*mutable std::shared_ptr<*/mutex_type/*>*/ _mutex;
+  //mutex_type _mutex;
   std::ofstream _oflog;
 };
 

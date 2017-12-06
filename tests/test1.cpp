@@ -8,9 +8,10 @@ int test2();
 
 int test1()
 {
+  std::mutex m;
   std::string message;
-  wlog::logstream log("test", "message", 
-    [&message](std::string name, std::string type, std::string text)
+  wlog::logstream log(m, "test", "message", 
+    [&message](wlog::time_point, std::string name, std::string type, std::string text)
     {
       message = name + type + text;
       return true;
@@ -43,8 +44,9 @@ int test2()
 {
   std::string message;
   {
-    wlog::logstream log("test", "message", 
-      [&message](std::string name, std::string type, std::string text)
+    std::mutex m;
+    wlog::logstream log(m, "test", "message", 
+      [&message](wlog::time_point, std::string name, std::string type, std::string text)
       {
         message = name + type + text;
         return true;

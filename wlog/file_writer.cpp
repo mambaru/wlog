@@ -29,76 +29,48 @@ namespace{
   }
 }
 
+
 file_writer::~file_writer()
 {
   _oflog.close();
 }
   
 
-file_writer::file_writer(const std::string& path, bool sync, long limit, int save_old)
+file_writer::file_writer(const std::string& path, bool sync, long limit, long save_old)
   : _path(path)
   , _sync(sync)
-  , _limit(limit)
-  , _save_old(save_old)
+  , _limit(limit > 0 ? limit : 0)
+  , _save_old(save_old > 0 ? save_old : 0)
   , _save_count(0)
   , _summary(0)
   , _starttime( mkdate() )
-  //, _mutex(std::make_shared<mutex_type>() )
-  
 {
   _oflog.open( _path, std::ios_base::app );
   if (_save_old != 0 )
     this->save_old_(_oflog, 0);
   if ( _sync )
     _oflog.close();
-  
-  //_poflog = std::make_shared<std::ofstream>( _path, std::ios_base::app );
 }
 
-/*
-file_writer::file_writer(file_writer&& other)
-{
-  _path = std::move(other._path);
-  _limit = std::move(other._limit);
-  _save_old = std::move(other._save_old);
-  _save_count = std::move(other._save_count);
-  _summary = std::move(other._summary);
-  _starttime = std::move(other._starttime);
-  _mutex = std::move(other._mutex);
-}
-
-file_writer::file_writer(const file_writer& other)
-  : _path(other._path)
-  , _limit(other._limit)
-  , _save_old(other._save_old)
-  , _save_count(other._save_count)
-  , _summary(other._summary)
-  , _starttime(other._starttime)
-  , _mutex(other._mutex)
-{
-}
-*/
-
-
-  
-void file_writer::operator()( 
+void file_writer::operator()(
+  const time_point& tp,
   const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
   const std::string& str
 )
 {
-  std::lock_guard<mutex_type> lk(_mutex);
+  //std::lock_guard<mutex_type> lk(_mutex);
   
   if ( _sync )
   {
     std::ofstream oflog( _path, std::ios_base::app );
-    this->write_(oflog, fmt, name, ident, str);
+    this->write_(oflog, tp, fmt, name, ident, str);
     oflog.flush();
     oflog.close();
   }
   else
-    this->write_( _oflog, fmt, name, ident, str );
+    this->write_( _oflog, tp, fmt, name, ident, str );
     
 }
 
@@ -153,6 +125,7 @@ void file_writer::save_old_( std::ofstream& oflog, long limit)
 
 void file_writer::write_(  
   std::ofstream& oflog,
+  const time_point& tp,
   const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
@@ -169,7 +142,7 @@ void file_writer::write_(
   }
   //oflog << str;
   if ( fmt != nullptr )
-    fmt(oflog, name, ident, str);
+    fmt(oflog, tp, name, ident, str);
   else
     oflog << name << " " << ident << " " << str;
 

@@ -16,6 +16,7 @@ class syslog_writer final
 public:
   syslog_writer(const std::string& sysname);
   void operator()(
+    const time_point& tp,
     const formatter_fun& fmt,
     const std::string& name, 
     const std::string& ident,

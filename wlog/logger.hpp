@@ -52,3 +52,11 @@
 #define WLOG_TRACE(X)    WLOG_LOG_TRACE   ( "WLOG", X )
 #define WLOG_PROGRESS(X) WLOG_LOG_PROGRESS( "WLOG", X )
 
+#define SYSLOG_EMERG(X)   WLOG( "SYSLOG", "EMERG",   X)
+#define SYSLOG_ALERT(X)   WLOG( "SYSLOG", "ALERT",   X)
+#define SYSLOG_CRIT(X)    WLOG( "SYSLOG", "CRIT",    X)
+#define SYSLOG_ERR(X)     WLOG( "SYSLOG", "ERR",     X)
+#define SYSLOG_WARNING(X) WLOG( "SYSLOG", "WARNING", X)
+#define SYSLOG_NOTICE(X)  WLOG( "SYSLOG", "NOTICE",  X)
+#define SYSLOG_INFO(X)    WLOG( "SYSLOG", "INFO",    X)
+#define SYSLOG_DEBUG(X)   WLOG( "SYSLOG", "DEBUG",   X)

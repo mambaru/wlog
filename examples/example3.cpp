@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
   //
   wlog::options opt;
   opt.path = "./example3.log";
-  opt.stdout.clear();
+  //opt.stdout.clear();
   if ( argc > 1 )
     opt.sync = atoi(argv[1])!=0;
 

@@ -11,6 +11,7 @@
 #include <map>
 #include <set>
 #include <wlog/logger_fun.hpp>
+#include <wlog/resolutions.hpp>
 
 namespace wlog{
   
@@ -40,7 +41,7 @@ struct basic_options
   : customize_options
 {
   /// Включает вывод миллисекунд в поле времени лога
-  bool milliseconds = true;
+  resolutions resolution = resolutions::inherited;
   /// Ограничение на размер файла в байтах
   /// -1 наследуется или без ограничения
   /// 0 без ограничения
@@ -50,7 +51,7 @@ struct basic_options
   /// 0 не сохранять
   long save_old = -1;
   bool sync = true;
-  bool colorized = true;
+  long colorized = -1;
   /// Файл лога. Пустая строка - в файл записи не будет
   /// Если пустая строка в custom_map, то в базовый файл
   std::string path = "";

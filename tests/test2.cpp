@@ -10,7 +10,7 @@ int test1()
 {
   std::string message;
   wlog::init_log(
-    [&message](std::string name, std::string type, std::string text)
+    [&message](wlog::time_point, std::string name, std::string type, std::string text)
     {
       message = name + type + text;
       return true;
@@ -43,7 +43,7 @@ int test3()
 {
   std::string message;
   wlog::init_log(
-    [&message](std::string name, std::string type, std::string text)
+    [&message](wlog::time_point, std::string name, std::string type, std::string text)
     {
       message += name + type + text;
       return true;

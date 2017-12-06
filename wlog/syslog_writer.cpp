@@ -57,6 +57,7 @@ syslog_writer::syslog_writer(const std::string& sysname)
 }
 
 void syslog_writer::operator()(     
+    const time_point& tp,
     const formatter_fun& fmt,
     const std::string& name, 
     const std::string& ident,
@@ -65,7 +66,7 @@ void syslog_writer::operator()(
 {
   std::stringstream ss;
   if ( !fmt )
-    fmt( ss, name, ident, str );
+    fmt( ss, tp, name, ident, str );
   else 
     ss << str;
   

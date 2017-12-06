@@ -27,9 +27,11 @@ default_logger::default_logger( const options& opt)
     this->inherit_options_(p.first, bopt, opt);
     this->init_handlers_(_options_map[p.first], bopt);
   }
+  
 }
 
 bool default_logger::operator()(
+  const time_point& tp,
   const std::string& name, 
   const std::string& ident, 
   const std::string& str) const
@@ -48,21 +50,21 @@ bool default_logger::operator()(
   }
   
   if ( handlers->file_writer != nullptr )
-    handlers->file_writer( handlers->file_formatter, name, ident, str );
+    handlers->file_writer( tp, handlers->file_formatter, name, ident, str );
 
   if ( handlers->stdout_writer != nullptr )
-    handlers->stdout_writer( handlers->stdout_formatter, name, ident, str );
+    handlers->stdout_writer( tp, handlers->stdout_formatter, name, ident, str );
 
   if ( handlers->syslog_writer != nullptr )
-    handlers->syslog_writer( handlers->syslog_formatter, name, ident, str );
+    handlers->syslog_writer( tp, handlers->syslog_formatter, name, ident, str );
 
   for (const auto& after : handlers->after )
-    after(name, ident, str);
+    after(tp, name, ident, str);
   
   if ( handlers != &_default_options )
   {
     for (const auto& after : _default_options.after )
-      after(name, ident, str);
+      after(tp, name, ident, str);
   }
   return true;
 }
@@ -73,6 +75,10 @@ void default_logger::inherit_options_(const std::string& name, basic_options& bo
     bopt.limit = opt.limit;
   if ( bopt.save_old == -1 )
     bopt.save_old = opt.save_old;
+  if ( bopt.colorized == -1 )
+    bopt.colorized = opt.colorized;
+  if ( bopt.resolution == resolutions::inherited )
+    bopt.resolution = opt.resolution;
     
   if ( bopt.path.empty() )
     bopt.path = opt.path;
@@ -97,10 +103,10 @@ void default_logger::init_handlers_(customize_handlers& handlers, const basic_op
   using namespace std::placeholders;
   handlers = static_cast<const customize_handlers&>(opt);
   if ( handlers.file_formatter == nullptr )
-    handlers.file_formatter  = file_formatter(opt.milliseconds);
+    handlers.file_formatter  = file_formatter(opt.resolution);
 
   if ( handlers.stdout_formatter == nullptr )
-    handlers.stdout_formatter  = stdout_formatter(opt.milliseconds, opt.colorized);
+    handlers.stdout_formatter  = stdout_formatter(opt.resolution, opt.colorized);
 
   if ( handlers.syslog_formatter == nullptr )
     handlers.syslog_formatter  = syslog_formatter();
@@ -112,14 +118,14 @@ void default_logger::init_handlers_(customize_handlers& handlers, const basic_op
       auto itr = _file_writer.find(opt.path);
       if ( itr == _file_writer.end() )
         itr = _file_writer.emplace( opt.path, std::make_shared<file_writer>(opt.path, opt.sync, opt.limit, opt.save_old) ).first;
-      handlers.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4 );
+      handlers.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4, _5 );
     }
   }
 
   if ( handlers.stdout_writer == nullptr )
   {
     if ( !opt.stdout.empty() )
-      handlers.stdout_writer = stdout_writer(opt.stdout);
+      handlers.stdout_writer = stdout_writer(opt.stdout, opt.sync);
   }
 
   if ( handlers.syslog_writer == nullptr )

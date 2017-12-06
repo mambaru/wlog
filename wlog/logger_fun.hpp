@@ -7,10 +7,14 @@
 
 #include <functional>
 #include <string>
+#include <chrono>
 
 namespace wlog{
-  
+
+typedef std::chrono::system_clock::time_point time_point;
+
 typedef std::function<bool(
+  const time_point& tp,
   const std::string& name, 
   const std::string& ident,
   const std::string& str
@@ -18,12 +22,21 @@ typedef std::function<bool(
 
 typedef std::function<void(
   std::ostream& os,
+  const time_point& tp,
   const std::string& name, 
   const std::string& ident,
   const std::string& str
 )> formatter_fun;
 
 typedef std::function<void(
+  std::ostream& os,
+  const time_point& tp
+)> datetime_formatter_fun;
+
+
+
+typedef std::function<void(
+  const time_point& tp,
   const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
@@ -33,6 +46,7 @@ typedef std::function<void(
 //typedef std::function<void(const std::string& type, const std::string& str)> syslog_fun;
 
 typedef std::function<void(
+  const time_point& tp,
   const std::string& name, 
   const std::string& ident,
   const std::string& str)

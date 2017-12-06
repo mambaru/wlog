@@ -24,15 +24,24 @@ public:
   explicit default_logger( const options& opt);
   
   bool operator()(
+    const time_point& tp,
     const std::string& name, 
     const std::string& ident,
     const std::string& msg
   ) const;
   
 private:
-  void init_handlers_(customize_handlers& handlers, const basic_options& opt) ;
-  void inherit_options_(const std::string& name, basic_options& bopt, const basic_options& opt);
-  //bool allow_(const std::string& name, const std::string& ident);
+  void init_handlers_(
+    customize_handlers& handlers, 
+    const basic_options& opt
+  );
+
+  void inherit_options_(
+    const std::string& name, 
+    basic_options& bopt, 
+    const basic_options& opt
+  );
+  
   bool allow_(
     const std::string& name,
     const std::string& ident, 

@@ -6,35 +6,28 @@
 
 #include "logstream.hpp"
 #include <iostream>
-
+#include <mutex>
 namespace wlog {
 
 logstream::~logstream()
 {
   this->write();
+  _mutex.unlock();
 }
 
-/*
-logstream::logstream(const std::string& name, const std::string& type, const logger_fun& writer)
-  : _name(name)
-  , _type(type)
-  , writer_(writer)
-{
-}
-
-logstream::logstream(std::string&& name, std::string&& type, const logger_fun& writer)
-  : _name( std::move(name) )
-  , _type( std::move(type) )
-  , writer_(writer)
-{
-}
-*/
-
-logstream::logstream(const std::string& name, const std::string& ident, const logger_fun& writer)
-  : _name( name )
+logstream::logstream(
+  std::mutex& m,
+  const std::string& name,
+  const std::string& ident,
+  const logger_fun& writer
+) : _mutex(m)
+  , _tp(time_point::clock::now())
+  , _name( name )
   , _ident( ident )
   , writer_(writer)
-{}
+{
+  
+}
 
 std::string logstream::str() const
 {
@@ -50,7 +43,7 @@ bool logstream::write()
   
   if ( writer_ != nullptr )
   {
-    flag = writer_(_name, _ident, msg);
+    flag = writer_(_tp, _name, _ident, msg);
   }
 #ifndef WLOG_ENABLE_CLOG
   else

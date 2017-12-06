@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <memory>
+#include <mutex>
 
 namespace wlog{
 
@@ -22,17 +23,11 @@ public:
   
   logstream& operator = (logstream& ll) = delete;
   
-  logstream(logstream&& ll);
+  logstream(logstream&& ll) = default;
 
   logstream& operator = (logstream&& ll) = delete;
   
-  /*
-  logstream(const std::string& name, const std::string& type, const logger_fun& writer);
-
-  logstream(std::string&& name, std::string&& type, const logger_fun& writer);
-  */
-
-  logstream(const std::string& name, const std::string& ident, const logger_fun& writer);
+  logstream(std::mutex& m, const std::string& name, const std::string& ident, const logger_fun& writer);
   
   std::string str() const;
   
@@ -60,20 +55,12 @@ public:
   std::stringstream& operator << ( const T& arg)
   {
     _ss << arg;
-    //_ss << std::forward<T>(arg);
     return _ss;
   }
-  
-
-
-  
-
 
 private:
-  /*
-  const std::string& _name;
-  const std::string& _type;
-  */
+  std::mutex& _mutex;
+  const time_point _tp;
   const std::string& _name;
   const std::string& _ident;
   std::stringstream _ss;
