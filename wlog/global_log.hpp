@@ -23,5 +23,8 @@ logger_fun&& release_log();
 bool log_status();
 
 logstream global_log(const std::string& name, const std::string& ident);
+stdout_stream global_cout();
+stdout_stream global_clog();
+stdout_stream global_cerr();
 
 }

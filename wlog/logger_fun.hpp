@@ -13,7 +13,7 @@ namespace wlog{
 
 typedef std::chrono::system_clock::time_point time_point;
 
-typedef std::function<bool(
+typedef std::function<void(
   const time_point& tp,
   const std::string& name, 
   const std::string& ident,
@@ -37,7 +37,7 @@ typedef std::function<void(
 
 typedef std::function<void(
   const time_point& tp,
-  const formatter_fun& fmt,
+  //const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
   const std::string& str

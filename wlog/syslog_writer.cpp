@@ -51,22 +51,22 @@ namespace
   }
 }
   
-syslog_writer::syslog_writer(const std::string& sysname)
-  : _sysname(sysname)
+syslog_writer::syslog_writer(const formatter_fun& formatter, const std::string& sysname)
+  : _formatter(formatter)
+  , _sysname(sysname)
 {
 }
 
 void syslog_writer::operator()(     
     const time_point& tp,
-    const formatter_fun& fmt,
     const std::string& name, 
     const std::string& ident,
     const std::string& str
 )
 {
   std::stringstream ss;
-  if ( !fmt )
-    fmt( ss, tp, name, ident, str );
+  if ( _formatter!=nullptr )
+    _formatter( ss, tp, name, ident, str );
   else 
     ss << str;
   

@@ -7,6 +7,7 @@
 #include "stdout_writer.hpp"
 #include <ostream>
 #include <iostream>
+#include <sstream>
 #include <mutex>
 
 namespace wlog{ extern std::mutex stdout_mutex; }
@@ -19,8 +20,9 @@ stdout_writer::~stdout_writer()
     _out->flush();
 }
 
-stdout_writer::stdout_writer(const std::string& stdout, bool sync)
-  : _out(nullptr)
+stdout_writer::stdout_writer(const formatter_fun& fmt, const std::string& stdout, bool sync)
+  : _formatter(fmt)
+  , _out(nullptr)
   , _sync(sync)
 {
   if (stdout=="cout")
@@ -33,7 +35,6 @@ stdout_writer::stdout_writer(const std::string& stdout, bool sync)
 
 void stdout_writer::operator()(
   const time_point& tp,
-  const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
   const std::string& str
@@ -44,8 +45,8 @@ void stdout_writer::operator()(
     if ( !_out->good() )
       return;
     std::lock_guard<std::mutex> lk(stdout_mutex);
-    if ( fmt!=nullptr )
-      fmt( *_out, tp, name, ident, str);
+    if ( _formatter!=nullptr )
+      _formatter( *_out, tp, name, ident, str);
     else
       (*_out) << name << " " <<ident<< " " << str;
     if ( _sync )

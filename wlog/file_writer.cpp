@@ -36,8 +36,9 @@ file_writer::~file_writer()
 }
   
 
-file_writer::file_writer(const std::string& path, bool sync, long limit, long save_old)
-  : _path(path)
+file_writer::file_writer(const formatter_fun& formatter, const std::string& path, bool sync, long limit, long save_old)
+  : _formatter(formatter)
+  , _path(path)
   , _sync(sync)
   , _limit(limit > 0 ? limit : 0)
   , _save_old(save_old > 0 ? save_old : 0)
@@ -54,7 +55,6 @@ file_writer::file_writer(const std::string& path, bool sync, long limit, long sa
 
 void file_writer::operator()(
   const time_point& tp,
-  const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
   const std::string& str
@@ -65,12 +65,12 @@ void file_writer::operator()(
   if ( _sync )
   {
     std::ofstream oflog( _path, std::ios_base::app );
-    this->write_(oflog, tp, fmt, name, ident, str);
+    this->write_(oflog, tp, name, ident, str);
     oflog.flush();
     oflog.close();
   }
   else
-    this->write_( _oflog, tp, fmt, name, ident, str );
+    this->write_( _oflog, tp, name, ident, str );
     
 }
 
@@ -126,7 +126,6 @@ void file_writer::save_old_( std::ofstream& oflog, long limit)
 void file_writer::write_(  
   std::ofstream& oflog,
   const time_point& tp,
-  const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
   const std::string& str
@@ -141,8 +140,8 @@ void file_writer::write_(
     this->save_old_(_oflog, _limit);
   }
   //oflog << str;
-  if ( fmt != nullptr )
-    fmt(oflog, tp, name, ident, str);
+  if ( _formatter != nullptr )
+    _formatter(oflog, tp, name, ident, str);
   else
     oflog << name << " " << ident << " " << str;
 

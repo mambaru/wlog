@@ -11,6 +11,7 @@
 #include "formatter.hpp"
 #include <memory>
 #include <iostream>
+#include <sstream>
 
 namespace wlog{
 
@@ -50,13 +51,13 @@ bool default_logger::operator()(
   }
   
   if ( handlers->file_writer != nullptr )
-    handlers->file_writer( tp, handlers->file_formatter, name, ident, str );
+    handlers->file_writer( tp, name, ident, str );
 
   if ( handlers->stdout_writer != nullptr )
-    handlers->stdout_writer( tp, handlers->stdout_formatter, name, ident, str );
+    handlers->stdout_writer( tp, name, ident, str );
 
   if ( handlers->syslog_writer != nullptr )
-    handlers->syslog_writer( tp, handlers->syslog_formatter, name, ident, str );
+    handlers->syslog_writer( tp, name, ident, str );
 
   for (const auto& after : handlers->after )
     after(tp, name, ident, str);
@@ -101,13 +102,14 @@ void default_logger::inherit_options_(const std::string& name, basic_options& bo
 void default_logger::init_handlers_(customize_handlers& handlers, const basic_options& opt)
 {
   using namespace std::placeholders;
+
   handlers = static_cast<const customize_handlers&>(opt);
   if ( handlers.file_formatter == nullptr )
     handlers.file_formatter  = file_formatter(opt.resolution);
 
   if ( handlers.stdout_formatter == nullptr )
-    handlers.stdout_formatter  = stdout_formatter(opt.resolution, opt.colorized);
-
+    handlers.stdout_formatter  = stdout_formatter(opt.resolution, opt.colorized, opt.hide);
+  
   if ( handlers.syslog_formatter == nullptr )
     handlers.syslog_formatter  = syslog_formatter();
     
@@ -117,36 +119,23 @@ void default_logger::init_handlers_(customize_handlers& handlers, const basic_op
     {
       auto itr = _file_writer.find(opt.path);
       if ( itr == _file_writer.end() )
-        itr = _file_writer.emplace( opt.path, std::make_shared<file_writer>(opt.path, opt.sync, opt.limit, opt.save_old) ).first;
-      handlers.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4, _5 );
+        itr = _file_writer.emplace( opt.path, std::make_shared<file_writer>(handlers.file_formatter, opt.path, opt.sync, opt.limit, opt.save_old) ).first;
+      handlers.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4 );
     }
   }
 
   if ( handlers.stdout_writer == nullptr )
   {
     if ( !opt.stdout.empty() )
-      handlers.stdout_writer = stdout_writer(opt.stdout, opt.sync);
+      handlers.stdout_writer = stdout_writer(handlers.stdout_formatter, opt.stdout, opt.sync);
   }
 
   if ( handlers.syslog_writer == nullptr )
   {
     if ( !opt.syslog.empty() )
-      handlers.syslog_writer = syslog_writer(opt.syslog);
+      handlers.syslog_writer = syslog_writer(handlers.syslog_formatter, opt.syslog);
   }
 }
-
-/*
-bool default_logger::allow_(const std::string& name, const std::string& ident)
-{
-  if ( !allow_(name, _default_options.allow) )
-    return false;
-
-  if ( deny_(name, _default_options.deny) )
-    return false;
-
-  auto itr = _options_map.ma
-}
-*/
 
 bool default_logger::allow_(
   const std::string& name, 

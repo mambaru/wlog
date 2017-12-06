@@ -14,13 +14,15 @@ set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
 
 
 if (PARANOID_WARNING)
+  message(STATUS "PARANOID_WARNING ON")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align \
-                         -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization\
-                         -Wformat=2 -Winit-self -Wmissing-declarations \
-                         -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual \
-                         -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo \
-                         -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror")
-      # -Wlogical-op -Wnoexcept -Wstrict-null-sentinel
+ -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization\
+ -Wformat=2 -Winit-self -Wmissing-declarations \
+ -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual \
+ -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo \
+ -Wstrict-overflow=5 -Wswitch-default -Wundef ")
+                         
+      # -Wlogical-op -Wnoexcept -Wstrict-null-sentinel  -Werror
 endif()
 
 include_directories(.)

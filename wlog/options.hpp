@@ -52,6 +52,7 @@ struct basic_options
   long save_old = -1;
   bool sync = true;
   long colorized = -1;
+  unsigned long hide = ~0ul;
   /// Файл лога. Пустая строка - в файл записи не будет
   /// Если пустая строка в custom_map, то в базовый файл
   std::string path = "";

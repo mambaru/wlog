@@ -14,7 +14,7 @@
 
 namespace wlog{
 
-class logstream
+class logstream final
 {
 public:
   ~logstream();
@@ -22,34 +22,22 @@ public:
   logstream(const logstream& ll) = delete;
   
   logstream& operator = (logstream& ll) = delete;
-  
-  logstream(logstream&& ll) = default;
 
   logstream& operator = (logstream&& ll) = delete;
+
+  logstream(logstream&& ll);
   
   logstream(std::mutex& m, const std::string& name, const std::string& ident, const logger_fun& writer);
   
   std::string str() const;
   
-  bool write();
+  void write();
 
-  std::ostream& operator<< (std::ios& (*pf)(std::ios&))
-  {
-    _ss << pf;
-    return _ss;
-  }
+  std::ostream& operator<< (std::ios& (*pf)(std::ios&));
   
-  std::ostream& operator<< (std::ios_base& (*pf)(std::ios_base&))
-  {
-    _ss << pf;
-    return _ss;
-  }
-
-  std::ostream& operator<< (std::ostream& (*pf)(std::ostream&))
-  {
-    _ss << pf;
-    return _ss;
-  }
+  std::ostream& operator<< (std::ios_base& (*pf)(std::ios_base&));
+  
+  std::ostream& operator<< (std::ostream& (*pf)(std::ostream&));
   
   template<typename T>
   std::stringstream& operator << ( const T& arg)
@@ -63,8 +51,43 @@ private:
   const time_point _tp;
   const std::string& _name;
   const std::string& _ident;
-  std::stringstream _ss;
   const logger_fun& writer_;
+  std::stringstream _ss;
+};
+
+
+class stdout_stream final
+{
+public:
+  ~stdout_stream();
+  
+  stdout_stream(const stdout_stream& ll) = delete;
+  
+  stdout_stream& operator = (stdout_stream& ll) = delete;
+
+  stdout_stream& operator = (stdout_stream&& ll) = delete;
+
+  stdout_stream(stdout_stream&& ll);
+  
+  stdout_stream(std::mutex& m, std::ostream& writer);
+  
+  std::ostream& operator<< (std::ios& (*pf)(std::ios&));
+  
+  std::ostream& operator<< (std::ios_base& (*pf)(std::ios_base&));
+  
+  std::ostream& operator<< (std::ostream& (*pf)(std::ostream&));
+  
+  template<typename T>
+  std::stringstream& operator << ( const T& arg)
+  {
+    _ss << arg;
+    return _ss;
+  }
+
+private:
+  std::mutex& _mutex;
+  std::ostream& _out;
+  std::stringstream _ss;
 };
 
 }

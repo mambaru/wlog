@@ -1,5 +1,5 @@
 //
-// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015
+// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015, 2017
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -60,3 +60,8 @@
 #define SYSLOG_NOTICE(X)  WLOG( "SYSLOG", "NOTICE",  X)
 #define SYSLOG_INFO(X)    WLOG( "SYSLOG", "INFO",    X)
 #define SYSLOG_DEBUG(X)   WLOG( "SYSLOG", "DEBUG",   X)
+
+#define WCOUT(X) ::wlog::global_cout() << X << std::endl;
+#define WCLOG(X) ::wlog::global_clog() << X << std::endl;
+#define WCERR(X) ::wlog::global_cerr() << X << std::endl;
+

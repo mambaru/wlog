@@ -49,24 +49,89 @@ namespace{
 }
 */
   
-void formatter::date(std::ostream& os,const time_point& tp)
+void formatter::date(std::ostream& os, const time_point& tp, unsigned long hide)
 {
+  if ( hide & ulong(hide_items::date) )
+    return;
+    
   time_t ts = time_point::clock::to_time_t(tp);
   struct tm t1;
   localtime_r(&ts, &t1);
+  
+  bool flag = false;
+  if ( !(hide & ulong(hide_items::year) ) )
+  {
+    flag = true;
+    os << std::setfill('0') << std::setw(2)
+       << int(t1.tm_year) + 1900;
+  }
+  
+  if ( !( hide & long(hide_items::month) ) )
+  {
+    if (flag) os << "-";
+    flag = true;
+    os << std::setfill('0') << std::setw(2)
+       << t1.tm_mon;
+  }
+
+  if ( !( hide & long(hide_items::day) ) )
+  {
+    if (flag) os << "-";
+    flag = true;
+    os << std::setfill('0') << std::setw(2)
+       << t1.tm_mday;
+  }
+  
+  if (flag)
+    os << " ";
+  /*
   char buf[100];
   int sz = strftime(buf,sizeof(buf), "%Y-%m-%d",&t1);
   os << std::string(buf, static_cast<std::string::size_type>(sz) );
+  */
 }
 
-void formatter::time(std::ostream& os,const time_point& tp)
+void formatter::time(std::ostream& os,const time_point& tp, unsigned long hide)
 {
+  if ( hide & ulong(hide_items::time) )
+    return;
+
   time_t ts = time_point::clock::to_time_t(tp);
   struct tm t1;
   localtime_r(&ts, &t1);
+
+  bool flag = false;
+  if ( !(hide & ulong(hide_items::hour) ) )
+  {
+    flag = true;
+    os << std::setfill('0') << std::setw(2)
+       << t1.tm_hour;
+  }
+  
+  if ( !( hide & long(hide_items::minute) ) )
+  {
+    if (flag) os << ":";
+    flag = true;
+    os << std::setfill('0') << std::setw(2)
+       << t1.tm_min;
+  }
+
+  if ( !( hide & long(hide_items::second) ) )
+  {
+    if (flag) os << ":";
+    flag = true;
+    os << std::setfill('0') << std::setw(2)
+       << t1.tm_sec;
+  }
+  
+  if (flag)
+    os << " ";
+  
+  /*
   char buf[100];
   int sz = strftime(buf,sizeof(buf), "%H:%M:%S",&t1);
   os << std::string(buf, static_cast<std::string::size_type>(sz) );
+  */
 }
 
 namespace{
@@ -131,9 +196,8 @@ void file_formatter::operator()(
   /*time_t ts = time(0);
   os << mkdate(ts) << " " << mktime(ts);
   */
-  formatter::date(os, tp);
-  os << " ";
-  formatter::time(os, tp);
+  formatter::date(os, tp, 0ul );
+  formatter::time(os, tp, 0ul);
 
   if ( _resolution != resolutions::seconds )
   {
@@ -143,9 +207,10 @@ void file_formatter::operator()(
   os << " " << name << " " << ident << " " << str;
 }
 
-stdout_formatter::stdout_formatter(resolutions resolution, long colorized)
+stdout_formatter::stdout_formatter(resolutions resolution, long colorized, ulong hide)
   : _resolution(resolution != resolutions::inherited ? resolution : resolutions::milliseconds )
   , _colorized(colorized > 0 ? colorized : 3)
+  , _hide( hide != ulong(hide_items::inherited) ? hide : 0ul )
 {
 }
 
@@ -162,15 +227,14 @@ void stdout_formatter::operator()(
   if ( _colorized > 2 )
     os << "\033[32m" ;
   
-  formatter::date(os, tp);
-  os << " ";
-  //os << mkdate(ts) << " ";
+  formatter::date(os, tp, 0ul);
   if ( _colorized > 2 )
     os << "\033[92m" ;
-  //os << mktime(ts);
-  formatter::time(os, tp);
+  formatter::time(os, tp, 0ul);
 
-  if ( _resolution != resolutions::seconds )
+  if ( _resolution != resolutions::seconds &&
+    !( _hide & ulong(hide_items::time))
+  )
   {
     if ( _colorized > 2 )
       os << "\033[32m" ;

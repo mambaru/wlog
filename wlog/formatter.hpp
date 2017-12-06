@@ -10,20 +10,22 @@
 #include <set>
 #include <wlog/logger_fun.hpp>
 #include <wlog/resolutions.hpp>
+#include <iostream>
 
 namespace wlog{
 
 class formatter
 {
 public:
-  static void date(std::ostream& os,const time_point& tp);
-  static void time(std::ostream& os,const time_point& tp);
+  static void date(std::ostream& os,const time_point& tp, unsigned long hide);
+  static void time(std::ostream& os,const time_point& tp, unsigned long hide);
   static void ms(std::ostream& os,const time_point& tp, long resolution);
 };
 
 class file_formatter
 {
 public:
+  
   file_formatter(resolutions resolution, datetime_formatter_fun date_fmt = nullptr, datetime_formatter_fun time_fmt = nullptr );
   void operator()(
     std::ostream& os, 
@@ -41,7 +43,7 @@ private:
 class stdout_formatter
 {
 public:
-  stdout_formatter(resolutions resolution, long colorized);
+  stdout_formatter(resolutions resolution, long colorized, ulong hide);
   void operator()(
     std::ostream& os, 
     const time_point& tp,
@@ -52,6 +54,7 @@ public:
 private:
   const resolutions _resolution;
   const long _colorized;
+  const ulong _hide;
 };
 
 class syslog_formatter

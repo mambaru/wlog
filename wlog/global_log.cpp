@@ -7,6 +7,7 @@
 
 #include "global_log.hpp"
 #include "default_logger.hpp"
+#include <iostream>
 #include <mutex>
 
 namespace wlog{
@@ -64,9 +65,26 @@ bool log_status()
   
 logstream global_log(const std::string& name, const std::string& ident)
 {
-  //std::lock_guard<mutex_type> lk(log_mutex);
   log_mutex.lock();
   return logstream(log_mutex, name,  ident,  global_writer);
+}
+
+stdout_stream global_cout()
+{
+  log_mutex.lock();
+  return stdout_stream(log_mutex, std::cout);
+}
+
+stdout_stream global_clog()
+{
+  log_mutex.lock();
+  return stdout_stream(log_mutex, std::clog);
+}
+
+stdout_stream global_cerr()
+{
+  log_mutex.lock();
+  return stdout_stream(log_mutex, std::clog);
 }
 
 }

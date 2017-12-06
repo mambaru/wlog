@@ -16,15 +16,15 @@ class stdout_writer final
 {
 public:
   ~stdout_writer();
-  stdout_writer(const std::string& stdout, bool sync);
+  stdout_writer(const formatter_fun& fmt, const std::string& stdout, bool sync);
   void operator()(
     const time_point& tp,
-    const formatter_fun& fmt,
     const std::string& name, 
     const std::string& ident,
     const std::string& str
   ) const;
 private:
+  formatter_fun _formatter;
   std::ostream* _out;
   const bool _sync;
 };
