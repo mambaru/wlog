@@ -29,6 +29,10 @@ namespace{
   }
 }
 
+file_writer::~file_writer()
+{
+  _oflog.close();
+}
   
 
 file_writer::file_writer(const std::string& path, bool sync, long limit, int save_old)
@@ -39,7 +43,7 @@ file_writer::file_writer(const std::string& path, bool sync, long limit, int sav
   , _save_count(0)
   , _summary(0)
   , _starttime( mkdate() )
-  , _mutex(std::make_shared<mutex_type>() )
+  //, _mutex(std::make_shared<mutex_type>() )
   
 {
   _oflog.open( _path, std::ios_base::app );
@@ -79,13 +83,12 @@ file_writer::file_writer(const file_writer& other)
   
 void file_writer::operator()( 
   const formatter_fun& fmt,
-  const char* name, 
-  const char* ident,
+  const std::string& name, 
+  const std::string& ident,
   const std::string& str
 )
 {
-  //this->write(fmt, name, ident, str);
-  std::lock_guard<mutex_type> lk(*_mutex);
+  std::lock_guard<mutex_type> lk(_mutex);
   
   if ( _sync )
   {
@@ -151,8 +154,8 @@ void file_writer::save_old_( std::ofstream& oflog, long limit)
 void file_writer::write_(  
   std::ofstream& oflog,
   const formatter_fun& fmt,
-  const char* name, 
-  const char* ident,
+  const std::string& name, 
+  const std::string& ident,
   const std::string& str
 )
 {

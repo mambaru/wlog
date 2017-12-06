@@ -27,7 +27,17 @@ struct customize_handlers
   std::vector<after_fun> after;
 };
 
+struct customize_options
+ : customize_handlers
+{
+  /// Список запрещенных логов или типов сообщений 
+  std::set< std::string > deny;
+  /// Список разрешенных логов или типов сообщений (остальные запрещены)
+  std::set< std::string > allow;
+};
+
 struct basic_options
+  : customize_options
 {
   /// Включает вывод миллисекунд в поле времени лога
   bool milliseconds = true;
@@ -48,14 +58,6 @@ struct basic_options
   std::string stdout = "clog";
   /// Имя для системного лога для лога syslog ("" - не используется)
   std::string syslog = "";
-  /// Список запрещенных логов или типов сообщений 
-  std::set< std::string > deny;
-  /// Список разрешенных логов или типов сообщений (остальные запрещены)
-  std::set< std::string > allow;
-  
-  // Пользовательский варианты формирования сообщений и записи
-  // Если заданы, то используються они, а соответствующие опции игнорируются
-  customize_handlers handlers;
 };
 
 struct options

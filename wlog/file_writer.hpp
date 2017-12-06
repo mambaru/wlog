@@ -13,15 +13,15 @@
 
 namespace wlog{
 
-class file_writer
+class file_writer final
 {
 public:
-  
+  ~file_writer();
   file_writer(const std::string& path, bool sync, long limit, int save_old);
   void operator()(  
     const formatter_fun& fmt,
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   );
   
@@ -29,8 +29,8 @@ private:
   void write_(  
     std::ofstream& oflog,
     const formatter_fun& fmt,
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   );
   
@@ -45,7 +45,7 @@ private:
   int _save_count;
   long _summary;
   const std::string _starttime;
-  mutable std::shared_ptr<mutex_type> _mutex;
+  /*mutable std::shared_ptr<*/mutex_type/*>*/ _mutex;
   std::ofstream _oflog;
 };
 

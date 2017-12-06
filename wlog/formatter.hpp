@@ -17,8 +17,8 @@ public:
   file_formatter(bool milliseconds);
   void operator()(
     std::ostream& os, 
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   ) const;
 private:
@@ -31,8 +31,8 @@ public:
   stdout_formatter(bool milliseconds, bool colorized);
   void operator()(
     std::ostream& os, 
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   ) const;
 private:
@@ -46,8 +46,8 @@ public:
   syslog_formatter();
   void operator()(
     std::ostream& os, 
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   ) const;
 };

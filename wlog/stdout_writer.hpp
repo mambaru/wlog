@@ -12,14 +12,15 @@
 
 namespace wlog{
 
-class stdout_writer
+class stdout_writer final
 {
 public:
+  ~stdout_writer();
   stdout_writer(const std::string& stdout);
   void operator()(
     const formatter_fun& fmt,
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   );
 private:

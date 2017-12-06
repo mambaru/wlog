@@ -20,10 +20,10 @@ namespace{
   std::string mkms()
   {
     auto duration = std::chrono::high_resolution_clock::now().time_since_epoch();
-    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    auto millis = std::chrono::duration_cast<std::chrono::nanoseconds>(duration).count();
     auto secround = (millis/1000) * 1000;
     std::stringstream ss;
-    ss <<std::setfill('0') << std::setw(3)<< millis - secround;
+    ss <<std::setfill('0') << std::setw(3)<< millis - secround ;
     return ss.str();
   }
 
@@ -53,8 +53,8 @@ file_formatter::file_formatter(bool milliseconds)
 
 void file_formatter::operator()(
     std::ostream& os, 
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   ) const
 {
@@ -73,8 +73,8 @@ stdout_formatter::stdout_formatter(bool milliseconds, bool colorized)
 
 void stdout_formatter::operator()(
     std::ostream& os, 
-    const char* name, 
-    const char* ident,
+    const std::string& name, 
+    const std::string& ident,
     const std::string& str
   ) const
 {
@@ -100,19 +100,19 @@ void stdout_formatter::operator()(
 
   if ( _colorized )
   {
-    if ( 0==strcmp(ident,"MESSAGE") )
+    if ( ident=="MESSAGE" || ident=="INFO")
       os << "\033[97m" ;
-    else if ( 0==strcmp(ident,"WARNING"))
+    else if ( ident=="WARNING"  || ident=="ALERT")
       os << "\033[93m" ;
-    else if ( 0==strcmp(ident,"TRACE"))
+    else if ( ident=="TRACE")
       os << "\033[90m" ;
-    else if ( 0==strcmp(ident,"DEBUG"))
+    else if ( ident=="DEBUG")
       os << "\033[33m" ;
-    else if ( 0==strcmp(ident,"ERROR"))
+    else if ( ident=="ERROR")
       os << "\033[91m" ;
-    else if ( 0==strcmp(ident,"FATAL"))
+    else if ( ident=="FATAL" || ident=="EMERG" || ident=="CRIT" || ident=="ALERT" )
       os << "\033[31m" ;
-    else if ( 0==strcmp(ident,"BEGIN") || 0==strcmp(ident,"END") || 0==strcmp(ident,"PROGRESS"))
+    else if ( ident=="BEGIN" || ident=="END" || ident=="PROGRESS")
       os << "\033[96m" ;
     else
       os << "\033[0m" ;
@@ -130,8 +130,8 @@ syslog_formatter::syslog_formatter()
 
 void syslog_formatter::operator()(
     std::ostream& os, 
-    const char* , 
-    const char* ,
+    const std::string& , 
+    const std::string& ,
     const std::string& str
   ) const
 {

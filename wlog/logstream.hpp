@@ -32,26 +32,50 @@ public:
   logstream(std::string&& name, std::string&& type, const logger_fun& writer);
   */
 
-  logstream(const char* name, const char* ident, const logger_fun& writer);
+  logstream(const std::string& name, const std::string& ident, const logger_fun& writer);
   
   std::string str() const;
   
   bool write();
 
-  template<typename T>
-  std::stringstream& operator << ( T&& arg)
+  std::ostream& operator<< (std::ios& (*pf)(std::ios&))
   {
-    _ss << std::forward<T>(arg);
+    _ss << pf;
     return _ss;
   }
+  
+  std::ostream& operator<< (std::ios_base& (*pf)(std::ios_base&))
+  {
+    _ss << pf;
+    return _ss;
+  }
+
+  std::ostream& operator<< (std::ostream& (*pf)(std::ostream&))
+  {
+    _ss << pf;
+    return _ss;
+  }
+  
+  template<typename T>
+  std::stringstream& operator << ( const T& arg)
+  {
+    _ss << arg;
+    //_ss << std::forward<T>(arg);
+    return _ss;
+  }
+  
+
+
+  
+
 
 private:
   /*
   const std::string& _name;
   const std::string& _type;
   */
-  const char* _name;
-  const char* _ident;
+  const std::string& _name;
+  const std::string& _ident;
   std::stringstream _ss;
   const logger_fun& writer_;
 };

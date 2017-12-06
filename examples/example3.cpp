@@ -1,3 +1,4 @@
+#define WLOG_ENABLE_DEBUG_LOG ON
 #include <wlog/logger.hpp>
 #include <wlog/options.hpp>
 #include <wlog/default_logger.hpp>
@@ -20,34 +21,25 @@ int main(int argc, char* argv[])
   
   std::cout << argv[0] << " " << opt.sync << " " << opt.save_old << " " << opt.limit<< std::endl;
   
-  //opt.stdout = "clog";
-  wlog::init_log( /*wlog::default_logger(opt)*/opt );
+  wlog::init_log( opt );
   for (int i = 0; i < LOG_LINES; ++i)
   {
-    if ( i % 10 == 0)
-    {
-      WLOG_WARNING("Тестовое " << "сообщение №" << i << "" );
-    }
-    else if ( (i+1) % 10 == 0)
-    {
-      WLOG("WLOG", "TRACE", "Тестовое " << "сообщение №" << i << "" );
-    }
-    else if ( (i+2) % 10 == 0)
-    {
-      WLOG("WLOG", "DEBUG", "Тестовое " << "сообщение №" << i << "" );
-    }
-    else if ( (i+3) % 10 == 0)
-    {
-      WLOG_ERROR("Тестовое " << "сообщение №" << i << "" );
-    }
-    else if ( (i+4) % 10 == 0)
-    {
-      WLOG_FATAL("Тестовое " << "сообщение №" << i << "" );
-    }
-    else if ( (i+5) % 10 == 0)
-    {
-      WLOG_BEGIN("Тестовое " << "сообщение №" << i << "" );
-    }
+    if ( i % 10 == 0 )
+      { WLOG_WARNING("Тестовое " << "сообщение №" << i ) }
+    else if ( i % 10 == 1)
+      {   WLOG_TRACE("Тестовое " << "сообщение №" << i ) }
+    else if ( i % 10 == 2)
+      {   WLOG_DEBUG("Тестовое " << "сообщение №" << i ) }
+    else if ( i % 10 == 3)
+      {   WLOG_ERROR("Тестовое " << "сообщение №" << i ) }
+    else if ( i % 10 == 4)
+      {   WLOG_FATAL("Тестовое " << "сообщение №" << i ) }
+    else if ( i % 10 == 5)
+      {   WLOG_BEGIN("Тестовое " << "сообщение №" << i)  }
+    else if ( i % 10 == 6)
+      {   WLOG_END("Тестовое " << "сообщение №" << i)  }
+    else if ( i % 10 == 7)
+      {   WLOG_PROGRESS("Тестовое " << "сообщение №" << i << std::endl)  }
     else
       WLOG_MESSAGE("Тестовое " << "сообщение №" << i << "" );
   }

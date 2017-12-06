@@ -30,7 +30,7 @@ logstream::logstream(std::string&& name, std::string&& type, const logger_fun& w
 }
 */
 
-logstream::logstream(const char* name, const char* ident, const logger_fun& writer)
+logstream::logstream(const std::string& name, const std::string& ident, const logger_fun& writer)
   : _name( name )
   , _ident( ident )
   , writer_(writer)

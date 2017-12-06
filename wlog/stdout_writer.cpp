@@ -9,10 +9,16 @@
 #include <iostream>
 #include <mutex>
 
+namespace wlog{ extern std::mutex stdout_mutex; }
+
 namespace wlog{
   
-extern std::mutex stdout_mutex;
-  
+stdout_writer::~stdout_writer()
+{
+  if ( _out != nullptr )
+    _out->flush();
+}
+
 stdout_writer::stdout_writer(const std::string& stdout)
   : _out(nullptr)
 {
@@ -26,8 +32,8 @@ stdout_writer::stdout_writer(const std::string& stdout)
 
 void stdout_writer::operator()(
   const formatter_fun& fmt,
-  const char* name, 
-  const char* ident,
+  const std::string& name, 
+  const std::string& ident,
   const std::string& str
 )
 {
