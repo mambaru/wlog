@@ -27,8 +27,8 @@ enum class resolutions: long
   hours        = -3,
   days         = -4,
   month        = -5,
-  year         = -6,
-  none         = -7
+  year         = -6/*,
+  none         = -7*/
 };
 
 

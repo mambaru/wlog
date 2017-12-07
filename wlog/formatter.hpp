@@ -35,7 +35,14 @@ public:
   static bool message( std::ostream& os, const std::string& tp, const formatter_options& opt);
   
   formatter(const formatter_options& opt, const formatter_handlers& handlers);
-  void operator()(std::ostream& os, const time_point& tp, const std::string& name, const std::string& ident, const std::string& str) const;
+  
+  void operator()(
+    std::ostream& os, 
+    const time_point& tp, 
+    const std::string& name, 
+    const std::string& ident, 
+    const std::string& str
+  ) const;
   
 private:
   
