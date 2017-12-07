@@ -8,7 +8,7 @@
 #include "file_writer.hpp"
 #include "stdout_writer.hpp"
 #include "syslog_writer.hpp"
-#include "formatter.hpp"
+#include "formatter1.hpp"
 #include <memory>
 #include <iostream>
 #include <sstream>

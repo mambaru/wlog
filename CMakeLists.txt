@@ -39,6 +39,7 @@ add_library(
  wlog/global_log.cpp
  wlog/default_logger.cpp
  wlog/formatter.cpp
+ wlog/formatter1.cpp
  wlog/file_writer.cpp
  wlog/stdout_writer.cpp
  wlog/syslog_writer.cpp

@@ -18,11 +18,7 @@ int main()
   for (int i = 0 ; i < TOTAL; ++i)
   {
     WLOG_PROGRESS( i << " " << std::fixed<<std::setprecision(2) << (i*100.0)/TOTAL << "%   ")
-    WLOG_DEBUG_IF( i%1000==0 && i!=0, "intermediate result " << i << "                         ")
-    /*if ( i % 1000 == 0 && i != 0)
-    {
-      WLOG_DEBUG( "intermediate result " << i << "                         ")
-    }*/
+    WLOG_DEBUG_IF( i%1000==0 && i!=0, "intermediate result " << i << "                     ")
     usleep(1000);
   }
  

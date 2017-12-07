@@ -6,69 +6,41 @@
 
 #pragma once
 
+#include <wlog/formatter_options.hpp>
+#include <ostream>
+#include <chrono>
 #include <string>
-#include <set>
-#include <wlog/logger_fun.hpp>
-#include <wlog/resolutions.hpp>
-#include <iostream>
 
-namespace wlog{
+
+namespace wlog
+{
 
 class formatter
 {
 public:
-  static void date(std::ostream& os,const time_point& tp, unsigned long hide);
-  static void time(std::ostream& os,const time_point& tp, unsigned long hide);
-  static void ms(std::ostream& os,const time_point& tp, long resolution);
-};
-
-class file_formatter
-{
-public:
   
-  file_formatter(resolutions resolution, datetime_formatter_fun date_fmt = nullptr, datetime_formatter_fun time_fmt = nullptr );
-  void operator()(
-    std::ostream& os, 
-    const time_point& tp,
-    const std::string& name, 
-    const std::string& ident,
-    const std::string& str
-  ) const;
+  static bool set_color(std::ostream& os, const std::string& name, const std::string& color, const formatter_options& opt);
+  static void reset_color(std::ostream& os, const std::string& name, const formatter_options& opt);
+  static void reset_color(std::ostream& os);
+  
+  static bool date( std::ostream& os, const time_point& tp, const formatter_options& opt);
+  static bool time( std::ostream& os, const time_point& tp, const formatter_options& opt);
+
+  template<typename Ratio>
+  static void fraction_t(std::ostream& os, const time_point& tp);
+  static bool fraction( std::ostream& os, const time_point& tp, const formatter_options& opt);
+  
+  static bool name( std::ostream& os, const std::string& tp, const formatter_options& opt);
+  static bool ident( std::ostream& os, const std::string& tp, const formatter_options& opt);
+  static bool message( std::ostream& os, const std::string& tp, const formatter_options& opt);
+  
+  formatter(const formatter_options& opt, const formatter_handlers& handlers);
+  void operator()(std::ostream& os, const time_point& tp, const std::string& name, const std::string& ident, const std::string& str) const;
+  
 private:
-  const resolutions _resolution;
-  const datetime_formatter_fun _date_fmt;
-  const datetime_formatter_fun _time_fmt;
+  
+  formatter_options _opt;
+  formatter_handlers _handlers;
 };
-
-class stdout_formatter
-{
-public:
-  stdout_formatter(resolutions resolution, long colorized, ulong hide);
-  void operator()(
-    std::ostream& os, 
-    const time_point& tp,
-    const std::string& name, 
-    const std::string& ident,
-    const std::string& str
-  ) const;
-private:
-  const resolutions _resolution;
-  const long _colorized;
-  const ulong _hide;
-};
-
-class syslog_formatter
-{
-public:
-  syslog_formatter();
-  void operator()(
-    std::ostream& os, 
-    const time_point& tp,
-    const std::string& name, 
-    const std::string& ident,
-    const std::string& str
-  ) const;
-};
-
 
 }

@@ -1,3 +1,4 @@
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 add_executable(test1 test1.cpp)
 add_test(test1 test1 10)
 add_test(test1v valgrind --error-exitcode=1 ${CMAKE_CURRENT_BINARY_DIR}/test1)
