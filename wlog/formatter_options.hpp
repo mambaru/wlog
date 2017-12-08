@@ -40,14 +40,15 @@ enum class hide_flags: unsigned long
   time          = 1 << 1,
   year          = 1 << 3,
   month         = 1 << 4,
-  days          = 1 << 5,
-  hours         = 1 << 6,
-  minutes       = 1 << 7,
-  seconds       = 1 << 8,
-  fraction      = 1 << 9,
-  name          = 1 << 10,
-  ident         = 1 << 11,
-  message       = 1 << 12
+  weekday       = 1 << 5,
+  days          = 1 << 6,
+  hours         = 1 << 7,
+  minutes       = 1 << 8,
+  seconds       = 1 << 9,
+  fraction      = 1 << 10,
+  name          = 1 << 11,
+  ident         = 1 << 12,
+  message       = 1 << 13
 };
 
 inline hide_flags operator | ( hide_flags left, hide_flags right)

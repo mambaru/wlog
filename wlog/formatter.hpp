@@ -34,7 +34,7 @@ public:
   static bool ident( std::ostream& os, const std::string& tp, const formatter_options& opt);
   static bool message( std::ostream& os, const std::string& tp, const formatter_options& opt);
   
-  formatter(const formatter_options& opt, const formatter_handlers& handlers);
+  formatter(const formatter_options& opt, const formatter_handlers& handlers = formatter_handlers() );
   
   void operator()(
     std::ostream& os, 
@@ -45,9 +45,10 @@ public:
   ) const;
   
 private:
-  
   formatter_options _opt;
   formatter_handlers _handlers;
+  bool _showtime;
+  bool _showfract;
 };
 
 }
