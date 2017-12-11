@@ -14,6 +14,7 @@
 
 namespace wlog{
 
+/*
 class formatter1
 {
 public:
@@ -75,6 +76,6 @@ public:
     const std::string& str
   ) const;
 };
-
+*/
 
 }

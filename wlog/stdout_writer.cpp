@@ -20,16 +20,16 @@ stdout_writer::~stdout_writer()
     _out->flush();
 }
 
-stdout_writer::stdout_writer(const formatter_fun& fmt, const std::string& stdout, bool sync)
+stdout_writer::stdout_writer(const formatter_fun& fmt, const options& opt)
   : _formatter(fmt)
   , _out(nullptr)
-  , _sync(sync)
+  , _sync(opt.sync!=0)
 {
-  if (stdout=="cout")
+  if (opt.name=="cout")
     _out = &std::cout;
-  else if (stdout=="clog")
+  else if (opt.name=="clog")
     _out = &std::clog;
-  else if (stdout=="cerr")
+  else if (opt.name=="cerr")
     _out = &std::cerr;
 }
 

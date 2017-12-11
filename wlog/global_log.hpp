@@ -12,11 +12,18 @@
 #include <string>
 
 namespace wlog{
-  
-void init_log(const std::string& stdout = "clog", resolutions resolution = resolutions::milliseconds, long colorized = 3);
+
 void init_log(const logger_fun& log);
-void init_log(const options& opt);
-void init_log(const std::string& path, resolutions resolution = resolutions::milliseconds, const std::string& stdout = "clog", long colorized = 3);
+void init_log(const default_logger_options& opt);
+void init_log(
+  const std::string& stdout = "clog", 
+  resolutions resolution = resolutions::milliseconds, 
+  colorized_flags colorized = colorized_flags::all);
+void init_log(
+  const std::string& path, 
+  resolutions resolution = resolutions::milliseconds, 
+  const std::string& stdout = "clog", 
+  colorized_flags colorized = colorized_flags::all);
 
 // @return текущий логгер. М.б. использован для записи финального сообщения
 logger_fun&& release_log();

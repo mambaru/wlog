@@ -7,19 +7,21 @@
 int main(int argc, char* argv[])
 {
   //
-  wlog::options opt;
+  wlog::default_logger_options opt;
   opt.path = "./example3.log";
-  //opt.stdout.clear();
+  opt.colorized = wlog::colorized_flags::all;
+  opt.stdout.stdout = "";
   if ( argc > 1 )
     opt.sync = atoi(argv[1])!=0;
 
   if ( argc > 2 )
-    opt.save_old = atoi(argv[2]);
+    opt.rotation = atoi(argv[2]);
 
   if ( argc > 3 )
-    opt.limit = atol(argv[3]);
+    opt.size_limit = atol(argv[3]);
+
   
-  std::cout << argv[0] << " " << opt.sync << " " << opt.save_old << " " << opt.limit<< std::endl;
+  std::cout << argv[0] << " " << opt.sync << " " << opt.rotation << " " << opt.size_limit<< std::endl;
   
   wlog::init_log( opt );
   for (int i = 0; i < LOG_LINES; ++i)

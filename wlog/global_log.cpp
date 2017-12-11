@@ -23,10 +23,10 @@ logger_fun&& release_log()
   return std::move(global_writer);
 }
 
-void init_log(const std::string& stdout, resolutions resolution, long colorized )
+void init_log(const std::string& stdout, resolutions resolution, colorized_flags colorized )
 {
-  options opt;
-  opt.stdout = stdout;
+  default_logger_options opt;
+  opt.stdout.name = stdout;
   opt.resolution = resolution;
   opt.colorized = colorized;
   std::lock_guard<mutex_type> lk(log_mutex);
@@ -39,17 +39,17 @@ void init_log(const logger_fun& log)
   global_writer = log;
 }
 
-void init_log(const options& /*opt*/)
+void init_log(const default_logger_options& /*opt*/)
 {
   std::lock_guard<mutex_type> lk(log_mutex);
   /*!!! global_writer = default_logger(opt);*/
 }
 
-void init_log(const std::string& path, resolutions resolution, const std::string& stdout, long colorized)
+void init_log(const std::string& path, resolutions resolution, const std::string& stdout, colorized_flags colorized)
 {
-  options opt;
+  default_logger_options opt;
   opt.path = path;
-  opt.stdout = stdout;
+  opt.stdout.name = stdout;
   opt.colorized = colorized;
   opt.resolution = resolution;
   std::lock_guard<mutex_type> lk(log_mutex);

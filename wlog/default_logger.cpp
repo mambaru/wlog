@@ -18,25 +18,39 @@ namespace wlog{
 std::mutex stdout_mutex;
 namespace { std::string expanse_path(const std::string& path, const std::string& name); }
 
-default_logger::default_logger( const options& opt)
+default_logger::default_logger( const options& copt, const handlers& /*hdr*/)
 {
-  this->init_handlers_(_default_options, opt);
+  options opt = copt;
+  for ( auto& p : opt.customize )
+  {
+    this->inherit_options_(p.first, p.second, opt);
+  }
+  
+  /*
+  this->init_handlers_(_default_handlers, hdr);
 
   for ( const auto& p : opt.customize )
   {
-    basic_options bopt = p.second;
+    logger_options bopt = p.second;
     this->inherit_options_(p.first, bopt, opt);
-    this->init_handlers_(_options_map[p.first], bopt);
   }
+  
+  for ( const auto& p : hdr.customize )
+  {
+    logger_handlers bopt = p.second;
+    this->init_handlers_(_handlers_map[p.first], bopt);
+  }
+  */
   
 }
 
 bool default_logger::operator()(
-  const time_point& tp,
-  const std::string& name, 
-  const std::string& ident, 
-  const std::string& str) const
+  const time_point& /*tp*/,
+  const std::string& /*name*/, 
+  const std::string& /*ident*/, 
+  const std::string& /*str*/) const
 {
+  /*
   const auto* handlers = &_default_options;
   
   if ( !this->allow_(name, ident, handlers->allow, handlers->deny) )
@@ -67,17 +81,22 @@ bool default_logger::operator()(
     for (const auto& after : _default_options.after )
       after(tp, name, ident, str);
   }
+  */
   return true;
+  
 }
 
-void default_logger::inherit_options_(const std::string& name, basic_options& bopt, const basic_options& opt)
+void default_logger::inherit_options_(const std::string& name, logger_options& bopt, const logger_options& opt)
 {
-  if ( bopt.limit == -1 )
-    bopt.limit = opt.limit;
-  if ( bopt.save_old == -1 )
-    bopt.save_old = opt.save_old;
-  if ( bopt.colorized == -1 )
+  if ( bopt.size_limit == -1 )
+    bopt.size_limit = opt.size_limit;
+  
+  if ( bopt.rotation == -1 )
+    bopt.rotation = opt.rotation;
+  
+  if ( bopt.colorized == colorized_flags::inherited )
     bopt.colorized = opt.colorized;
+  
   if ( bopt.resolution == resolutions::inherited )
     bopt.resolution = opt.resolution;
     
@@ -88,38 +107,45 @@ void default_logger::inherit_options_(const std::string& name, basic_options& bo
   else if ( bopt.path=="$" )
     bopt.path = expanse_path( opt.path, name);
 
-  if ( bopt.stdout.empty() )
-    bopt.stdout = opt.stdout;
-  else if ( bopt.stdout=="#" )
-    bopt.stdout.clear();
+  if ( bopt.stdout.name.empty() )
+    bopt.stdout.name = opt.stdout.name;
+  else if ( bopt.stdout.name=="#" )
+    bopt.stdout.name.clear();
+  
+  if ( bopt.stdout.sync == -1 )
+    bopt.stdout.sync = opt.stdout.sync;
+  if ( bopt.stdout.sync == -1 )
+    bopt.stdout.sync = opt.sync;
 
-  if ( bopt.syslog.empty() )
-    bopt.syslog = opt.syslog;
-  else if ( bopt.syslog=="#" )
-    bopt.syslog.clear();
+  if ( bopt.syslog.name.empty() )
+    bopt.syslog.name = opt.syslog.name;
+  else if ( bopt.syslog.name=="#" )
+    bopt.syslog.name.clear();
 }
 
-void default_logger::init_handlers_(customize_handlers& handlers, const basic_options& opt)
+void default_logger::init_handlers_(logger_handlers& to, const logger_handlers& from, const logger_options& opt)
 {
   using namespace std::placeholders;
 
-  handlers = static_cast<const customize_handlers&>(opt);
-  if ( handlers.file_formatter == nullptr )
-    handlers.file_formatter  = file_formatter(opt.resolution);
+  to = from;
+  if ( to.file_formatter == nullptr )
+    to.file_formatter = formatter(opt);
 
-  if ( handlers.stdout_formatter == nullptr )
-    handlers.stdout_formatter  = stdout_formatter(opt.resolution, opt.colorized, opt.hide);
+  if ( to.stdout_formatter == nullptr )
+    to.stdout_formatter  = formatter(opt);
   
-  if ( handlers.syslog_formatter == nullptr )
-    handlers.syslog_formatter  = syslog_formatter();
+  /*
+  if ( to.syslog_formatter == nullptr )
+    to.syslog_formatter  = syslog_formatter();
+  */
     
-  if ( handlers.file_writer == nullptr )
+  if ( to.file_writer == nullptr )
   {
     if ( !opt.path.empty() )
     {
-      auto itr = _file_writer.find(opt.path);
-      if ( itr == _file_writer.end() )
-        itr = _file_writer.emplace( opt.path, std::make_shared<file_writer>(handlers.file_formatter, opt.path, opt.sync, opt.limit, opt.save_old) ).first;
+      auto itr = _file_map.find(opt.path);
+      if ( itr == _file_map.end() )
+        itr = _file_map.emplace( opt.path, std::make_shared<file_writer>(to.file_formatter, opt.path, opt.sync, opt.limit, opt.save_old) ).first;
       handlers.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4 );
     }
   }

@@ -11,10 +11,49 @@
 #include <map>
 #include <set>
 #include <wlog/logger_fun.hpp>
-#include <wlog/resolutions.hpp>
+#include <wlog/formatter_options.hpp>
+#include <wlog/writer_options.hpp>
 
 namespace wlog{
   
+struct file_logger_options: formatter_options, file_writer_options{};
+struct stdout_logger_options: formatter_options, stdout_writer_options{};
+struct syslog_logger_options: syslog_writer_options{};
+
+struct logger_options: file_logger_options
+{
+  stdout_logger_options stdout;
+  syslog_logger_options syslog;
+  
+  std::set<std::string> allow;
+  std::set<std::string> deny;
+};
+
+struct default_logger_options: logger_options
+{
+  typedef std::map<std::string, logger_options> customize_map;
+  customize_map customize;
+};
+
+struct logger_handlers
+{
+  formatter_fun file_formatter;
+  formatter_fun stdout_formatter;
+  formatter_fun syslog_formatter;
+  
+  writer_fun file_writer;
+  writer_fun stdout_writer;
+  writer_fun syslog_writer;
+};
+
+struct default_logger_handlers: logger_handlers
+{
+ typedef std::map<std::string, logger_handlers> customize_map;
+ customize_map customize;
+};
+
+
+/*
 struct customize_handlers
 {
   formatter_fun file_formatter;
@@ -127,6 +166,6 @@ struct options
   typedef std::map<std::string, basic_options> customize_map;
   customize_map customize;
 };
-
+*/
 
 }

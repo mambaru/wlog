@@ -37,7 +37,6 @@ typedef std::function<void(
 
 typedef std::function<void(
   const time_point& tp,
-  //const formatter_fun& fmt,
   const std::string& name, 
   const std::string& ident,
   const std::string& str

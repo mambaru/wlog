@@ -7,7 +7,8 @@
 #pragma once
 
 namespace wlog{
-  
+ 
+  /*
 enum class resolutions: long
 {
   inherited    = 0,
@@ -39,6 +40,6 @@ enum class hide_items: unsigned long
   minute        = 1 << 7,
   second        = 1 << 8
 };
-
+*/
 
 }
