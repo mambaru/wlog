@@ -1,5 +1,6 @@
 #include <wlog/formatter.hpp>
 #include <wlog/file_writer.hpp>
+#include <iostream> 
 #include "test.hpp"
 
 namespace 
@@ -10,18 +11,40 @@ static wlog::time_point tp;
 
 int test1();
 
-
-
 int test1()
 {
-  wlog::file_writer::options opt;
-  opt.path = "./test4.log";
-  wlog::formatter_options fo;
-  /*fo.hide = wlog::hide_flags::none;
-  fo.resolution = wlog::resolutions::nanoseconds;*/
-  wlog::formatter fmt(fo);
-  wlog::file_writer fw( fmt, opt);
-  fw(tp, "TEST4", "MESSAGE", "test1\n");
+  {
+    wlog::file_writer::options opt;
+    opt.startup_rotate = 1;
+    opt.path = "./test4.log";
+    wlog::formatter_options fo;
+    wlog::formatter fmt(fo);
+    wlog::file_writer fw( fmt, opt);
+    fw(tp, "TEST4", "MESSAGE", "test1\n");
+    std::ifstream ifs("./test4.log");
+    std::string testline;
+    std::getline( ifs, testline);
+    std::cout << testline << std::endl;
+    TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
+  }
+  {
+    wlog::file_writer::options opt;
+    opt.startup_rotate = 1;
+    opt.rotation = 1;
+    opt.path = "./test4.log";
+    wlog::formatter_options fo;
+    wlog::formatter fmt(fo);
+    wlog::file_writer fw( fmt, opt);
+    fw(tp, "TEST4", "MESSAGE", "test1\n");
+    std::ifstream ifs("./test4.log.old-0");
+    std::string testline;
+    std::getline( ifs, testline);
+    std::cout << testline << std::endl;
+    TEST( testline == "---------------- truncate with 896 summary size 896 ( start time: 2017-12-08 23:15:25) ----------------" );
+    std::getline( ifs, testline);
+    std::cout << testline << std::endl;
+    TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
+  }
   return 0;
 }
 

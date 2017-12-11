@@ -13,19 +13,29 @@
 
 namespace wlog{
 
+struct file_writer_options
+{
+  std::string path;
+  int sync = -1;
+  int startup_rotate = -1; 
+  long size_limit = -1;
+  long time_limit = -1;
+  long rotation   = -1; // ex save old
+};
+
+struct file_writer_handlers
+{
+};
+
 class file_writer final
 {
 public:
-  struct options
-  {
-    std::string path;
-    int sync = -1;
-    long size_limit = -1;
-    long time_limit = -1;
-    long rotation   = -1; // ex save old
-  };
   ~file_writer();
-  file_writer(const formatter_fun& formatter, const options& opt);
+  typedef file_writer_options options;
+  typedef file_writer_handlers handlers;
+  
+  file_writer(const formatter_fun& formatter, const options& opt, const handlers& hdlr = handlers() );
+  
   void operator()(  
     const time_point& tp,
     const std::string& name, 
@@ -42,11 +52,12 @@ private:
     const std::string& str
   );
   
-  void rotate_if_( std::ofstream& oflog);
+  bool rotate_if_( std::ofstream& oflog);
   void rotate_( std::ofstream& oflog);
 
   formatter_fun _formatter;
   options _opt;
+  handlers _handlers;
   /*
   typedef std::mutex mutex_type;
   const std::string _path;

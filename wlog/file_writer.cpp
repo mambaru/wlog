@@ -17,6 +17,7 @@
 
 namespace wlog{
   
+  
 namespace{
 
   std::string mkdate()
@@ -37,14 +38,21 @@ file_writer::~file_writer()
 }
   
 
-file_writer::file_writer(const formatter_fun& formatter, const options& opt)
+file_writer::file_writer(const formatter_fun& formatter, const options& opt, const handlers& hdlr)
   : _formatter(formatter)
   , _opt(opt)
+  , _handlers(hdlr)
   , _save_count(0)
   , _summary(0)
   , _rotate_time(0)
   , _starttime( mkdate() )
 {
+  if ( _opt.sync == -1 ) _opt.sync = 1;
+  if ( _opt.startup_rotate == -1 ) _opt.startup_rotate = 0;
+  if ( _opt.size_limit == -1 ) _opt.size_limit = 0;
+  if ( _opt.time_limit == -1 ) _opt.time_limit = 0;
+  if ( _opt.rotation   == -1 ) _opt.rotation = 0;
+
   _oflog.open( _opt.path, std::ios_base::app );
   
   if ( _opt.time_limit > 0 )
@@ -58,7 +66,10 @@ file_writer::file_writer(const formatter_fun& formatter, const options& opt)
     _rotate_time = file_time + _opt.time_limit;
   }
   
-  this->rotate_if_(_oflog);
+  if ( !this->rotate_if_(_oflog) && this->_opt.startup_rotate > 0 )
+  {
+    this->rotate_(_oflog);
+  }
   
   if ( _opt.sync != 0)
     _oflog.close();
@@ -84,7 +95,8 @@ void file_writer::operator()(
 }
 
 
-void file_writer::rotate_( std::ofstream& oflog)
+void file_writer::
+rotate_( std::ofstream& oflog)
 {
   oflog.close();
   
@@ -113,8 +125,9 @@ void file_writer::rotate_( std::ofstream& oflog)
   oflog.open(_opt.path);
 }
 
-void file_writer::rotate_if_( std::ofstream& oflog)
+bool file_writer::rotate_if_( std::ofstream& oflog)
 {
+  bool rotated = false;
   if ( _opt.size_limit > 0 || _opt.time_limit > 0 )
   {
     time_t now = time(0);
@@ -136,7 +149,7 @@ void file_writer::rotate_if_( std::ofstream& oflog)
             << " ----------------" << std::endl;
 
       this->rotate_(oflog);
-      
+      rotated = true;
       _rotate_time = now + _opt.time_limit;
       
       oflog << "---------------- truncate with " << pos 
@@ -145,6 +158,7 @@ void file_writer::rotate_if_( std::ofstream& oflog)
             << " ----------------" << std::endl;
     }
   }
+  return rotated;
 }
 
 void file_writer::write_(  
