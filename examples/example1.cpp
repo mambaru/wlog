@@ -12,7 +12,7 @@ int main()
 {
   WLOG_MESSAGE("Message before init_log()")
   WCOUT("std::cout << " << "Message before init_log()")
-  wlog::init_log();
+  wlog::init_log( wlog::colorized_flags::all);
   WLOG_MESSAGE("Demo progress LOG")
   WLOG_BEGIN("Progress...")
   for (int i = 0 ; i < TOTAL; ++i)

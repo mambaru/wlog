@@ -8,13 +8,15 @@
 
 #include <mutex>
 #include <wlog/logger_fun.hpp>
+#include <wlog/writer_options.hpp>
 
 namespace wlog{
 
 class syslog_writer final
 {
 public:
-  syslog_writer(const formatter_fun& formatter, const std::string& sysname);
+  typedef syslog_writer_options options;
+  syslog_writer(const formatter_fun& formatter, const options& opt);
   void operator()(
     const time_point& tp,
     const std::string& name, 

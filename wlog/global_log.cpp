@@ -23,14 +23,16 @@ logger_fun&& release_log()
   return std::move(global_writer);
 }
 
-void init_log(const std::string& stdout, resolutions resolution, colorized_flags colorized )
+void init_log(colorized_flags colorized, resolutions resolution )
 {
   default_logger_options opt;
-  opt.stdout.name = stdout;
-  opt.resolution = resolution;
-  opt.colorized = colorized;
+  opt.stdout.name = "clog";
+  opt.stdout.colorized = colorized;
+  opt.stdout.resolution = resolution;
+  auto plog = std::make_shared<default_logger>(opt);
   std::lock_guard<mutex_type> lk(log_mutex);
-  /*!!! global_writer = default_logger( opt );*/
+  using namespace std::placeholders;
+  global_writer = std::bind(&default_logger::operator(), plog, _1, _2, _3, _4);
 }
 
 void init_log(const logger_fun& log)
@@ -39,21 +41,26 @@ void init_log(const logger_fun& log)
   global_writer = log;
 }
 
-void init_log(const default_logger_options& /*opt*/)
+void init_log(const default_logger_options& opt)
 {
+  auto plog = std::make_shared<default_logger>(opt);
   std::lock_guard<mutex_type> lk(log_mutex);
-  /*!!! global_writer = default_logger(opt);*/
+  using namespace std::placeholders;
+  global_writer = std::bind(&default_logger::operator(), plog, _1, _2, _3, _4);
 }
 
 void init_log(const std::string& path, resolutions resolution, const std::string& stdout, colorized_flags colorized)
 {
   default_logger_options opt;
   opt.path = path;
-  opt.stdout.name = stdout;
-  opt.colorized = colorized;
   opt.resolution = resolution;
+  opt.stdout.resolution = resolution;
+  opt.stdout.name = stdout;
+  opt.stdout.colorized = colorized;
+  auto plog = std::make_shared<default_logger>(opt);
   std::lock_guard<mutex_type> lk(log_mutex);
-  /*!!! global_writer = default_logger(opt); */
+  using namespace std::placeholders;
+  global_writer = std::bind(&default_logger::operator(), plog, _1, _2, _3, _4);
 }
 
 

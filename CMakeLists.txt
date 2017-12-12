@@ -21,8 +21,6 @@ if (PARANOID_WARNING)
  -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual \
  -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo \
  -Wstrict-overflow=5 -Wswitch-default -Wundef ")
-                         
-      # -Wlogical-op -Wnoexcept -Wstrict-null-sentinel  -Werror
 endif()
 
 include_directories(.)

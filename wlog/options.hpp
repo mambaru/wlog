@@ -20,6 +20,26 @@ struct file_logger_options: formatter_options, file_writer_options{};
 struct stdout_logger_options: formatter_options, stdout_writer_options{};
 struct syslog_logger_options: syslog_writer_options{};
 
+inline file_logger_options& operator <<= (file_logger_options& self, const file_logger_options& other)
+{
+  static_cast<formatter_options&>(self) <<= static_cast<const formatter_options&>(other);
+  static_cast<file_writer_options&>(self) <<= static_cast<const file_writer_options&>(other);
+  return self;
+}
+
+inline stdout_logger_options& operator <<= (stdout_logger_options& self, const stdout_logger_options& other)
+{
+  static_cast<formatter_options&>(self) <<= static_cast<const formatter_options&>(other);
+  static_cast<stdout_writer_options&>(self) <<= static_cast<const stdout_writer_options&>(other);
+  return self;
+}
+
+inline syslog_logger_options& operator <<= (syslog_logger_options& self, const syslog_logger_options& other)
+{
+  static_cast<syslog_writer_options&>(self) <<= static_cast<const syslog_writer_options&>(other);
+  return self;
+}
+
 struct logger_options: file_logger_options
 {
   stdout_logger_options stdout;
@@ -28,6 +48,14 @@ struct logger_options: file_logger_options
   std::set<std::string> allow;
   std::set<std::string> deny;
 };
+
+inline logger_options& operator <<= (logger_options& self, const logger_options& other)
+{
+  static_cast<file_logger_options&>(self) <<= static_cast<const file_logger_options&>(other);
+  self.stdout <<= other.stdout;
+  self.syslog <<= other.syslog;
+  return self;
+}
 
 struct default_logger_options: logger_options
 {
@@ -45,6 +73,19 @@ struct logger_handlers
   writer_fun stdout_writer;
   writer_fun syslog_writer;
 };
+
+inline logger_handlers& operator <<= (logger_handlers& self, const logger_handlers& other)
+{
+  if ( self.file_formatter==nullptr ) self.file_formatter = other.file_formatter;
+  if ( self.stdout_formatter==nullptr ) self.stdout_formatter = other.stdout_formatter;
+  if ( self.syslog_formatter==nullptr ) self.syslog_formatter = other.syslog_formatter;
+  
+  if ( self.file_writer==nullptr ) self.file_writer = other.file_writer;
+  if ( self.stdout_writer==nullptr ) self.stdout_writer = other.stdout_writer;
+  if ( self.stdout_writer==nullptr ) self.stdout_writer = other.stdout_writer;
+  return self;
+}
+
 
 struct default_logger_handlers: logger_handlers
 {

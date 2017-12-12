@@ -46,13 +46,6 @@ private:
   formatter_fun _formatter;
   options _opt;
   handlers _handlers;
-  /*
-  typedef std::mutex mutex_type;
-  const std::string _path;
-  const bool _sync;
-  const long _limit;
-  const int _save_old;
-  */
   long _save_count;
   long _summary;
   time_t _rotate_time;

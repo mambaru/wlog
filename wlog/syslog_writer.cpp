@@ -51,9 +51,9 @@ namespace
   }
 }
   
-syslog_writer::syslog_writer(const formatter_fun& formatter, const std::string& sysname)
+syslog_writer::syslog_writer(const formatter_fun& formatter, const options& opt)
   : _formatter(formatter)
-  , _sysname(sysname)
+  , _sysname(opt.name)
 {
 }
 

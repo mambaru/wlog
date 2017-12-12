@@ -111,6 +111,30 @@ struct formatter_options
   std::unordered_map<std::string, std::string> color_map;
 };
 
+inline formatter_options& operator <<= (formatter_options& self, const formatter_options& other)
+{
+  if ( self.resolution == resolutions::inherited )
+    self.resolution = other.resolution;
+  
+  if ( self.hide == hide_flags::inherited )
+    self.hide = other.hide;
+  
+  if ( self.colorized == colorized_flags::inherited) 
+    self.colorized = other.colorized;
+  
+  if ( self.locale == "" )
+    self.locale = other.locale;
+  
+  if ( self.locale == "#" )
+    self.locale.clear();
+    
+  for (const auto& c : other.color_map)
+    if ( 0 == self.color_map.count(c.first) )
+      self.color_map.emplace(c);
+
+  return self;
+}
+
 struct formatter_handlers
 {
   typedef std::function<bool( std::ostream&, const time_point&, const formatter_options&) >  date_fun_t;
@@ -125,5 +149,27 @@ struct formatter_handlers
   str_fun_t message;
 };
 
+inline formatter_handlers& operator <<= (formatter_handlers& self, const formatter_handlers& other)
+{
+  if ( self.date==nullptr )
+    self.date = other.date;
+
+  if ( self.time==nullptr )
+    self.time = other.time;
+
+  if ( self.fraction==nullptr )
+    self.fraction = other.fraction;
+  
+  if ( self.name==nullptr )
+    self.name = other.name;
+
+  if ( self.ident==nullptr )
+    self.ident = other.ident;
+
+  if ( self.message==nullptr )
+    self.message = other.message;
+  
+  return self;
+}
 
 }

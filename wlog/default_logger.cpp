@@ -8,7 +8,7 @@
 #include "file_writer.hpp"
 #include "stdout_writer.hpp"
 #include "syslog_writer.hpp"
-#include "formatter1.hpp"
+#include "formatter.hpp"
 #include <memory>
 #include <iostream>
 #include <sstream>
@@ -18,76 +18,85 @@ namespace wlog{
 std::mutex stdout_mutex;
 namespace { std::string expanse_path(const std::string& path, const std::string& name); }
 
-default_logger::default_logger( const options& copt, const handlers& /*hdr*/)
+  
+class default_logger::impl
+{
+public:
+  struct context
+  {
+    std::set<std::string> allow;
+    std::set<std::string> deny;
+    std::vector<after_fun> after;
+    writer_fun file_writer;
+    writer_fun stdout_writer;
+    writer_fun syslog_writer;
+  };
+  
+  impl( const options& copt, const handlers& hdr);
+  
+  bool write(
+    const time_point& tp,
+    const std::string& name, 
+    const std::string& ident, 
+    const std::string& str
+  ) const;
+
+private: 
+  void init_context_(context& cntx, const logger_options& opt, const logger_handlers& hdr);
+
+  void inherit_options_(
+    const std::string& name,
+    logger_options& bopt, 
+    const logger_options& opt
+  );
+  
+  bool allow_(
+    const std::string& name,
+    const std::string& ident, 
+    const std::set<std::string>& allow,
+    const std::set<std::string>& deny
+  ) const;
+
+private:
+  typedef std::string key_type;
+  typedef std::map<key_type, context > context_map;
+  typedef std::shared_ptr<file_writer> file_writer_ptr;
+
+  context _common;
+  context_map _customize;
+  std::map< std::string, file_writer_ptr > _file_map;
+};
+
+
+default_logger::impl::impl( const options& copt, const handlers& hdr)
 {
   options opt = copt;
+  init_context_( _common, opt, hdr );
   for ( auto& p : opt.customize )
   {
-    this->inherit_options_(p.first, p.second, opt);
+    inherit_options_(p.first, p.second, opt);
+    
+    auto itr = hdr.customize.find(p.first);
+    impl::context& cntx = _customize[p.first];
+    const logger_handlers& lhdr = itr!=hdr.customize.end() ? itr->second : static_cast<const logger_handlers&>(hdr);
+    init_context_( cntx, p.second, lhdr );
   }
-  
-  /*
-  this->init_handlers_(_default_handlers, hdr);
 
-  for ( const auto& p : opt.customize )
+  for ( auto& p : hdr.customize )
   {
-    logger_options bopt = p.second;
-    this->inherit_options_(p.first, bopt, opt);
+    if ( 0 == _customize.count(p.first) )
+    {
+      init_context_( _customize[p.first], opt, p.second );
+    }
   }
-  
-  for ( const auto& p : hdr.customize )
-  {
-    logger_handlers bopt = p.second;
-    this->init_handlers_(_handlers_map[p.first], bopt);
-  }
-  */
-  
 }
 
-bool default_logger::operator()(
-  const time_point& /*tp*/,
-  const std::string& /*name*/, 
-  const std::string& /*ident*/, 
-  const std::string& /*str*/) const
+
+void default_logger::impl::inherit_options_(const std::string& name, logger_options& bopt, const logger_options& opt)
 {
-  /*
-  const auto* handlers = &_default_options;
-  
-  if ( !this->allow_(name, ident, handlers->allow, handlers->deny) )
-    return false;
+  if ( bopt.sync == -1 )
+    bopt.sync = opt.sync;
 
-  auto itr = _options_map.find(name);
-  if ( itr != _options_map.end() )
-  {
-    handlers = &(itr->second);
-    if ( !this->allow_(name, ident, handlers->allow, handlers->deny) )
-      return false;
-  }
-  
-  if ( handlers->file_writer != nullptr )
-    handlers->file_writer( tp, name, ident, str );
-
-  if ( handlers->stdout_writer != nullptr )
-    handlers->stdout_writer( tp, name, ident, str );
-
-  if ( handlers->syslog_writer != nullptr )
-    handlers->syslog_writer( tp, name, ident, str );
-
-  for (const auto& after : handlers->after )
-    after(tp, name, ident, str);
-  
-  if ( handlers != &_default_options )
-  {
-    for (const auto& after : _default_options.after )
-      after(tp, name, ident, str);
-  }
-  */
-  return true;
-  
-}
-
-void default_logger::inherit_options_(const std::string& name, logger_options& bopt, const logger_options& opt)
-{
   if ( bopt.size_limit == -1 )
     bopt.size_limit = opt.size_limit;
   
@@ -107,63 +116,76 @@ void default_logger::inherit_options_(const std::string& name, logger_options& b
   else if ( bopt.path=="$" )
     bopt.path = expanse_path( opt.path, name);
 
+  // stdout
   if ( bopt.stdout.name.empty() )
     bopt.stdout.name = opt.stdout.name;
   else if ( bopt.stdout.name=="#" )
     bopt.stdout.name.clear();
   
   if ( bopt.stdout.sync == -1 )
-    bopt.stdout.sync = opt.stdout.sync;
-  if ( bopt.stdout.sync == -1 )
-    bopt.stdout.sync = opt.sync;
+    bopt.stdout.sync = opt.stdout.sync!=-1 ? opt.stdout.sync : opt.sync;
 
+  if ( bopt.stdout.resolution == resolutions::inherited )
+  {
+    bopt.stdout.resolution = opt.stdout.resolution!=resolutions::inherited 
+                            ? opt.stdout.resolution : opt.resolution;
+  }
+
+  
+  if ( bopt.stdout.colorized == colorized_flags::inherited )
+  {
+    bopt.stdout.colorized = opt.stdout.colorized!=colorized_flags::inherited 
+                            ? opt.stdout.colorized : opt.colorized;
+  }
+
+  if ( bopt.stdout.hide == hide_flags::inherited )
+  {
+    bopt.stdout.hide = opt.stdout.hide!=hide_flags::inherited 
+                            ? opt.stdout.hide : opt.hide;
+  }
+
+  
+  
+
+  // syslog
   if ( bopt.syslog.name.empty() )
     bopt.syslog.name = opt.syslog.name;
   else if ( bopt.syslog.name=="#" )
     bopt.syslog.name.clear();
 }
 
-void default_logger::init_handlers_(logger_handlers& to, const logger_handlers& from, const logger_options& opt)
+void default_logger::impl::init_context_(context& cntx, /*const std::string& name,*/ const logger_options& opt, const logger_handlers& hdr)
 {
-  using namespace std::placeholders;
-
-  to = from;
-  if ( to.file_formatter == nullptr )
-    to.file_formatter = formatter(opt);
-
-  if ( to.stdout_formatter == nullptr )
-    to.stdout_formatter  = formatter(opt);
-  
-  /*
-  if ( to.syslog_formatter == nullptr )
-    to.syslog_formatter  = syslog_formatter();
-  */
-    
-  if ( to.file_writer == nullptr )
+  if ( hdr.file_writer!=nullptr )   cntx.file_writer = hdr.file_writer;
+  if ( hdr.stdout_writer!=nullptr ) cntx.stdout_writer = hdr.stdout_writer;
+  if ( hdr.syslog_writer!=nullptr ) cntx.syslog_writer = hdr.syslog_writer;
+  cntx.allow = opt.allow;
+  cntx.deny = opt.deny;
+  if ( cntx.file_writer==nullptr && !opt.path.empty() )
   {
-    if ( !opt.path.empty() )
+    auto itr = _file_map.find(opt.path);
+    if ( itr == _file_map.end() )
     {
-      auto itr = _file_map.find(opt.path);
-      if ( itr == _file_map.end() )
-        itr = _file_map.emplace( opt.path, std::make_shared<file_writer>(to.file_formatter, opt.path, opt.sync, opt.limit, opt.save_old) ).first;
-      handlers.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4 );
+      auto fwp = std::make_shared<file_writer>( hdr.file_formatter!=nullptr ? hdr.file_formatter : formatter(opt), opt);
+      itr = _file_map.emplace( opt.path, fwp ).first;
     }
+    using namespace std::placeholders;
+    cntx.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4 );
   }
 
-  if ( handlers.stdout_writer == nullptr )
+  if ( cntx.stdout_writer==nullptr && !opt.stdout.name.empty() )
   {
-    if ( !opt.stdout.empty() )
-      handlers.stdout_writer = stdout_writer(handlers.stdout_formatter, opt.stdout, opt.sync);
+    cntx.stdout_writer = stdout_writer( hdr.stdout_formatter!=nullptr ? hdr.stdout_formatter : formatter(opt.stdout), opt.stdout );
   }
 
-  if ( handlers.syslog_writer == nullptr )
+  if ( cntx.syslog_writer==nullptr && !opt.syslog.name.empty() )
   {
-    if ( !opt.syslog.empty() )
-      handlers.syslog_writer = syslog_writer(handlers.syslog_formatter, opt.syslog);
+    // по умолчанию без форматирования 
+    cntx.syslog_writer = syslog_writer( hdr.syslog_formatter, opt.syslog );
   }
 }
 
-bool default_logger::allow_(
+bool default_logger::impl::allow_(
   const std::string& name, 
   const std::string& ident,
   const std::set<std::string>& allow,
@@ -176,7 +198,77 @@ bool default_logger::allow_(
     ( deny.empty() || (deny.count(name)==0 && deny.count(ident)==0 ) );
 }
 
+bool default_logger::impl::write(
+  const time_point& tp,
+  const std::string& name, 
+  const std::string& ident, 
+  const std::string& str) const
+{
+  
+  const auto* handlers = &_common;
+  
+  if ( !allow_(name, ident, handlers->allow, handlers->deny) )
+    return false;
 
+  auto itr = _customize.find(name);
+  if ( itr != _customize.end() )
+  {
+    handlers = &(itr->second);
+    if ( !allow_(name, ident, handlers->allow, handlers->deny) )
+      return false;
+  }
+  
+  if ( handlers->file_writer != nullptr )
+    handlers->file_writer( tp, name, ident, str );
+
+  if ( handlers->stdout_writer != nullptr )
+  {
+    handlers->stdout_writer( tp, name, ident, str );
+  }
+
+  if ( handlers->syslog_writer != nullptr )
+    handlers->syslog_writer( tp, name, ident, str );
+
+  for (const auto& after : handlers->after )
+    after(tp, name, ident, str);
+  
+  if ( handlers != &_common )
+  {
+    for (const auto& after : _common.after )
+      after(tp, name, ident, str);
+  }
+  
+  return true;
+}
+ 
+/*****************************************************************************/
+/*****************************************************************************/
+/*****************************************************************************/
+
+default_logger::~default_logger()
+{
+  
+}
+
+default_logger::default_logger(default_logger&& other)
+  : _impl( std::move(other._impl) )
+{
+  
+}
+
+default_logger::default_logger( const options& copt, const handlers& hdr)
+  : _impl(new impl(copt, hdr) )
+{
+}
+
+bool default_logger::operator()(
+  const time_point& tp,
+  const std::string& name, 
+  const std::string& ident, 
+  const std::string& str) const
+{
+  return _impl->write(tp, name, ident, str);
+}
 
 namespace 
 {

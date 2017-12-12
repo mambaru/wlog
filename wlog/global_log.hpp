@@ -15,10 +15,12 @@ namespace wlog{
 
 void init_log(const logger_fun& log);
 void init_log(const default_logger_options& opt);
+
 void init_log(
-  const std::string& stdout = "clog", 
-  resolutions resolution = resolutions::milliseconds, 
-  colorized_flags colorized = colorized_flags::all);
+  colorized_flags colorized = colorized_flags::all,
+  resolutions resolution = resolutions::milliseconds
+);
+
 void init_log(
   const std::string& path, 
   resolutions resolution = resolutions::milliseconds, 

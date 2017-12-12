@@ -36,14 +36,20 @@ int test1()
     wlog::formatter fmt(fo);
     wlog::file_writer fw( fmt, opt);
     fw(tp, "TEST4", "MESSAGE", "test1\n");
-    std::ifstream ifs("./test4.log.old-0");
-    std::string testline;
-    std::getline( ifs, testline);
-    std::cout << testline << std::endl;
-    TEST( testline == "---------------- truncate with 896 summary size 896 ( start time: 2017-12-08 23:15:25) ----------------" );
-    std::getline( ifs, testline);
-    std::cout << testline << std::endl;
-    TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
+    {
+      std::ifstream ifs("./test4.log.old-0");
+      std::string testline;
+      std::getline( ifs, testline);
+      std::cout << testline << std::endl;
+      TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
+    }
+    {
+      std::ifstream ifs("./test4.log");
+      std::string testline;
+      std::getline( ifs, testline);
+      std::cout << testline << std::endl;
+      TEST( testline == "Previous log: ./test4.log.old-0" );
+    }
   }
   return 0;
 }

@@ -9,8 +9,8 @@ int main(int argc, char* argv[])
   //
   wlog::default_logger_options opt;
   opt.path = "./example3.log";
-  opt.colorized = wlog::colorized_flags::all;
-  opt.stdout.stdout = "";
+  opt.stdout.colorized = wlog::colorized_flags::all;
+  opt.stdout.name = "cout";
   if ( argc > 1 )
     opt.sync = atoi(argv[1])!=0;
 

@@ -94,9 +94,7 @@ void file_writer::operator()(
     
 }
 
-
-void file_writer::
-rotate_( std::ofstream& oflog)
+void file_writer::rotate_( std::ofstream& oflog)
 {
   oflog.close();
   
@@ -117,7 +115,12 @@ rotate_( std::ofstream& oflog)
     {
       perror( "Error renaming current log file" );
     }
+  }
+  
+  oflog.open(_opt.path);
     
+  if ( _opt.rotation > 0 )
+  {
     oflog << "Previous log: " << old_name << std::endl;
     ++_save_count;
   }
