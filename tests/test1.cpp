@@ -10,32 +10,26 @@ int test1()
 {
   std::mutex m;
   std::string message;
-  wlog::logstream log(m, "test", "message", 
-    [&message](wlog::time_point, std::string name, std::string type, std::string text)
-    {
-      message = name + type + text;
-      return true;
-    }
-  );
-  if ( !test( log.str().empty(), __FILE__, __LINE__ ) )
-    return __LINE__;
-  
-  log << "hello " << 1;
-  log << 2;
+  {
+    wlog::logstream log(m, "test", "message", 
+      [&message](const wlog::time_point&, const std::string& name, const std::string& ident, const std::string& text)
+      {
+        std::cout << name << "," << ident << "," << text << " >> " << message << std::endl;
+        message = name + ident + text;
+        std::cout << "<<" << message << std::endl;
+        return true;
+      }
+    );
 
-  if ( !test( !log.str().empty(), __FILE__, __LINE__ ) )
-    return __LINE__;
+    TEST( log.str().empty() );
+    log << "hello " << 1;
+    log << 2;
+    TEST( !log.str().empty() );
+    TEST( log.str()=="hello 12" );
+  }
+  std::cout << message << std::endl;
+  TEST( message=="testmessagehello 12" );
   
-  if ( !test( log.str()=="hello 12", __FILE__, __LINE__ ) )
-    return __LINE__;
-  
-  log.write();
-  
-  if ( !test( !log.str().empty(), __FILE__, __LINE__ ) )
-    return __LINE__;
-  
-  if ( !test( message=="testmessagehello 12", __FILE__, __LINE__ ) )
-    return __LINE__;
   
   return 0;
 }

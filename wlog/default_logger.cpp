@@ -68,9 +68,32 @@ private:
 };
 
 
-default_logger::impl::impl( const options& copt, const handlers& hdr)
+default_logger::impl::impl( const options& copt, const handlers& chdr)
 {
   options opt = copt;
+  handlers hdr = chdr;
+  
+  opt.upgrade();
+  hdr.upgrade();
+  
+  for ( auto& p : opt.customize )
+  {
+    auto itr = hdr.customize.find(p.first);
+    impl::context& cntx = _customize[p.first];
+    const logger_handlers& lhdr = itr!=hdr.customize.end() ? itr->second : static_cast<const logger_handlers&>(hdr);
+    init_context_( cntx, p.second, lhdr );
+  }
+  
+  init_context_( _common, opt, hdr );
+  for ( auto& p : hdr.customize )
+  {
+    if ( 0 == _customize.count(p.first) )
+    {
+      init_context_( _customize[p.first], opt, p.second );
+    }
+  }
+  
+  /*
   init_context_( _common, opt, hdr );
   for ( auto& p : opt.customize )
   {
@@ -88,7 +111,7 @@ default_logger::impl::impl( const options& copt, const handlers& hdr)
     {
       init_context_( _customize[p.first], opt, p.second );
     }
-  }
+  }*/
 }
 
 
@@ -154,13 +177,15 @@ void default_logger::impl::inherit_options_(const std::string& name, logger_opti
     bopt.syslog.name.clear();
 }
 
-void default_logger::impl::init_context_(context& cntx, /*const std::string& name,*/ const logger_options& opt, const logger_handlers& hdr)
+void default_logger::impl::init_context_(context& cntx, const logger_options& opt, const logger_handlers& hdr)
 {
-  if ( hdr.file_writer!=nullptr )   cntx.file_writer = hdr.file_writer;
-  if ( hdr.stdout_writer!=nullptr ) cntx.stdout_writer = hdr.stdout_writer;
-  if ( hdr.syslog_writer!=nullptr ) cntx.syslog_writer = hdr.syslog_writer;
+  if ( cntx.file_writer==nullptr )   cntx.file_writer = hdr.file_writer;
+  if ( cntx.stdout_writer==nullptr ) cntx.stdout_writer = hdr.stdout_writer;
+  if ( cntx.syslog_writer==nullptr ) cntx.syslog_writer = hdr.syslog_writer;
+  
   cntx.allow = opt.allow;
   cntx.deny = opt.deny;
+  
   if ( cntx.file_writer==nullptr && !opt.path.empty() )
   {
     auto itr = _file_map.find(opt.path);

@@ -285,10 +285,14 @@ bool formatter::name( std::ostream& os, const std::string& name, const formatter
 
 bool formatter::ident( std::ostream& os, const std::string& ident, const formatter_options& opt)
 {
-  if ( opt.hide & hide_flags::ident )
+ /* if ( opt.hide & hide_flags::ident )
     return false;
+    */
+ 
+  bool flag = false;
+  bool is_colorized = opt.colorized & (colorized_flags::ident | colorized_flags::ident_ex);
   
-  if ( opt.colorized & (colorized_flags::ident | colorized_flags::ident_ex) )
+  if ( is_colorized )
   {
     if ( !formatter::set_color(os, ident, "", opt) )
     {
@@ -320,17 +324,20 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
     formatter::reset_color(os);
   }
   
-  os << ident;
+  if ( !(opt.hide & hide_flags::ident) )
+  {
+    flag = true;
+    os << ident;
+  }
 
-  
-  if ( opt.colorized & (colorized_flags::ident | colorized_flags::ident_ex) )
+  if ( is_colorized )
   {
     if ( !( opt.colorized & colorized_flags::message) )
     {
       formatter::reset_color(os);
     }
   }
-  return true;
+  return flag;
 }
 
 bool formatter::message( std::ostream& os, const std::string& txt, const formatter_options& opt)

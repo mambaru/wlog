@@ -53,7 +53,12 @@ inline logger_options& operator <<= (logger_options& self, const logger_options&
 {
   static_cast<file_logger_options&>(self) <<= static_cast<const file_logger_options&>(other);
   self.stdout <<= other.stdout;
+  self.stdout <<= static_cast<const formatter_options&>(other);
+  if ( self.stdout.sync == -1 ) self.stdout.sync = self.sync;
+  if ( self.stdout.name=="#" ) self.stdout.name.clear();
+  //self.stdout <<= static_cast<const formatter_options&>(other);
   self.syslog <<= other.syslog;
+  if ( self.syslog.name=="#" ) self.syslog.name.clear();
   return self;
 }
 
@@ -61,6 +66,18 @@ struct default_logger_options: logger_options
 {
   typedef std::map<std::string, logger_options> customize_map;
   customize_map customize;
+  
+  void upgrade()
+  {
+    for (auto& op : customize)
+      op.second <<= static_cast< const logger_options&>(*this);
+
+    this->stdout <<= static_cast<const formatter_options&>(*this);
+    if ( this->stdout.sync == -1 ) this->stdout.sync = this->sync;
+    if ( this->stdout.name=="#" )  this->stdout.name.clear();
+    if ( this->syslog.name=="#" )  this->syslog.name.clear();
+  }
+
 };
 
 struct logger_handlers
@@ -91,6 +108,13 @@ struct default_logger_handlers: logger_handlers
 {
  typedef std::map<std::string, logger_handlers> customize_map;
  customize_map customize;
+
+  void upgrade()
+  {
+    for (auto& op : customize)
+      op.second <<= static_cast< const logger_handlers&>(*this);
+  }
+  
 };
 
 

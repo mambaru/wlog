@@ -47,7 +47,7 @@ void logstream::write()
 
   if ( writer_ != nullptr )
   {
-    writer_(_tp, _name, _ident, msg);
+    writer_(_tp, _name, _ident, msg );
   }
 /// TODO: перенести в wfc::wfc до инициализации log
 #ifndef WLOG_ENABLE_CLOG
@@ -56,6 +56,7 @@ void logstream::write()
     std::clog << _name << " " << _ident << " " << msg;
   }
 #endif
+  _ss.str(std::string());
   _ss.clear();
 }
 

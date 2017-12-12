@@ -31,8 +31,6 @@ public:
   
   std::string str() const;
   
-  void write();
-
   std::ostream& operator<< (std::ios& (*pf)(std::ios&));
   
   std::ostream& operator<< (std::ios_base& (*pf)(std::ios_base&));
@@ -47,11 +45,13 @@ public:
   }
 
 private:
+  void write();
+  
   std::mutex& _mutex;
   const time_point _tp;
-  const std::string& _name;
-  const std::string& _ident;
-  const logger_fun& writer_;
+  const std::string _name;
+  const std::string _ident;
+  const logger_fun writer_;
   std::stringstream _ss;
 };
 
