@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 
 project(wlog)
 
@@ -41,3 +41,30 @@ add_library(
  wlog/stdout_writer.cpp
  wlog/syslog_writer.cpp
 )
+
+include(CMakePackageConfigHelpers)
+set(LIB_INSTALL_DIR lib/ )
+set(LIB_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} )
+set(INCLUDE_INSTALL_DIR wlog)
+set(INCLUDE_CURRENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+configure_package_config_file(
+  cmake/Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/wlogConfig.cmake
+  INSTALL_DESTINATION ${LIB_INSTALL_DIR}/wlog/cmake
+  PATH_VARS INCLUDE_INSTALL_DIR INCLUDE_CURRENT_DIR LIB_BUILD_DIR LIB_INSTALL_DIR
+)
+#SYSCONFIG_INSTALL_DIR 
+
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/wlogConfigVersion.cmake
+  VERSION 1.2.3
+  COMPATIBILITY SameMajorVersion
+)
+
+install(
+  FILES 
+    ${CMAKE_CURRENT_BINARY_DIR}/wlogConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/wlogConfigVersion.cmake
+  DESTINATION 
+    ${LIB_INSTALL_DIR}/wlog/cmake 
+)
+        

@@ -1,0 +1,23 @@
+@PACKAGE_INIT@
+IF(EXISTS "@PACKAGE_INCLUDE_INSTALL_DIR@")
+  set_and_check(WLOG_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+elseif( EXISTS "@INCLUDE_CURRENT_DIR@" )
+  set_and_check(WLOG_INCLUDE_DIR "@INCLUDE_CURRENT_DIR@")
+else()
+  set_and_check(WLOG_INCLUDE_DIR "@INCLUDE_CURRENT_DIR@/wlog")
+endif()
+
+set(WLOG_LIBRARIES wlog)
+set(WLOG_LIBRARY_DIRS "@LIB_BUILD_DIR@" "@LIB_INSTALL_DIR@" )
+
+if( EXISTS "@LIB_INSTALL_DIR@" )
+  set_and_check(WLOG_LIBRARIES "@LIB_INSTALL_DIR@")
+elseif(EXISTS "@LIB_BUILD_DIR@")
+  set_and_check(WLOG_LIBRARIES "@LIB_BUILD_DIR@")
+else()
+  set_and_check(WLOG_LIBRARIES "@LIB_BUILD_DIR@/wlog/build")
+endif()
+
+
+  
+

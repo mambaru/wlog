@@ -8,6 +8,13 @@
 
 #include <wlog/global_log.hpp>
 
+namespace wlog{
+  
+template<typename ...Args>
+inline void only_for_log( Args&& ... ){}
+
+}
+
 #ifndef WLOG_DISABLE_ALL_LOG
 #   define WLOG( name, type, msg ) ::wlog::global_log(name, type) << msg << std::endl;
 #   define WLOGR( name, type, msg ) ::wlog::global_log(name, type) << msg << "\r";
