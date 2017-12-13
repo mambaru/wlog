@@ -1,13 +1,13 @@
 #define WLOG_ENABLE_DEBUG_LOG ON
 #include <wlog/logger.hpp>
-#include <wlog/options.hpp>
-#include <wlog/default_logger.hpp>
+#include <wlog/init_log.hpp>
+#include <wlog/options/logger_options.hpp>
 #include <iostream>
 #define LOG_LINES 1000000
 int main(int argc, char* argv[])
 {
   //
-  wlog::default_logger_options opt;
+  wlog::logger_options opt;
   opt.path = "./example3.log";
   //opt.sync = 0;
   if ( argc > 1 )

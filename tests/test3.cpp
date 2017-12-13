@@ -1,4 +1,4 @@
-#include <wlog/formatter.hpp>
+#include <wlog/formatter/formatter.hpp>
 #include "test.hpp"
 #include <sstream>
 #include <chrono>

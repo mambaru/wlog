@@ -31,58 +31,30 @@ public:
   
   std::string str() const;
   
-  std::ostream& operator<< (std::ios& (*pf)(std::ios&));
-  
-  std::ostream& operator<< (std::ios_base& (*pf)(std::ios_base&));
-  
-  std::ostream& operator<< (std::ostream& (*pf)(std::ostream&));
-  
-  template<typename T>
-  std::stringstream& operator << ( const T& arg)
-  {
-    _ss << arg;
-    return _ss;
-  }
+  std::ostream& log();
 
 private:
-  void write();
-  
-  std::mutex& _mutex;
-  const time_point _tp;
-  const std::string _name;
-  const std::string _ident;
-  const logger_fun writer_;
-  std::stringstream _ss;
+  class impl;
+  std::unique_ptr<impl> _impl;
 };
 
 
-class stdout_stream final
+class stdstream final
 {
 public:
-  ~stdout_stream();
+  ~stdstream();
   
-  stdout_stream(const stdout_stream& ll) = delete;
+  stdstream(const stdstream& ll) = delete;
   
-  stdout_stream& operator = (stdout_stream& ll) = delete;
+  stdstream& operator = (stdstream& ll) = delete;
 
-  stdout_stream& operator = (stdout_stream&& ll) = delete;
+  stdstream& operator = (stdstream&& ll) = delete;
 
-  stdout_stream(stdout_stream&& ll);
+  stdstream(stdstream&& ll);
   
-  stdout_stream(std::mutex& m, std::ostream& writer);
+  stdstream(std::mutex& m, std::ostream& writer);
   
-  std::ostream& operator<< (std::ios& (*pf)(std::ios&));
-  
-  std::ostream& operator<< (std::ios_base& (*pf)(std::ios_base&));
-  
-  std::ostream& operator<< (std::ostream& (*pf)(std::ostream&));
-  
-  template<typename T>
-  std::stringstream& operator << ( const T& arg)
-  {
-    _ss << arg;
-    return _ss;
-  }
+  std::ostream& log();
 
 private:
   std::mutex& _mutex;

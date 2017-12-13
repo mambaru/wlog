@@ -16,8 +16,8 @@ inline void only_for_log( Args&& ... ){}
 }
 
 #ifndef WLOG_DISABLE_ALL_LOG
-#   define WLOG( name, type, msg ) ::wlog::global_log(name, type) << msg << std::endl;
-#   define WLOGR( name, type, msg ) ::wlog::global_log(name, type) << msg << "\r";
+#   define WLOG( name, type, msg ) ::wlog::global_log(name, type).log() << msg << std::endl;
+#   define WLOGR( name, type, msg ) ::wlog::global_log(name, type).log() << msg << "\r";
 #else
 #   define WLOG(name, type, msg)
 #   define WLOGR( name, type, msg )
@@ -68,7 +68,7 @@ inline void only_for_log( Args&& ... ){}
 #define SYSLOG_INFO(X)    WLOG( "SYSLOG", "INFO",    X)
 #define SYSLOG_DEBUG(X)   WLOG( "SYSLOG", "DEBUG",   X)
 
-#define WCOUT(X) ::wlog::global_cout() << X << std::endl;
-#define WCLOG(X) ::wlog::global_clog() << X << std::endl;
-#define WCERR(X) ::wlog::global_cerr() << X << std::endl;
+#define WCOUT(X) ::wlog::global_cout().log() << X << std::endl;
+#define WCLOG(X) ::wlog::global_clog().log() << X << std::endl;
+#define WCERR(X) ::wlog::global_cerr().log() << X << std::endl;
 

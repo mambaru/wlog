@@ -9,7 +9,8 @@
 #include <mutex>
 #include <memory>
 #include <wlog/logger_fun.hpp>
-#include <wlog/writer_options.hpp>
+#include <wlog/writer/file_writer_options.hpp>
+#include <wlog/writer/file_writer_handlers.hpp>
 #include <fstream>
 
 namespace wlog{

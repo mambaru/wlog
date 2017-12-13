@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <wlog/options/resolutions.hpp>
-#include <wlog/options/hide_flags.hpp>
-#include <wlog/options/colorized_flags.hpp>
+#include <wlog/formatter/resolutions.hpp>
+#include <wlog/formatter/hide_flags.hpp>
+#include <wlog/formatter/colorized_flags.hpp>
 
 #include <string>
 #include <unordered_map>

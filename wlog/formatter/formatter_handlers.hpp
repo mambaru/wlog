@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <wlog/options/formatter_options.hpp>
 #include <wlog/types.hpp>
 #include <functional>
 #include <ostream>

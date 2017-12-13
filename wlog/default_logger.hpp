@@ -5,7 +5,8 @@
 //
 
 #pragma once
-#include <wlog/options.hpp>
+#include <wlog/options/logger_options.hpp>
+#include <wlog/options/logger_handlers.hpp>
 #include <wlog/logger_fun.hpp>
 
 #include <string>
@@ -16,14 +17,11 @@
 
 namespace wlog{
 
-class file_writer;
-
 class default_logger
 {
-  struct context;
 public:
-  typedef default_logger_options options;
-  typedef default_logger_handlers handlers;
+  typedef logger_options options;
+  typedef logger_handlers handlers;
 
   virtual ~default_logger();
   
@@ -37,9 +35,6 @@ public:
     const std::string& msg
   ) const;
   
-private:
-  /*
-  */
 private:  
   
   class impl;

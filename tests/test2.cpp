@@ -1,4 +1,5 @@
 #include <wlog/global_log.hpp>
+#include <wlog/init_log.hpp>
 #include <wlog/logger.hpp>
 #include "test.hpp"
 
@@ -17,7 +18,7 @@ int test1()
     }
   );
   
-  wlog::global_log("test", "message") << "hello " << 1 << 2;
+  wlog::global_log("test", "message").log() << "hello " << 1 << 2;
 
   if ( !test( message=="testmessagehello 12", __FILE__, __LINE__ ) )
     return __LINE__;
@@ -30,7 +31,7 @@ int test2()
   std::string message;
   wlog::init_log();
   
-  wlog::global_log("test", "message") << "hello " << 1 << 2;
+  wlog::global_log("test", "message").log() << "hello " << 1 << 2;
 
   if ( !test( message=="", __FILE__, __LINE__ ) )
     return __LINE__;

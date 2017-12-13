@@ -45,11 +45,12 @@ add_library(
  wlog
  wlog/logstream.cpp
  wlog/global_log.cpp
+ wlog/init_log.cpp
  wlog/default_logger.cpp
- wlog/formatter.cpp
- wlog/file_writer.cpp
- wlog/stdout_writer.cpp
- wlog/syslog_writer.cpp
+ wlog/formatter/formatter.cpp
+ wlog/writer/file_writer.cpp
+ wlog/writer/stdout_writer.cpp
+ wlog/writer/syslog_writer.cpp
 )
 
 include(CMakePackageConfigHelpers)

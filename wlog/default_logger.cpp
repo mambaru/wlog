@@ -5,10 +5,10 @@
 //
 
 #include "default_logger.hpp"
-#include "file_writer.hpp"
-#include "stdout_writer.hpp"
-#include "syslog_writer.hpp"
-#include "formatter.hpp"
+#include <wlog/writer/file_writer.hpp>
+#include <wlog/writer/stdout_writer.hpp>
+#include <wlog/writer/syslog_writer.hpp>
+#include <wlog/formatter/formatter.hpp>
 #include <memory>
 #include <iostream>
 #include <sstream>
@@ -16,7 +16,9 @@
 namespace wlog{
 
 std::mutex stdout_mutex;
-namespace { std::string expanse_path(const std::string& path, const std::string& name); }
+//WARNING: не реализоанно!
+#error
+namespace { std::string expanse_path(const std::string& path, const std::string& name); }*/
 
   
 class default_logger::impl
@@ -42,14 +44,8 @@ public:
   ) const;
 
 private: 
-  void init_context_(context& cntx, const logger_options& opt, const logger_handlers& hdr);
+  void init_context_(context& cntx, const basic_logger_options& opt, const basic_logger_handlers& hdr);
 
-  void inherit_options_(
-    const std::string& name,
-    logger_options& bopt, 
-    const logger_options& opt
-  );
-  
   bool allow_(
     const std::string& name,
     const std::string& ident, 
@@ -80,7 +76,7 @@ default_logger::impl::impl( const options& copt, const handlers& chdr)
   {
     auto itr = hdr.customize.find(p.first);
     impl::context& cntx = _customize[p.first];
-    const logger_handlers& lhdr = itr!=hdr.customize.end() ? itr->second : static_cast<const logger_handlers&>(hdr);
+    const basic_logger_handlers& lhdr = itr!=hdr.customize.end() ? itr->second : static_cast<const basic_logger_handlers&>(hdr);
     init_context_( cntx, p.second, lhdr );
   }
   
@@ -93,91 +89,9 @@ default_logger::impl::impl( const options& copt, const handlers& chdr)
     }
   }
   
-  /*
-  init_context_( _common, opt, hdr );
-  for ( auto& p : opt.customize )
-  {
-    inherit_options_(p.first, p.second, opt);
-    
-    auto itr = hdr.customize.find(p.first);
-    impl::context& cntx = _customize[p.first];
-    const logger_handlers& lhdr = itr!=hdr.customize.end() ? itr->second : static_cast<const logger_handlers&>(hdr);
-    init_context_( cntx, p.second, lhdr );
-  }
-
-  for ( auto& p : hdr.customize )
-  {
-    if ( 0 == _customize.count(p.first) )
-    {
-      init_context_( _customize[p.first], opt, p.second );
-    }
-  }*/
 }
 
-
-void default_logger::impl::inherit_options_(const std::string& name, logger_options& bopt, const logger_options& opt)
-{
-  if ( bopt.sync == -1 )
-    bopt.sync = opt.sync;
-
-  if ( bopt.size_limit == -1 )
-    bopt.size_limit = opt.size_limit;
-  
-  if ( bopt.rotation == -1 )
-    bopt.rotation = opt.rotation;
-  
-  if ( bopt.colorized == colorized_flags::inherited )
-    bopt.colorized = opt.colorized;
-  
-  if ( bopt.resolution == resolutions::inherited )
-    bopt.resolution = opt.resolution;
-    
-  if ( bopt.path.empty() )
-    bopt.path = opt.path;
-  else if ( bopt.path=="#" )
-    bopt.path.clear();
-  else if ( bopt.path=="$" )
-    bopt.path = expanse_path( opt.path, name);
-
-  // stdout
-  if ( bopt.stdout.name.empty() )
-    bopt.stdout.name = opt.stdout.name;
-  else if ( bopt.stdout.name=="#" )
-    bopt.stdout.name.clear();
-  
-  if ( bopt.stdout.sync == -1 )
-    bopt.stdout.sync = opt.stdout.sync!=-1 ? opt.stdout.sync : opt.sync;
-
-  if ( bopt.stdout.resolution == resolutions::inherited )
-  {
-    bopt.stdout.resolution = opt.stdout.resolution!=resolutions::inherited 
-                            ? opt.stdout.resolution : opt.resolution;
-  }
-
-  
-  if ( bopt.stdout.colorized == colorized_flags::inherited )
-  {
-    bopt.stdout.colorized = opt.stdout.colorized!=colorized_flags::inherited 
-                            ? opt.stdout.colorized : opt.colorized;
-  }
-
-  if ( bopt.stdout.hide == hide_flags::inherited )
-  {
-    bopt.stdout.hide = opt.stdout.hide!=hide_flags::inherited 
-                            ? opt.stdout.hide : opt.hide;
-  }
-
-  
-  
-
-  // syslog
-  if ( bopt.syslog.name.empty() )
-    bopt.syslog.name = opt.syslog.name;
-  else if ( bopt.syslog.name=="#" )
-    bopt.syslog.name.clear();
-}
-
-void default_logger::impl::init_context_(context& cntx, const logger_options& opt, const logger_handlers& hdr)
+void default_logger::impl::init_context_(context& cntx, const basic_logger_options& opt, const basic_logger_handlers& hdr)
 {
   if ( cntx.file_writer==nullptr )   cntx.file_writer = hdr.file_writer;
   if ( cntx.stdout_writer==nullptr ) cntx.stdout_writer = hdr.stdout_writer;
@@ -295,6 +209,7 @@ bool default_logger::operator()(
   return _impl->write(tp, name, ident, str);
 }
 
+
 namespace 
 {
   std::string expanse_path(const std::string& path, const std::string& name)
@@ -311,5 +226,6 @@ namespace
       + std::string( path.begin() + diff, path.end() );
   }
 }
+
 
 }

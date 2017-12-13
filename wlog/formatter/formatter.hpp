@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <wlog/options/formatter_options.hpp>
-#include <wlog/options/formatter_handlers.hpp>
+#include <wlog/formatter/formatter_options.hpp>
+#include <wlog/formatter/formatter_handlers.hpp>
 #include <wlog/types.hpp>
 #include <ostream>
 #include <chrono>

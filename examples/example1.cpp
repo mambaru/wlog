@@ -1,6 +1,7 @@
 #define WLOG_ENABLE_DEBUG_LOG
 
 #include <wlog/wlog.hpp>
+#include <wlog/init_log.hpp>
 #include <iomanip>
 #include <unistd.h>
   

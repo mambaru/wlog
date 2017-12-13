@@ -6,29 +6,27 @@
 
 #pragma once
 
-#include <string>
-#include <fstream>
+#include <mutex>
+#include <wlog/types.hpp>
 #include <wlog/logger_fun.hpp>
-#include <wlog/writer_options.hpp>
+#include <wlog/writer/syslog_writer_options.hpp>
 
 namespace wlog{
 
-class stdout_writer final
+class syslog_writer final
 {
 public:
-  typedef stdout_writer_options options;
-  ~stdout_writer();
-  stdout_writer(const formatter_fun& fmt, const options& opt);
+  typedef syslog_writer_options options;
+  syslog_writer(const formatter_fun& formatter, const options& opt);
   void operator()(
     const time_point& tp,
     const std::string& name, 
     const std::string& ident,
     const std::string& str
-  ) const;
+  );
 private:
   formatter_fun _formatter;
-  std::ostream* _out;
-  const bool _sync;
+  const std::string _sysname;
 };
 
 }

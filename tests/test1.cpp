@@ -22,15 +22,13 @@ int test1()
     );
 
     TEST( log.str().empty() );
-    log << "hello " << 1;
-    log << 2;
+    log.log() << "hello " << 1;
+    log.log() << 2;
     TEST( !log.str().empty() );
     TEST( log.str()=="hello 12" );
   }
   std::cout << message << std::endl;
   TEST( message=="testmessagehello 12" );
-  
-  
   return 0;
 }
 
@@ -47,8 +45,8 @@ int test2()
       }
     );
 
-    log << "hello " << 1;
-    log << 2;
+    log.log() << "hello " << 1;
+    log.log() << 2;
   }
 
   if ( !test( message=="testmessagehello 12", __FILE__, __LINE__ ) )

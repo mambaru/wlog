@@ -7,24 +7,43 @@
 #include "logstream.hpp"
 #include <iostream>
 #include <mutex>
+#include <cassert>
 namespace wlog {
 
-logstream::~logstream()
+class logstream::impl
 {
-  this->write();
+public:
+  ~impl();
+  impl(std::mutex& m, const std::string& name, const std::string& ident, const logger_fun& writer);
+  std::string str() const;
+  std::ostream& log();
+
+private:
+  std::mutex& _mutex;
+  const time_point _tp;
+  const std::string _name;
+  const std::string _ident;
+  const logger_fun writer_;
+  std::stringstream _ss;
+};
+
+logstream::impl::~impl()
+{
+  if ( writer_ != nullptr )
+  {
+    writer_(_tp, _name, _ident, _ss.str() );
+  }
+/// TODO: перенести в wfc::wfc до инициализации log
+#ifndef WLOG_ENABLE_CLOG
+  else
+  {
+    std::clog << _name << " " << _ident << " " << _ss.str();
+  }
+#endif
   _mutex.unlock();
 }
 
-logstream::logstream(logstream&& other)
-  : _mutex(other._mutex)
-  , _tp(std::move(other._tp))
-  , _name(other._name)
-  , _ident(other._ident)
-  , writer_(other.writer_)
-  , _ss()
-{}
-
-logstream::logstream(
+logstream::impl::impl(
   std::mutex& m,
   const std::string& name,
   const std::string& ident,
@@ -36,51 +55,49 @@ logstream::logstream(
   , writer_(writer)
 {}
 
-std::string logstream::str() const
+std::string logstream::impl::str() const
 {
   return _ss.str();
 }
 
-void logstream::write()
+std::ostream& logstream::impl::log() 
 {
-  std::string msg = _ss.str();
-
-  if ( writer_ != nullptr )
-  {
-    writer_(_tp, _name, _ident, msg );
-  }
-/// TODO: перенести в wfc::wfc до инициализации log
-#ifndef WLOG_ENABLE_CLOG
-  else
-  {
-    std::clog << _name << " " << _ident << " " << msg;
-  }
-#endif
-  _ss.str(std::string());
-  _ss.clear();
-}
-
-std::ostream& logstream::operator<< (std::ios& (*pf)(std::ios&))
-{
-  _ss << pf;
-  return _ss;
-}
-  
-std::ostream& logstream::operator<< (std::ios_base& (*pf)(std::ios_base&))
-{
-  _ss << pf;
   return _ss;
 }
 
-std::ostream& logstream::operator<< (std::ostream& (*pf)(std::ostream&))
+logstream::~logstream()
 {
-  _ss << pf;
-  return _ss;
+  _impl.reset();
 }
+
+logstream::logstream(logstream&& other)
+  : _impl( std::move(other._impl) )
+{}
+
+logstream::logstream(
+  std::mutex& m,
+  const std::string& name,
+  const std::string& ident,
+  const logger_fun& writer
+) : _impl(new impl(m, name, ident, writer) )
+{}
+
+std::string logstream::str() const
+{
+  assert(_impl!=nullptr);
+  return _impl->str();
+}
+
+std::ostream& logstream::log() 
+{
+  assert(_impl!=nullptr);
+  return _impl->log();
+}
+
 
 /// ///////////////////////////
 
-stdout_stream::~stdout_stream()
+stdstream::~stdstream()
 {
   if ( _out.good() )
   {
@@ -90,33 +107,18 @@ stdout_stream::~stdout_stream()
   _mutex.unlock();
 }
 
-stdout_stream::stdout_stream(stdout_stream&& other)
+stdstream::stdstream(stdstream&& other)
   : _mutex(other._mutex)
   , _out(other._out)
   , _ss()
 {}
 
-stdout_stream::stdout_stream(std::mutex& m, std::ostream& out) 
+stdstream::stdstream(std::mutex& m, std::ostream& out) 
   : _mutex(m)
   , _out(out)
 {}
 
-std::ostream& stdout_stream::operator<< (std::ios& (*pf)(std::ios&))
-{
-  _ss << pf;
-  return _ss;
-}
-  
-std::ostream& stdout_stream::operator<< (std::ios_base& (*pf)(std::ios_base&))
-{
-  _ss << pf;
-  return _ss;
-}
+std::ostream& stdstream::log() { return _ss;}
 
-std::ostream& stdout_stream::operator<< (std::ostream& (*pf)(std::ostream&))
-{
-  _ss << pf;
-  return _ss;
-}
 
 }

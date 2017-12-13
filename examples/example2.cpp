@@ -1,6 +1,7 @@
 #define WLOG_ENABLE_DEBUG_LOG ON
 #include <wlog/logger.hpp>
-#include <wlog/options.hpp>
+#include <wlog/init_log.hpp>
+#include <wlog/options/logger_options.hpp>
 #include <wlog/default_logger.hpp>
 #include <iostream>
 
@@ -9,7 +10,7 @@
 int main(int, char* [])
 {
   //
-  wlog::default_logger_options opt;
+  wlog::logger_options opt;
   opt.path = "./example2.log";
   opt.colorized = wlog::colorized_flags::all;
   opt.resolution = wlog::resolutions::centiseconds;

@@ -7,5 +7,5 @@
 #pragma once
 
 #include <wlog/logger.hpp>
-#include <wlog/options.hpp>
 #include <wlog/global_log.hpp>
+#include <wlog/init_log.hpp>

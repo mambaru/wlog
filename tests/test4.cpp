@@ -1,5 +1,5 @@
-#include <wlog/formatter.hpp>
-#include <wlog/file_writer.hpp>
+#include <wlog/formatter/formatter.hpp>
+#include <wlog/writer/file_writer.hpp>
 #include <iostream> 
 #include "test.hpp"
 
