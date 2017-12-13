@@ -12,7 +12,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG ")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO  "-O2 -g -DNDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
 
-
 if (PARANOID_WARNING)
   message(STATUS "PARANOID_WARNING ON")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wcast-align \
@@ -22,6 +21,17 @@ if (PARANOID_WARNING)
  -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo \
  -Wstrict-overflow=5 -Wswitch-default -Wundef ")
 endif()
+
+find_package(wjson HINTS ${CMAKE_SOURCE_DIR}/wjson/build ${CMAKE_SOURCE_DIR}/../wjson/build)
+
+if (wjson_FOUND)
+  include_directories(${WJSON_INCLUDE_DIR})
+elseif (EXISTS ${CMAKE_SOURCE_DIR}/../wjson )
+  include_directories(${CMAKE_SOURCE_DIR}/../wjson)
+else()
+  add_definitions(-DWLOG_DISABLE_JSON)
+  set( WLOG_DISABLE_JSON ON)
+endif ()
 
 include_directories(.)
 
@@ -56,13 +66,14 @@ configure_package_config_file(
 
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/wlogConfigVersion.cmake
-  VERSION 1.2.3
+  VERSION 0.0.1
   COMPATIBILITY SameMajorVersion
 )
 
 install(
   FILES 
-    ${CMAKE_CURRENT_BINARY_DIR}/wlogConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/wlogConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/wlogConfig.cmake 
+    ${CMAKE_CURRENT_BINARY_DIR}/wlogConfigVersion.cmake
   DESTINATION 
     ${LIB_INSTALL_DIR}/wlog/cmake 
 )

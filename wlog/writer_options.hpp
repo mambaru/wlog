@@ -6,11 +6,9 @@
 
 #pragma once
 
-
 #include <wlog/logger_fun.hpp>
 #include <string>
 #include <memory>
-
 
 namespace wlog{
 
