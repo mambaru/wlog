@@ -41,9 +41,9 @@ void init_log(const logger_fun& log)
   global_writer = log;
 }
 
-void init_log(const default_logger_options& opt)
+void init_log(const default_logger_options& opt, const default_logger_handlers& hdr)
 {
-  auto plog = std::make_shared<default_logger>(opt);
+  auto plog = std::make_shared<default_logger>(opt, hdr);
   std::lock_guard<mutex_type> lk(log_mutex);
   using namespace std::placeholders;
   global_writer = std::bind(&default_logger::operator(), plog, _1, _2, _3, _4);

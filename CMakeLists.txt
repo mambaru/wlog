@@ -53,7 +53,6 @@ configure_package_config_file(
   INSTALL_DESTINATION ${LIB_INSTALL_DIR}/wlog/cmake
   PATH_VARS INCLUDE_INSTALL_DIR INCLUDE_CURRENT_DIR LIB_BUILD_DIR LIB_INSTALL_DIR
 )
-#SYSCONFIG_INSTALL_DIR 
 
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/wlogConfigVersion.cmake

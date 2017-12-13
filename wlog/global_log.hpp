@@ -14,7 +14,8 @@
 namespace wlog{
 
 void init_log(const logger_fun& log);
-void init_log(const default_logger_options& opt);
+
+void init_log(const default_logger_options& opt, const default_logger_handlers& hdr=default_logger_handlers());
 
 void init_log(
   colorized_flags colorized = colorized_flags::all,
