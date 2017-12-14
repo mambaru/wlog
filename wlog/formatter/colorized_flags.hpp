@@ -8,10 +8,9 @@
 
 namespace wlog{
 
-enum class colorized_flags: unsigned long
+enum class colorized_flags: unsigned short
 {
-  inherited     = ~0ul,
-  none          = 0x0,
+  none          = 0,
   date          = 1,
   time          = 1 << 1,
   fraction      = 1 << 2,
@@ -19,34 +18,30 @@ enum class colorized_flags: unsigned long
   ident         = 1 << 4,
   ident_ex      = 1 << 5,
   message       = 1 << 6,
-  all           = 0xffffffff
+  all           = 0x7F, 
+  inherited     = 1 << 8
 };
+
+constexpr colorized_flags full_color = colorized_flags::all;
 
 inline colorized_flags operator | ( colorized_flags left, colorized_flags right)
 {
-  if ( left == colorized_flags::inherited ) left = colorized_flags::none;
-  if ( right == colorized_flags::inherited ) right = colorized_flags::none;
-  return static_cast<colorized_flags>( static_cast<unsigned long>(left) 
-        | static_cast<unsigned long>(right) );
+  return static_cast<colorized_flags>(static_cast<unsigned short>(left) | static_cast<unsigned short>(right) );
 }
 
 inline colorized_flags operator ^ ( colorized_flags left, colorized_flags right)
 {
-  if ( left == colorized_flags::inherited ) left = colorized_flags::none;
-  if ( right == colorized_flags::inherited ) right = colorized_flags::none;
-  return static_cast<colorized_flags>( static_cast<unsigned long>(left) 
-         ^ static_cast<unsigned long>(right) );
+  return static_cast<colorized_flags>( static_cast<unsigned short>(left) ^ static_cast<unsigned short>(right) );
 }
-inline bool operator & ( colorized_flags left, colorized_flags right)
+
+inline colorized_flags operator & ( colorized_flags left, colorized_flags right)
 {
-  if ( left == colorized_flags::inherited ) left = colorized_flags::none;
-  if ( right == colorized_flags::inherited ) right = colorized_flags::none;
-  return 0 != (static_cast<unsigned long>(left) & static_cast<unsigned long>(right));
+  return static_cast<colorized_flags>(static_cast<unsigned short>(left) & static_cast<unsigned short>(right) );
 }
 
 inline bool operator!(colorized_flags flags)
 {
-  return static_cast<unsigned long>(flags)==0;
+  return static_cast<unsigned short>(flags)==0;
 }
 
 }

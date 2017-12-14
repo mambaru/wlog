@@ -44,7 +44,7 @@ void formatter::reset_color(std::ostream& os)
 
 bool formatter::date( std::ostream& os, const time_point& tp, const formatter_options& opt)
 {
-  if ( opt.hide & hide_flags::date )
+  if ( !!(opt.hide & hide_flags::date) )
     return false;
   
   const char* old_locale=0; 
@@ -55,7 +55,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   }
   
   bool flag = false;
-  if ( opt.colorized & colorized_flags::date )
+  if ( bool(opt.colorized & colorized_flags::date) )
     formatter::set_color(os, "$date", "\033[32m", opt);
 
   time_t ts = time_point::clock::to_time_t(tp);
@@ -123,7 +123,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   if ( pos != 0)
     os << buf;
   
-  if ( opt.colorized & colorized_flags::date )
+  if ( bool(opt.colorized & colorized_flags::date) )
     formatter::reset_color(os);
     
   if ( !opt.locale.empty() )
@@ -140,7 +140,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
 
 bool formatter::time( std::ostream& os, const time_point& tp, const formatter_options& opt)
 {
-  if ( opt.hide & hide_flags::time )
+  if ( !!(opt.hide & hide_flags::time) )
     return false;
 
   const char* old_locale=0; 
@@ -150,7 +150,7 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
     std::setlocale(LC_TIME, opt.locale.c_str() );
   }
   
-  if ( opt.colorized & colorized_flags::time )
+  if ( bool(opt.colorized & colorized_flags::time) )
     formatter::set_color(os, "$time", "\033[92m", opt);
 
   time_t ts = time_point::clock::to_time_t(tp);
@@ -210,7 +210,7 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
   if ( pos != 0)
     os << buf;
 
-  if ( opt.colorized & colorized_flags::time )
+  if ( bool(opt.colorized & colorized_flags::time) )
     formatter::reset_color(os);
 
   if ( !opt.locale.empty() )
@@ -233,10 +233,10 @@ void formatter::fraction_t(std::ostream& os, const time_point& tp)
 
 bool formatter::fraction( std::ostream& os, const time_point& tp, const formatter_options& opt)
 {
-  if ( opt.hide & hide_flags::fraction || opt.resolution <= resolutions::seconds)
+  if ( bool(opt.hide & hide_flags::fraction) || opt.resolution <= resolutions::seconds)
     return false;
   
-  if ( opt.colorized & colorized_flags::fraction )
+  if ( bool(opt.colorized & colorized_flags::fraction) )
     formatter::set_color(os, "$fraction", "\033[32m", opt);
 
   if ( opt.resolution == resolutions::nanoseconds )
@@ -250,7 +250,7 @@ bool formatter::fraction( std::ostream& os, const time_point& tp, const formatte
   else if ( opt.resolution == resolutions::deciseconds )
     fraction_t<std::deci>(os, tp);
 
-  if ( opt.colorized & colorized_flags::fraction )
+  if ( bool(opt.colorized & colorized_flags::fraction) )
     formatter::reset_color(os);
   return true;
 }
@@ -258,10 +258,10 @@ bool formatter::fraction( std::ostream& os, const time_point& tp, const formatte
 
 bool formatter::name( std::ostream& os, const std::string& name, const formatter_options& opt)
 {
-  if ( opt.hide & hide_flags::name)
+  if ( bool(opt.hide & hide_flags::name) )
     return false;
   
-  if ( opt.colorized & colorized_flags::name )
+  if ( bool(opt.colorized & colorized_flags::name) )
   {
     if ( !formatter::set_color(os, name, "", opt) )
       formatter::set_color(os, "$name", "\033[36m", opt);
@@ -290,7 +290,7 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
     */
  
   bool flag = false;
-  bool is_colorized = opt.colorized & (colorized_flags::ident | colorized_flags::ident_ex);
+  bool is_colorized = bool( opt.colorized & (colorized_flags::ident | colorized_flags::ident_ex) );
   
   if ( is_colorized )
   {
@@ -303,7 +303,7 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
         color = "\033[91m" ;
       else if ( ident=="FATAL" || ident=="EMERG" || ident=="CRIT" || ident=="ALERT" )
         color = "\033[31m" ;
-      else if ( opt.colorized & colorized_flags::ident_ex )
+      else if ( bool(opt.colorized & colorized_flags::ident_ex) )
       {
         if ( ident=="MESSAGE" || ident=="INFO")
           color = "\033[97m" ;
@@ -342,12 +342,12 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
 
 bool formatter::message( std::ostream& os, const std::string& txt, const formatter_options& opt)
 {
-  if ( opt.hide & hide_flags::message )
+  if ( bool(opt.hide & hide_flags::message) )
     return false;
 
   if ( opt.colorized != colorized_flags::none)
   {
-    if ( opt.colorized & colorized_flags::message )
+    if ( bool(opt.colorized & colorized_flags::message) )
     {
       formatter::set_color(os, "$message", "", opt);
     }
@@ -373,7 +373,7 @@ formatter::formatter(const formatter_options& opt, const formatter_handlers& han
   
   _showtime = _handlers.date != nullptr;
   _showtime |= _opt.resolution < resolutions::seconds;
-  _showtime |= _opt.hide & (hide_flags::year | hide_flags::month | hide_flags::days);
+  _showtime |= bool( _opt.hide & (hide_flags::year | hide_flags::month | hide_flags::days) );
   _showtime |= _opt.locale.empty();
   _showfract =  !(_opt.hide & hide_flags::fraction) && _opt.resolution > resolutions::seconds;
  

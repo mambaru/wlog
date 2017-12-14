@@ -12,13 +12,13 @@ int main(int, char* [])
   //
   wlog::logger_options opt;
   opt.path = "./example2.log";
-  opt.colorized = wlog::colorized_flags::all;
+  opt.colorized = wlog::full_color;
   opt.resolution = wlog::resolutions::centiseconds;
   opt.rotation = 10;
   opt.size_limit = 1024*1024*100;
   opt.time_limit = 1;
   opt.hide = wlog::hide_flags::name | wlog::hide_flags::ident | wlog::hide_flags::date | wlog::hide_flags::hours;
-  //opt.stdout.colorized = wlog::colorized_flags::all;
+  //opt.stdout.colorized = wlog::full_color;
   opt.stdout.name = "cout";
   //opt.upgrade();
   wlog::init_log( opt );

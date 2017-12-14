@@ -22,17 +22,6 @@ if (PARANOID_WARNING)
  -Wstrict-overflow=5 -Wswitch-default -Wundef ")
 endif()
 
-find_package(wjson HINTS ${CMAKE_SOURCE_DIR}/wjson/build ${CMAKE_SOURCE_DIR}/../wjson/build)
-
-if (wjson_FOUND)
-  include_directories(${WJSON_INCLUDE_DIR})
-elseif (EXISTS ${CMAKE_SOURCE_DIR}/../wjson )
-  include_directories(${CMAKE_SOURCE_DIR}/../wjson)
-else()
-  add_definitions(-DWLOG_DISABLE_JSON)
-  set( WLOG_DISABLE_JSON ON)
-endif ()
-
 include_directories(.)
 
 if ( BUILD_TESTING )

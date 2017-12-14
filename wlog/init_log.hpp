@@ -21,7 +21,7 @@ void init_log(
 );
 
 void init_log(
-  colorized_flags colorized = colorized_flags::all,
+  colorized_flags colorized = full_color,
   resolutions resolution = resolutions::milliseconds
 );
 
@@ -29,7 +29,7 @@ void init_log(
   const std::string& path, 
   resolutions resolution = resolutions::milliseconds, 
   const std::string& stdout = "clog", 
-  colorized_flags colorized = colorized_flags::all);
+  colorized_flags colorized = full_color);
 
 // @return текущий логгер. М.б. использован для записи финального сообщения
 logger_fun&& release_log();

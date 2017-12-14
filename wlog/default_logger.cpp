@@ -17,8 +17,8 @@ namespace wlog{
 
 std::mutex stdout_mutex;
 //WARNING: не реализоанно!
-#error
-namespace { std::string expanse_path(const std::string& path, const std::string& name); }*/
+//#error
+//namespace { std::string expanse_path(const std::string& path, const std::string& name); }
 
   
 class default_logger::impl
@@ -212,6 +212,7 @@ bool default_logger::operator()(
 
 namespace 
 {
+  /*!!! реализовать!
   std::string expanse_path(const std::string& path, const std::string& name)
   {
     std::string result;
@@ -224,7 +225,7 @@ namespace
       + std::string("-") 
       + name 
       + std::string( path.begin() + diff, path.end() );
-  }
+  }*/
 }
 
 

@@ -8,9 +8,8 @@
 
 namespace wlog{
   
-enum class hide_flags: unsigned long
+enum class hide_flags: unsigned short
 {
-  inherited     = ~0ul,
   none          = 0x0,
   date          = 1,
   time          = 1 << 1,
@@ -24,37 +23,32 @@ enum class hide_flags: unsigned long
   fraction      = 1 << 10,
   name          = 1 << 11,
   ident         = 1 << 12,
-  message       = 1 << 13
+  message       = 1 << 13,
+  inherited     = 1 << 14
 };
 
 inline hide_flags operator | ( hide_flags left, hide_flags right)
 {
-  if ( left == hide_flags::inherited ) left = hide_flags::none;
-  if ( right == hide_flags::inherited ) right = hide_flags::none;
-  return static_cast<hide_flags>( static_cast<unsigned long>(left) 
-         | static_cast<unsigned long>(right) );
+  return static_cast<hide_flags>( static_cast<unsigned short>(left) 
+         | static_cast<unsigned short>(right) );
 }
 
 inline hide_flags operator ^ ( hide_flags left, hide_flags right)
 {
-  if ( left == hide_flags::inherited ) left = hide_flags::none;
-  if ( right == hide_flags::inherited ) right = hide_flags::none;
-  return static_cast<hide_flags>( static_cast<unsigned long>(left) 
-         ^ static_cast<unsigned long>(right) );
+  return static_cast<hide_flags>( static_cast<unsigned short>(left) 
+         ^ static_cast<unsigned short>(right) );
 }
 
 
-inline bool operator & ( hide_flags left, hide_flags right)
+inline hide_flags operator & ( hide_flags left, hide_flags right)
 {
-  if ( left == hide_flags::inherited ) left = hide_flags::none;
-  if ( right == hide_flags::inherited ) right = hide_flags::none;
-  return 0 != (static_cast<unsigned long>(left) & static_cast<unsigned long>(right));
+  return static_cast<hide_flags>( static_cast<unsigned short>(left) 
+         & static_cast<unsigned short>(right) );
 }
 
 inline bool operator!(hide_flags flags)
 {
-  return static_cast<unsigned long>(flags)==0;
+  return static_cast<unsigned short>(flags)==0;
 }
-
 
 }
