@@ -290,7 +290,7 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
     */
  
   bool flag = false;
-  bool is_colorized = bool( opt.colorized & (colorized_flags::ident | colorized_flags::ident_ex) );
+  bool is_colorized = bool( opt.colorized & (colorized_flags::ident | colorized_flags::ident_err) );
   
   if ( is_colorized )
   {
@@ -303,7 +303,7 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
         color = "\033[91m" ;
       else if ( ident=="FATAL" || ident=="EMERG" || ident=="CRIT" || ident=="ALERT" )
         color = "\033[31m" ;
-      else if ( bool(opt.colorized & colorized_flags::ident_ex) )
+      else if ( bool(opt.colorized & colorized_flags::ident) )
       {
         if ( ident=="MESSAGE" || ident=="INFO")
           color = "\033[97m" ;

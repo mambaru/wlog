@@ -13,15 +13,7 @@ namespace wlog{
 struct syslog_writer_options
 {
   std::string name;
+  syslog_writer_options& operator <<= (const syslog_writer_options& other);
 };
-
-inline syslog_writer_options& operator <<= (syslog_writer_options& self, const syslog_writer_options& other)
-{
-  if ( self.name.empty() ) self.name = other.name;
-  if ( self.name=="#" ) self.name.clear();
-  return self;
-}
-
-
 
 }

@@ -1,8 +1,8 @@
 #define WLOG_ENABLE_DEBUG_LOG ON
-#include <wlog/logger.hpp>
+#include <wlog/logging.hpp>
 #include <wlog/init_log.hpp>
-#include <wlog/options/logger_options.hpp>
-#include <wlog/default_logger.hpp>
+#include <wlog/logger/logger_options.hpp>
+#include <wlog/logger/default_logger.hpp>
 #include <iostream>
 
 #define LOG_LINES 1000000

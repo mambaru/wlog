@@ -1,11 +1,11 @@
 //
-// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015
+// Author: Vladimir Migashko <migashko@gmail.com>, (C) 2013-2015, 2017
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 #pragma once
 
-#include <wlog/options/logger_options.hpp>
+#include <wlog/logger/logger_options.hpp>
 #include <wjson/json.hpp>
 #include <wjson/name.hpp>
 
@@ -102,8 +102,8 @@ struct colorized_flags_json
   JSON_NAME(time)
   JSON_NAME(fraction)
   JSON_NAME(name)
+  JSON_NAME(ident_err)
   JSON_NAME(ident)
-  JSON_NAME(ident_ex)
   JSON_NAME(message)
   JSON_NAME(all)
   
@@ -116,10 +116,10 @@ struct colorized_flags_json
       wjson::enum_value<n_time, colorized_flags, colorized_flags::time>,
       wjson::enum_value<n_fraction, colorized_flags, colorized_flags::fraction>,
       wjson::enum_value<n_name, colorized_flags, colorized_flags::name>,
+      wjson::enum_value<n_ident_err, colorized_flags, colorized_flags::ident_err>,
       wjson::enum_value<n_ident, colorized_flags, colorized_flags::ident>,
-      wjson::enum_value<n_ident_ex, colorized_flags, colorized_flags::ident_ex>,
       wjson::enum_value<n_message, colorized_flags, colorized_flags::message>,
-      wjson::enum_value<n_all, colorized_flags, colorized_flags::all >
+      wjson::enum_value<n_all, colorized_flags, colorized_flags::all4json >
     >,
     '|'
   > type;
@@ -139,11 +139,25 @@ struct formatter_options_json
   JSON_NAME(format)
   JSON_NAME(color_map)
 
+  struct full_color
+  {
+    colorized_flags operator()(const formatter_options& opt) const 
+    {
+      return opt.colorized == colorized_flags::all ? colorized_flags::all4json : opt.colorized; 
+    }
+    
+    void operator()(formatter_options& opt, colorized_flags value) const 
+    {
+      opt.colorized = value == colorized_flags::all4json ? colorized_flags::all : value;
+    }
+  };
+
   typedef wjson::object<
     formatter_options,
     wjson::member_list<
       wjson::member<n_resolution, formatter_options, resolutions, &formatter_options::resolution, resolutions_json>,
-      wjson::member<n_colorized, formatter_options, colorized_flags, &formatter_options::colorized, colorized_flags_json>,
+      //wjson::member<n_colorized, formatter_options, colorized_flags, &formatter_options::colorized, colorized_flags_json>,
+      wjson::member_p<n_colorized, formatter_options, colorized_flags, full_color, colorized_flags_json>,
       wjson::member<n_hide, formatter_options, hide_flags, &formatter_options::hide, hide_flags_json>,
       wjson::member<n_locale, formatter_options, std::string, &formatter_options::locale>,
       wjson::member<n_format, formatter_options, std::string, &formatter_options::format>,

@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <wlog/options/logger_options.hpp>
-#include <wlog/options/logger_handlers.hpp>
+#include <wlog/logger/logger_options.hpp>
+#include <wlog/logger/logger_handlers.hpp>
 #include <wlog/logger_fun.hpp>
 #include <string>
 

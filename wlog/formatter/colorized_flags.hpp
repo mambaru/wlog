@@ -15,11 +15,12 @@ enum class colorized_flags: unsigned short
   time          = 1 << 1,
   fraction      = 1 << 2,
   name          = 1 << 3,
-  ident         = 1 << 4,
-  ident_ex      = 1 << 5,
+  ident_err     = 1 << 4,
+  ident         = 1 << 5,
   message       = 1 << 6,
   all           = 0x7F, 
-  inherited     = 1 << 8
+  inherited     = 1 << 8,
+  all4json      = 1 << 9
 };
 
 constexpr colorized_flags full_color = colorized_flags::all;

@@ -31,15 +31,31 @@ if ( BUILD_TESTING )
 endif()
 
 add_library(
- wlog
- wlog/logstream.cpp
- wlog/global_log.cpp
- wlog/init_log.cpp
- wlog/default_logger.cpp
- wlog/formatter/formatter.cpp
- wlog/writer/file_writer.cpp
- wlog/writer/stdout_writer.cpp
- wlog/writer/syslog_writer.cpp
+  wlog
+  wlog/logstream.cpp
+  wlog/global_log.cpp
+  wlog/init_log.cpp
+  
+  wlog/formatter/formatter.cpp
+  wlog/formatter/formatter_options.cpp
+  wlog/formatter/formatter_handlers.cpp
+  
+  wlog/writer/file_writer.cpp
+  wlog/writer/file_writer_options.cpp
+  wlog/writer/stdout_writer.cpp
+  wlog/writer/stdout_writer_options.cpp
+  wlog/writer/syslog_writer.cpp
+  wlog/writer/syslog_writer_options.cpp
+  
+  wlog/logger/default_logger.cpp
+  wlog/logger/file_logger_options.cpp
+  wlog/logger/stdout_logger_options.cpp
+  wlog/logger/syslog_logger_options.cpp
+  wlog/logger/basic_logger_options.cpp
+  wlog/logger/logger_options.cpp
+  wlog/logger/basic_logger_handlers.cpp
+  
+  wlog/logger/logger_handlers.cpp
 )
 
 include(CMakePackageConfigHelpers)

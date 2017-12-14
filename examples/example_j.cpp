@@ -17,7 +17,8 @@ int main(int argc, char* argv[])
   if (std::string(argv[1]) == "-G" )
   {
     wlog::logger_options lopt;
-    //lopt.colorized = wlog::colorized_flags::date | wlog::colorized_flags::time;
+    lopt.upgrade();
+    //lopt.stdout.colorized = wlog::colorized_flags::date | wlog::colorized_flags::time;
     //lopt.colorized = wlog::colorized_flags::all;
     //lopt.colorized = wlog::colorized_flags::all;
     std::string json;

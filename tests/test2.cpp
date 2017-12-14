@@ -1,6 +1,6 @@
 #include <wlog/global_log.hpp>
 #include <wlog/init_log.hpp>
-#include <wlog/logger.hpp>
+#include <wlog/logging.hpp>
 #include "test.hpp"
 
 int test1();

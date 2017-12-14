@@ -14,14 +14,9 @@ struct stdout_writer_options
 {
   std::string name;
   int sync = -1;
+
+  stdout_writer_options& operator <<= (const stdout_writer_options& other);
 };
 
-inline stdout_writer_options& operator <<= (stdout_writer_options& self, const stdout_writer_options& other)
-{
-  if ( self.name.empty() ) self.name = other.name;
-  if ( self.name=="#" ) self.name.clear();
-  if ( self.sync==-1 ) self.sync = other.sync;
-  return self;
-}
 
 }

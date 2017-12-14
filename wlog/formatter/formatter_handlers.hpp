@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <wlog/formatter/formatter_options.hpp>
 #include <wlog/types.hpp>
 #include <functional>
 #include <ostream>
@@ -24,29 +25,10 @@ struct formatter_handlers
   str_fun_t name;
   str_fun_t ident;
   str_fun_t message;
+  
+  formatter_handlers& operator <<= (const formatter_handlers& other);
 };
 
-inline formatter_handlers& operator <<= (formatter_handlers& self, const formatter_handlers& other)
-{
-  if ( self.date==nullptr )
-    self.date = other.date;
 
-  if ( self.time==nullptr )
-    self.time = other.time;
-
-  if ( self.fraction==nullptr )
-    self.fraction = other.fraction;
-  
-  if ( self.name==nullptr )
-    self.name = other.name;
-
-  if ( self.ident==nullptr )
-    self.ident = other.ident;
-
-  if ( self.message==nullptr )
-    self.message = other.message;
-  
-  return self;
-}
 
 }
