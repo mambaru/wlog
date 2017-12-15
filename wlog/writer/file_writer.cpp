@@ -53,22 +53,27 @@ file_writer::file_writer(const formatter_fun& formatter, const options& opt, con
   if ( _opt.time_limit == -1 ) _opt.time_limit = 0;
   if ( _opt.rotation   == -1 ) _opt.rotation = 0;
 
-  _oflog.open( _opt.path, std::ios_base::app );
-  
+  time_t file_time = 0;
+  struct stat t_stat;
+  if ( 0 == stat(_opt.path.c_str(), &t_stat) )
+  {
+    file_time  = t_stat.st_ctime;
+  }
+
   if ( _opt.time_limit > 0 )
   {
-    time_t file_time  = time(0);
-    struct stat t_stat;
-    if ( 0 == stat(_opt.path.c_str(), &t_stat) )
-    {
-      file_time  = t_stat.st_ctime;
-    }
-    _rotate_time = file_time + _opt.time_limit;
+    _rotate_time = ( file_time ==0 ? time(0) : file_time) + _opt.time_limit;
   }
   
-  if ( !this->rotate_if_(_oflog) && this->_opt.startup_rotate > 0 )
+  if ( _opt.startup_rotate > 0 && _opt.rotation == 0  )
+    _oflog.open( _opt.path);
+  else
+    _oflog.open( _opt.path, std::ios_base::app );
+  
+  if ( !this->rotate_if_(_oflog)  )
   {
-    this->rotate_(_oflog);
+    if ( file_time!=0 && _opt.startup_rotate > 0 )
+      this->rotate_(_oflog);
   }
   
   if ( _opt.sync != 0)
@@ -125,7 +130,7 @@ void file_writer::rotate_( std::ofstream& oflog)
     ++_save_count;
   }
 
-  oflog.open(_opt.path);
+  //oflog.open(_opt.path);
 }
 
 bool file_writer::rotate_if_( std::ofstream& oflog)

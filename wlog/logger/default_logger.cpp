@@ -146,13 +146,22 @@ bool default_logger::impl::write(
   
   const auto* handlers = &_common;
   
-  if ( !allow_(name, ident, handlers->allow, handlers->deny) )
+  bool is_allow = allow_(name, ident, handlers->allow, handlers->deny);
+  if ( !is_allow && _customize.empty() )
     return false;
+  /*if ( !allow_(name, ident, handlers->allow, handlers->deny) )
+    return false;*/
 
   auto itr = _customize.find(name);
+  if ( itr == _customize.end() )
+    itr = _customize.find(ident);
+  
   if ( itr != _customize.end() )
   {
     handlers = &(itr->second);
+    if (!is_allow && handlers->allow.count(ident) == 0)
+      return false;
+
     if ( !allow_(name, ident, handlers->allow, handlers->deny) )
       return false;
   }

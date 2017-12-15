@@ -20,13 +20,12 @@ logger_options::logger_options()
   
 void logger_options::upgrade()
 {
-  for (auto& op : customize)
-    op.second <<= static_cast< const basic_logger_options&>(*this);
-
   static_cast<formatter_options&>(this->stdout) <<= static_cast<const formatter_options&>(*this);
   if ( this->stdout.sync == -1 ) this->stdout.sync = this->sync;
   if ( this->stdout.name=="#" )  this->stdout.name.clear();
   if ( this->syslog.name=="#" )  this->syslog.name.clear();
+  for (auto& op : customize)
+    op.second <<= static_cast< const basic_logger_options&>(*this);
 }
 
 }

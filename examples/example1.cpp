@@ -26,6 +26,5 @@ int main()
   WLOG_PROGRESS( TOTAL << " " << 100 << "%        " << std::endl)
   WLOG_END("Progress... Done")
   
-  //std::cout << x << std::endl;
   return 0;
 }
