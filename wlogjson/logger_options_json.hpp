@@ -102,7 +102,7 @@ struct colorized_flags_json
   JSON_NAME(time)
   JSON_NAME(fraction)
   JSON_NAME(name)
-  JSON_NAME(ident_err)
+  JSON_NAME(notice)
   JSON_NAME(ident)
   JSON_NAME(message)
   JSON_NAME(all)
@@ -116,7 +116,7 @@ struct colorized_flags_json
       wjson::enum_value<n_time, colorized_flags, colorized_flags::time>,
       wjson::enum_value<n_fraction, colorized_flags, colorized_flags::fraction>,
       wjson::enum_value<n_name, colorized_flags, colorized_flags::name>,
-      wjson::enum_value<n_ident_err, colorized_flags, colorized_flags::ident_err>,
+      wjson::enum_value<n_notice, colorized_flags, colorized_flags::notice>,
       wjson::enum_value<n_ident, colorized_flags, colorized_flags::ident>,
       wjson::enum_value<n_message, colorized_flags, colorized_flags::message>,
       wjson::enum_value<n_all, colorized_flags, colorized_flags::all4json >
@@ -319,9 +319,26 @@ struct basic_logger_options_json
   typedef type::serializer serializer;
   typedef type::target target;
   typedef type::member_list member_list;
-  
 };
-  
+
+struct custom_logger_options_json
+{
+  JSON_NAME(names)
+
+  typedef wjson::object<
+    custom_logger_options,
+    wjson::member_list<
+      wjson::member<n_names, custom_logger_options, std::vector<std::string>, 
+                    &custom_logger_options::names, wjson::vector_of_strings<> >,
+      wjson::base<basic_logger_options_json>
+    >,
+    wjson::strict_mode
+  > type;
+  typedef type::serializer serializer;
+  typedef type::target target;
+  typedef type::member_list member_list;
+};
+
 struct logger_options_json
 {
   JSON_NAME(customize)
@@ -329,7 +346,7 @@ struct logger_options_json
     logger_options,
     wjson::member_list<
       wjson::base<basic_logger_options_json>,
-      wjson::member<n_customize, logger_options, logger_options::customize_map, &logger_options::customize, wjson::dict_map<basic_logger_options_json> >
+      wjson::member<n_customize, logger_options, logger_options::customize_list, &logger_options::customize, wjson::vector_of<custom_logger_options_json> >
     >,
     wjson::strict_mode
   > type;

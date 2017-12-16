@@ -14,7 +14,8 @@ struct file_logger_options
   : formatter_options
   , file_writer_options
 {
-  file_logger_options& operator <<= (const file_logger_options& other);
+  void upgrade(const file_logger_options& other);
+  void finalize();
 };
 
 

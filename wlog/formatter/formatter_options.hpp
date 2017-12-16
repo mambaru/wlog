@@ -27,8 +27,8 @@ struct formatter_options
   
   std::map<std::string, std::string> color_map; //TODO
   
-  formatter_options& operator <<= (const formatter_options& other);
-  void upgrade();
+  void upgrade(const formatter_options& other);
+  void finalize();
 
 };
 

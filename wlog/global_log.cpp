@@ -13,8 +13,8 @@
 namespace wlog{
 
 typedef std::mutex mutex_type;
-extern mutex_type log_mutex;
-extern logger_fun global_writer;
+mutex_type log_mutex;
+logger_fun global_writer;
 
 logstream global_log(const std::string& name, const std::string& ident)
 {

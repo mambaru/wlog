@@ -13,8 +13,6 @@
 #include <fstream>
 #include <cstdio>
 
-//#include <boost/filesystem.hpp>
-
 namespace wlog{
   
   

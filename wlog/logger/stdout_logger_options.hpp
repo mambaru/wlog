@@ -15,7 +15,8 @@ struct stdout_logger_options
   : formatter_options
   , stdout_writer_options
 {
-  stdout_logger_options& operator <<= (const stdout_logger_options& other);
+  void upgrade(const stdout_logger_options& other);
+  void finalize();
 };
 
 

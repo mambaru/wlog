@@ -15,7 +15,7 @@ enum class colorized_flags: unsigned short
   time          = 1 << 1,
   fraction      = 1 << 2,
   name          = 1 << 3,
-  ident_err     = 1 << 4,
+  notice        = 1 << 4,
   ident         = 1 << 5,
   message       = 1 << 6,
   all           = 0x7F, 

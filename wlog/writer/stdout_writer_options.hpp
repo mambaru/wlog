@@ -15,7 +15,8 @@ struct stdout_writer_options
   std::string name;
   int sync = -1;
 
-  stdout_writer_options& operator <<= (const stdout_writer_options& other);
+  void upgrade(const stdout_writer_options& other);
+  void finalize();
 };
 
 

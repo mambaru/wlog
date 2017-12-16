@@ -19,7 +19,8 @@ struct file_writer_options
   long time_limit = -1;
   long rotation   = -1; // ex save old
   
-  file_writer_options& operator <<= (const file_writer_options& other);
+  void upgrade(const file_writer_options& other);
+  void finalize();
 
 };
 

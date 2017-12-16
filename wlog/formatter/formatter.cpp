@@ -15,12 +15,8 @@ formatter::formatter(const formatter_options& opt, const formatter_handlers& han
   : _opt(opt)
   , _handlers(handlers)
 {
-  _opt.upgrade();
-  
-  if ( _opt.resolution == resolutions::inherited ) _opt.resolution = resolutions::seconds;
-  if ( _opt.hide == hide_flags::inherited ) _opt.hide = hide_flags::none;
-  if ( _opt.colorized == colorized_flags::inherited ) _opt.colorized = colorized_flags::none;
-  
+  _opt.finalize();
+
   if ( !_opt.format.empty() )
   {
     _showtime = false;
@@ -302,7 +298,7 @@ bool formatter::name( std::ostream& os, const std::string& name, const formatter
 bool formatter::ident( std::ostream& os, const std::string& ident, const formatter_options& opt)
 {
   bool flag = false;
-  bool is_colorized = bool( opt.colorized & (colorized_flags::ident | colorized_flags::ident_err) );
+  bool is_colorized = bool( opt.colorized & (colorized_flags::ident | colorized_flags::notice) );
   
   if ( is_colorized )
   {

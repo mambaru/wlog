@@ -15,11 +15,7 @@
 
 namespace wlog{
 
-std::mutex stdout_mutex;
-//WARNING: не реализоанно!
-//#error
-//namespace { std::string expanse_path(const std::string& path, const std::string& name); }
-
+//std::mutex stdout_mutex;
   
 class default_logger::impl
 {
@@ -69,15 +65,18 @@ default_logger::impl::impl( const options& copt, const handlers& chdr)
   options opt = copt;
   handlers hdr = chdr;
   
-  opt.upgrade();
+  opt.finalize();
   hdr.upgrade();
   
   for ( auto& p : opt.customize )
   {
-    auto itr = hdr.customize.find(p.first);
-    impl::context& cntx = _customize[p.first];
-    const basic_logger_handlers& lhdr = itr!=hdr.customize.end() ? itr->second : static_cast<const basic_logger_handlers&>(hdr);
-    init_context_( cntx, p.second, lhdr );
+    for ( const std::string& n : p.names )
+    {
+      auto itr = hdr.customize.find(n);
+      impl::context& cntx = _customize[n];
+      const basic_logger_handlers& lhdr = itr!=hdr.customize.end() ? itr->second : static_cast<const basic_logger_handlers&>(hdr);
+      init_context_( cntx, p, lhdr );
+    }
   }
   
   init_context_( _common, opt, hdr );
@@ -217,25 +216,5 @@ bool default_logger::operator()(
 {
   return _impl->write(tp, name, ident, str);
 }
-
-
-namespace 
-{
-  /*!!! реализовать!
-  std::string expanse_path(const std::string& path, const std::string& name)
-  {
-    std::string result;
-    auto pos = path.rfind('.');
-    if ( pos == std::string::npos )
-      return path + name + std::string(".log");
-
-    std::ptrdiff_t diff = static_cast<std::ptrdiff_t>(pos);
-    return std::string( path.begin(), path.begin() + diff ) 
-      + std::string("-") 
-      + name 
-      + std::string( path.begin() + diff, path.end() );
-  }*/
-}
-
 
 }

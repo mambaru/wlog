@@ -2,17 +2,20 @@
 
 namespace wlog{
   
-basic_logger_options& basic_logger_options::operator <<= (const basic_logger_options& other)
+void basic_logger_options::upgrade(const basic_logger_options& other)
 {
-  basic_logger_options& self = *this;
-  static_cast<file_logger_options&>(self) <<= static_cast<const file_logger_options&>(other);
-  self.stdout <<= other.stdout;
-  static_cast<formatter_options&>(self.stdout) <<= static_cast<const formatter_options&>(other);
-  if ( self.stdout.sync == -1 ) self.stdout.sync = self.sync;
-  if ( self.stdout.name=="#" ) self.stdout.name.clear();
-  self.syslog <<= other.syslog;
-  if ( self.syslog.name=="#" ) self.syslog.name.clear();
-  return self;
+  file_logger_options::upgrade( static_cast<const file_logger_options&>(other) );
+  this->stdout.upgrade( other.stdout );
+  static_cast<formatter_options&>(this->stdout).upgrade( static_cast<const formatter_options&>(other) );
+  this->syslog.upgrade(other.syslog);
+ }
+
+void basic_logger_options::finalize()
+{
+  file_logger_options::finalize();
+  this->stdout.finalize();
+  this->syslog.finalize();
 }
+
 
 }

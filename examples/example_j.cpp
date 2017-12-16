@@ -1,4 +1,5 @@
 #define WLOG_ENABLE_DEBUG_LOG ON
+#include <signal.h>
 #include <iostream>
 #include <fstream>
 #include <wlogjson/logger_options_json.hpp>
@@ -20,6 +21,13 @@
 #define EXAMPLE_TRACE(X)    WLOG_LOG_TRACE   ( "EXAMPLE", X )
 #define EXAMPLE_PROGRESS(X) WLOG_LOG_PROGRESS( "EXAMPLE", X )
 
+void sig_handler(int );
+void sig_handler(int )
+{
+  system("setterm -cursor on");
+  exit(0);
+}  
+
 int main(int argc, char* argv[])
 {
   if ( argc!=2 )
@@ -40,7 +48,7 @@ int main(int argc, char* argv[])
     wlog::logger_options lopt;
     if ( argv[1][0] == '0' )
     {
-      lopt.upgrade();
+      lopt.finalize();
     }
     wlog::logger_options_json::serializer()(lopt, std::back_inserter(json));
     std::cout << json << std::endl;
@@ -57,13 +65,17 @@ int main(int argc, char* argv[])
     std::cerr << wjson::strerror::message_trace(e, json.begin(), json.end()) << std::endl;
     return 1;
   }
-  
+
+  signal(SIGINT, sig_handler);
+  system("setterm -cursor off");
+
   wlog::init_log(opt);
   WLOG_MESSAGE("Demo progress LOG")
   WLOG_BEGIN("Progress...")
   for (int i = 0, j=0 ; i < LOG_LINES; ++i)
   {
-    WLOG_PROGRESS( i << " " << std::fixed<<std::setprecision(2) << (i*100.0)/LOG_LINES << "%   ")
+    WLOG_PROGRESS( i << " " << std::fixed<<std::setprecision(3) << (i*100.0)/LOG_LINES << "%   ")
+    //usleep(1000);
     if ( i%1000==0 )
     {
            if ( j % 20 == 0)  {   WLOG_WARNING("Тестовое WARNING " << "сообщение №" << i ) }
@@ -84,9 +96,8 @@ int main(int argc, char* argv[])
       else  EXAMPLE_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );   
       ++j;
     }
-    usleep(1000);
   }
- 
+  system("setterm -cursor on");
   WLOG_PROGRESS( LOG_LINES << " " << 100 << "%        " << std::endl)
   WLOG_END("Progress... Done")
   

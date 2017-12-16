@@ -52,6 +52,7 @@ add_library(
   wlog/logger/stdout_logger_options.cpp
   wlog/logger/syslog_logger_options.cpp
   wlog/logger/basic_logger_options.cpp
+  wlog/logger/custom_logger_options.cpp
   wlog/logger/logger_options.cpp
   wlog/logger/basic_logger_handlers.cpp
   

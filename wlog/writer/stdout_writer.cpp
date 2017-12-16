@@ -10,8 +10,6 @@
 #include <sstream>
 #include <mutex>
 
-namespace wlog{ extern std::mutex stdout_mutex; }
-
 namespace wlog{
   
 stdout_writer::~stdout_writer()
@@ -44,7 +42,6 @@ void stdout_writer::operator()(
   {
     if ( !_out->good() )
       return;
-    std::lock_guard<std::mutex> lk(stdout_mutex);
     if ( _formatter!=nullptr )
       _formatter( *_out, tp, name, ident, str);
     else

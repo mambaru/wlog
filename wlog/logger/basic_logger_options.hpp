@@ -21,7 +21,8 @@ struct basic_logger_options: file_logger_options
   std::set<std::string> allow;
   std::set<std::string> deny;
   
-  basic_logger_options& operator <<= (const basic_logger_options& other);
+  void upgrade(const basic_logger_options& other);
+  void finalize();
 };
 
 }
