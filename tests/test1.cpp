@@ -8,7 +8,7 @@ int test2();
 
 int test1()
 {
-  std::mutex m;
+  wlog::mutex_type m;
   std::string message;
   {
     wlog::logstream log(m, "test", "message", 
@@ -36,7 +36,7 @@ int test2()
 {
   std::string message;
   {
-    std::mutex m;
+    wlog::mutex_type m;
     wlog::logstream log(m, "test", "message", 
       [&message](wlog::time_point, std::string name, std::string type, std::string text)
       {

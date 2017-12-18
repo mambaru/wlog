@@ -14,12 +14,12 @@ class logstream::impl
 {
 public:
   ~impl();
-  impl(std::mutex& m, const std::string& name, const std::string& ident, const logger_fun& writer);
+  impl(mutex_type& m, const std::string& name, const std::string& ident, const logger_fun& writer);
   std::string str() const;
   std::ostream& log();
 
 private:
-  std::mutex& _mutex;
+  mutex_type& _mutex;
   const time_point _tp;
   const std::string _name;
   const std::string _ident;
@@ -44,7 +44,7 @@ logstream::impl::~impl()
 }
 
 logstream::impl::impl(
-  std::mutex& m,
+  mutex_type& m,
   const std::string& name,
   const std::string& ident,
   const logger_fun& writer
@@ -75,7 +75,7 @@ logstream::logstream(logstream&& other)
 {}
 
 logstream::logstream(
-  std::mutex& m,
+  mutex_type& m,
   const std::string& name,
   const std::string& ident,
   const logger_fun& writer
@@ -113,7 +113,7 @@ stdstream::stdstream(stdstream&& other)
   , _ss()
 {}
 
-stdstream::stdstream(std::mutex& m, std::ostream& out) 
+stdstream::stdstream(mutex_type& m, std::ostream& out) 
   : _mutex(m)
   , _out(out)
 {}

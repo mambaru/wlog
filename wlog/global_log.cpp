@@ -7,12 +7,12 @@
 #include "global_log.hpp"
 #include "logstream.hpp"
 #include "logger_fun.hpp"
+#include "types.hpp"
 #include <iostream>
 #include <mutex>
 
 namespace wlog{
 
-typedef std::mutex mutex_type;
 mutex_type log_mutex;
 logger_fun global_writer;
 

@@ -7,8 +7,11 @@
 #pragma once
 
 #include <chrono>
+#include <mutex>
 
 namespace wlog{
 
-using time_point = std::chrono::system_clock::time_point;
+  typedef std::recursive_mutex mutex_type;
+  using time_point = std::chrono::system_clock::time_point;
+  
 }

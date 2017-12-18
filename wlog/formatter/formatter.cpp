@@ -117,15 +117,15 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
       bool fweek = !(opt.hide & hide_flags::weekday );
       
       
-      if ( fyear && fmon ) pos += strftime(buf + pos, 100, "%Y %b", &t1);
-      else if ( fyear && fday && fweek) pos += strftime(buf + pos, 100, "%d %a %Y", &t1);
-      else if ( fyear && fday && !fweek) pos += strftime(buf + pos, 100, "%d %Y", &t1);
-      else if ( fmon && fday && fweek) pos += strftime(buf + pos, 100, "%a %b %d", &t1);
-      else if ( fmon && fday && !fweek) pos += strftime(buf + pos, 100, "%b %d", &t1);
-      else if ( fyear ) pos += strftime(buf + pos, 100, "%Y", &t1);
-      else if ( fmon ) pos += strftime(buf + pos, 100, "%b", &t1);
-      else if ( fday && fweek ) pos += strftime(buf + pos, 100, "%a %d", &t1);
-      else if ( fday && !fweek ) pos += strftime(buf + pos, 100, "%d", &t1);
+      if ( fyear && fmon ) pos += strftime(buf + pos, 100-pos, "%Y %b", &t1);
+      else if ( fyear && fday && fweek) pos += strftime(buf + pos, 100-pos, "%d %a %Y", &t1);
+      else if ( fyear && fday && !fweek) pos += strftime(buf + pos, 100-pos, "%d %Y", &t1);
+      else if ( fmon && fday && fweek) pos += strftime(buf + pos, 100-pos, "%a %b %d", &t1);
+      else if ( fmon && fday && !fweek) pos += strftime(buf + pos, 100-pos, "%b %d", &t1);
+      else if ( fyear ) pos += strftime(buf + pos, 100-pos, "%Y", &t1);
+      else if ( fmon ) pos += strftime(buf + pos, 100-pos, "%b", &t1);
+      else if ( fday && fweek ) pos += strftime(buf + pos, 100-pos, "%a %d", &t1);
+      else if ( fday && !fweek ) pos += strftime(buf + pos, 100-pos, "%d", &t1);
     }
     
     flag = pos != 0;
@@ -197,12 +197,12 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
       bool fmin = !(opt.hide & hide_flags::minutes ) && (opt.resolution >= resolutions::minutes);
       bool fsec = !(opt.hide & hide_flags::seconds ) && (opt.resolution >= resolutions::seconds);
       
-      if ( fhour && fmin) pos += strftime(buf + pos, 100, "%R", &t1);
-      else if ( fhour && fsec) pos += strftime(buf + pos, 100, "%Hh %Ss", &t1);
-      else if ( fmin && fsec) pos += strftime(buf + pos, 100, "%Mm %Ss", &t1);
-      else if ( fhour ) pos += strftime(buf + pos, 100, "%Hh", &t1);
-      else if ( fmin ) pos += strftime(buf + pos, 100, "%Mm", &t1);
-      else if ( fsec ) pos += strftime(buf + pos, 100, "%Ss", &t1);
+      if ( fhour && fmin) pos += strftime(buf + pos, 100-pos, "%R", &t1);
+      else if ( fhour && fsec) pos += strftime(buf + pos, 100-pos, "%Hh %Ss", &t1);
+      else if ( fmin && fsec) pos += strftime(buf + pos, 100-pos, "%Mm %Ss", &t1);
+      else if ( fhour ) pos += strftime(buf + pos, 100-pos, "%Hh", &t1);
+      else if ( fmin ) pos += strftime(buf + pos, 100-pos, "%Mm", &t1);
+      else if ( fsec ) pos += size_t(snprintf(buf + pos, 100-pos, "%lu", std::time(0) ));
     }
 
     flag = pos != 0;
@@ -301,22 +301,6 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
   {
     if ( !formatter::set_color(os, "$ident", "", opt) )
       formatter::set_color(os, ident, "\033[36m", opt);
-
-
-      /*
-    if ( !formatter::set_color(os, "$ident", "", opt) )
-    {
-      if ( !(opt.hide & hide_flags::ident) )
-      {
-        formatter::set_color(os, ident, "\033[0m", opt);
-      }
-      else
-      {
-        formatter::set_color(os, ident, "", opt);
-      }
-    }
-    */
-    
   }
   else if ( opt.colorized!=colorized_flags::none )
   {
@@ -345,23 +329,30 @@ bool formatter::message( std::ostream& os, const std::string& txt, const formatt
 {
   if ( bool(opt.hide & hide_flags::message) )
     return false;
-
-  if ( opt.colorized != colorized_flags::none)
-  {
-    if ( bool(opt.colorized & colorized_flags::message) )
-    {
-      formatter::set_color(os, "$message", "", opt);
-    }
-  }
   
-  if ( hdr.message!=nullptr) os << hdr.message(txt);
-  else os << txt;
-
-  if ( opt.colorized != colorized_flags::none)
+  std::string msg = txt;
+  if ( hdr.message != nullptr)
+    msg = txt;
+  
+  if ( opt.colorized == colorized_flags::none )
   {
-    formatter::reset_color(os);
+    os << msg;
+    return true;
   }
-  return !txt.empty();
+
+  if ( bool( opt.colorized & colorized_flags::message ) )
+    formatter::set_color(os, "$message", "", opt);
+  
+  auto ritr = msg.rbegin();
+  while ( ritr!=msg.rend() && std::isspace(*ritr) ) ++ritr;
+  os << std::string(msg.begin(), ritr.base() );
+  
+  if ( opt.colorized != colorized_flags::none)
+    formatter::reset_color(os);
+
+  os << std::string(ritr.base(), msg.end() );
+  
+  return !msg.empty();
 }
 
 

@@ -7,10 +7,10 @@
 #pragma once
 
 #include <wlog/logger_fun.hpp>
+#include <wlog/types.hpp>
 #include <sstream>
 #include <string>
 #include <memory>
-#include <mutex>
 
 namespace wlog{
 
@@ -27,7 +27,7 @@ public:
 
   logstream(logstream&& ll);
   
-  logstream(std::mutex& m, const std::string& name, const std::string& ident, const logger_fun& writer);
+  logstream(mutex_type& m, const std::string& name, const std::string& ident, const logger_fun& writer);
   
   std::string str() const;
   
@@ -52,12 +52,12 @@ public:
 
   stdstream(stdstream&& ll);
   
-  stdstream(std::mutex& m, std::ostream& writer);
+  stdstream(mutex_type& m, std::ostream& writer);
   
   std::ostream& log();
 
 private:
-  std::mutex& _mutex;
+  mutex_type& _mutex;
   std::ostream& _out;
   std::stringstream _ss;
 };

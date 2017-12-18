@@ -5,21 +5,21 @@
 //
 #pragma once
 
-#include <wlogjson/basic_logger_options_json.hpp>
-#include <wlogjson/custom_logger_options_json.hpp>
-#include <wlog/logger/logger_options.hpp>
+#include <wlogjson/stdout_writer_options_json.hpp>
+#include <wlogjson/formatter_options_json.hpp>
+#include <wlog/logger/stdout_logger_options.hpp>
 #include <wjson/json.hpp>
 #include <wjson/name.hpp>
 
 namespace wlog{
-struct logger_options_json
+  
+struct stdout_logger_options_json
 {
-  JSON_NAME(customize)
   typedef wjson::object<
-    logger_options,
+    stdout_logger_options,
     wjson::member_list<
-      wjson::base<basic_logger_options_json>,
-      wjson::member<n_customize, logger_options, logger_options::customize_list, &logger_options::customize, wjson::vector_of<custom_logger_options_json> >
+      wjson::base<stdout_writer_options_json>,
+      wjson::base<formatter_options_json>
     >,
     wjson::strict_mode
   > type;
@@ -28,4 +28,5 @@ struct logger_options_json
   typedef type::member_list member_list;
 };
 
+  
 }

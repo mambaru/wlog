@@ -5,6 +5,7 @@
 #include <wlogjson/logger_options_json.hpp>
 #include <wlog/logging.hpp>
 #include <wlog/init_log.hpp>
+#include <wlog/logger_fun.hpp>
 #include <wjson/json.hpp>
 #include <wjson/strerror.hpp>
 #include <unistd.h>
@@ -74,6 +75,7 @@ int main(int argc, char* argv[])
   {
     return "[" +  ident + "]";
   };
+  
   wlog::init_log(opt, hdr);
   WLOG_MESSAGE("Demo progress LOG")
   WLOG_BEGIN("Progress...")
@@ -97,7 +99,13 @@ int main(int argc, char* argv[])
       else if ( j % 20 == 11) {   EXAMPLE_ERROR("Тестовое ERROR " << "сообщение №" << i ) }
       else if ( j % 20 == 12) {   EXAMPLE_FATAL("Тестовое FATAL " << "сообщение №" << i ) }
       else if ( j % 20 == 13) {   EXAMPLE_BEGIN("Тестовое BEGIN " << "сообщение №" << i)  }
-      else if ( j % 20 == 13) {   EXAMPLE_END("Тестовое END " << "сообщение №" << i)  }
+      else if ( j % 20 == 14) {   EXAMPLE_END("Тестовое END " << "сообщение №" << i)  }
+      else if ( j % 20 == 15)  {  SYSLOG_INFO("Тестовое INFO " << "сообщение №" << i)  }
+      else if ( j % 20 == 16)  {  SYSLOG_NOTICE("Тестовое NOTICE " << "сообщение №" << i)  }
+      else if ( j % 20 == 17)  {  SYSLOG_ALERT("Тестовое ALERT " << "сообщение №" << i)  }
+      else if ( j % 20 == 18)  {  SYSLOG_EMERG("Тестовое EMERG " << "сообщение №" << i)  }
+      else if ( j % 20 == 19)  {  SYSLOG_CRIT("Тестовое CRIT " << "сообщение №" << i)  }
+      
       else  EXAMPLE_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );   
       ++j;
     }

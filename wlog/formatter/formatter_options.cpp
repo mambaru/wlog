@@ -59,6 +59,7 @@ void formatter_options::finalize()
   {
     this->color_map.emplace("WARNING", "\033[93m");
     this->color_map.emplace("ERROR",   "\033[91m");
+    this->color_map.emplace("ERR",   "\033[91m");
     this->color_map.emplace("FATAL",   "\033[31m");
     this->color_map.emplace("EMERG",   "\033[31m");
     this->color_map.emplace("CRIT",    "\033[31m");
@@ -70,8 +71,8 @@ void formatter_options::finalize()
       this->color_map.emplace("INFO",     "\033[97m");
       this->color_map.emplace("TRACE",    "\033[90m");
       this->color_map.emplace("DEBUG",    "\033[33m");
-      this->color_map.emplace("BEGIN",    "\033[96m");
-      this->color_map.emplace("END",      "\033[96m");
+      this->color_map.emplace("BEGIN",    "\033[95m");
+      this->color_map.emplace("END",      "\033[95m");
       this->color_map.emplace("PROGRESS", "\033[96m"); 
     }
     
@@ -104,6 +105,7 @@ void formatter_options::finalize()
       else if ( color == "light_magenta" ) color="\033[95m";
       else if ( color == "light_cyan" ) color="\033[96m";
       else if ( color == "white" ) color="\033[97m";
+      else if ( color == "none" ) color="\033[0m";
       else 
         color="\033[0m";
     }
