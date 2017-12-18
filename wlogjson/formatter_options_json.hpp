@@ -20,7 +20,7 @@ struct formatter_options_json
   JSON_NAME(resolution)
   JSON_NAME(hide)
   JSON_NAME(locale)
-  JSON_NAME(format)
+  JSON_NAME(datetime_format)
   JSON_NAME(color_map)
 
   struct full_color
@@ -43,7 +43,7 @@ struct formatter_options_json
       wjson::member_p<n_colorized, formatter_options, colorized_flags, full_color, colorized_flags_json>,
       wjson::member<n_hide, formatter_options, hide_flags, &formatter_options::hide, hide_flags_json>,
       wjson::member<n_locale, formatter_options, std::string, &formatter_options::locale>,
-      wjson::member<n_format, formatter_options, std::string, &formatter_options::format>,
+      wjson::member<n_datetime_format, formatter_options, std::string, &formatter_options::datetime_format>,
       wjson::member<n_color_map, formatter_options, std::map<std::string, std::string>, &formatter_options::color_map, 
                     wjson::dict_map< wjson::value<std::string> > >
     >,

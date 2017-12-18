@@ -24,8 +24,8 @@ void formatter_options::upgrade(const formatter_options& other)
   if ( self.locale == "" )
     self.locale = other.locale;
     
-  if ( self.format == "" )
-    self.format = other.format;
+  if ( self.datetime_format == "" )
+    self.datetime_format = other.datetime_format;
       
   for (const auto& c : other.color_map)
     if ( 0 == self.color_map.count(c.first) )
@@ -48,8 +48,8 @@ void formatter_options::finalize()
   if ( self.locale == "#" )
     self.locale.clear();
 
-  if ( self.format == "#" )
-    self.format.clear();
+  if ( self.datetime_format == "#" )
+    self.datetime_format.clear();
   
   if ( self.colorized == colorized_flags::none )
   {

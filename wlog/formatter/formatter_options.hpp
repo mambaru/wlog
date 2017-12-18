@@ -23,7 +23,7 @@ struct formatter_options
   hide_flags hide = hide_flags::inherited;
   
   std::string locale;
-  std::string format; // date format : TODO
+  std::string datetime_format; // date format : TODO
   
   std::map<std::string, std::string> color_map; //TODO
   

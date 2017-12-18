@@ -17,7 +17,7 @@ formatter::formatter(const formatter_options& opt, const formatter_handlers& han
 {
   _opt.finalize();
 
-  if ( !_opt.format.empty() )
+  if ( !_opt.datetime_format.empty() )
   {
     _showtime = false;
   }
@@ -94,9 +94,9 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
                           | hide_flags::hours | hide_flags::minutes | hide_flags::seconds) );
     if ( fulldate )
     {
-      if (!opt.format.empty() )
+      if (!opt.datetime_format.empty() )
       {
-        pos = strftime(buf, 100, opt.format.c_str(), &t1);
+        pos = strftime(buf, 100, opt.datetime_format.c_str(), &t1);
       }
       else if ( opt.locale.empty() || opt.resolution < resolutions::seconds )
       {

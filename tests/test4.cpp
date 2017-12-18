@@ -27,6 +27,7 @@ int test1()
     std::cout << testline << std::endl;
     TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
   }
+  
   {
     wlog::file_writer::options opt;
     opt.startup_rotate = 1;
@@ -43,6 +44,7 @@ int test1()
       std::cout << testline << std::endl;
       TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
     }
+    
     {
       std::ifstream ifs("./test4.log");
       std::string testline;
