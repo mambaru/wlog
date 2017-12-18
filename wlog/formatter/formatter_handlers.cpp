@@ -1,7 +1,7 @@
 #include <wlog/formatter/formatter_handlers.hpp>
 namespace wlog{
 
-formatter_handlers& formatter_handlers::operator <<= (const formatter_handlers& other)
+void formatter_handlers::upgrade(const formatter_handlers& other)
 {
   formatter_handlers& self = *this;
   
@@ -11,8 +11,6 @@ formatter_handlers& formatter_handlers::operator <<= (const formatter_handlers& 
   if ( self.name==nullptr )     self.name = other.name;
   if ( self.ident==nullptr )    self.ident = other.ident;
   if ( self.message==nullptr )  self.message = other.message;
-  
-  return self;
 }
 
 }

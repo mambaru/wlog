@@ -18,7 +18,7 @@ int test1()
     opt.startup_rotate = 1;
     opt.path = "./test4.log";
     wlog::formatter_options fo;
-    wlog::formatter fmt(fo);
+    wlog::formatter fmt(fo, wlog::formatter_handlers() );
     wlog::file_writer fw( fmt, opt);
     fw(tp, "TEST4", "MESSAGE", "test1\n");
     std::ifstream ifs("./test4.log");
@@ -33,7 +33,7 @@ int test1()
     opt.rotation = 1;
     opt.path = "./test4.log";
     wlog::formatter_options fo;
-    wlog::formatter fmt(fo);
+    wlog::formatter fmt(fo, wlog::formatter_handlers());
     wlog::file_writer fw( fmt, opt);
     fw(tp, "TEST4", "MESSAGE", "test1\n");
     {

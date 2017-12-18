@@ -25,18 +25,18 @@ public:
   static void reset_color(std::ostream& os, const std::string& name, const formatter_options& opt);
   static void reset_color(std::ostream& os);
   
-  static bool date( std::ostream& os, const time_point& tp, const formatter_options& opt);
-  static bool time( std::ostream& os, const time_point& tp, const formatter_options& opt);
+  static bool date( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr);
+  static bool time( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr);
 
   template<typename Ratio>
   static void fraction_t(std::ostream& os, const time_point& tp);
-  static bool fraction( std::ostream& os, const time_point& tp, const formatter_options& opt);
+  static bool fraction( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr);
   
-  static bool name( std::ostream& os, const std::string& tp, const formatter_options& opt);
-  static bool ident( std::ostream& os, const std::string& tp, const formatter_options& opt);
-  static bool message( std::ostream& os, const std::string& tp, const formatter_options& opt);
+  static bool name( std::ostream& os, const std::string& tp, const formatter_options& opt, const formatter_handlers& hdr);
+  static bool ident( std::ostream& os, const std::string& tp, const formatter_options& opt, const formatter_handlers& hdr);
+  static bool message( std::ostream& os, const std::string& tp, const formatter_options& opt, const formatter_handlers& hdr);
   
-  formatter(const formatter_options& opt, const formatter_handlers& handlers = formatter_handlers() );
+  formatter(const formatter_options& opt, const formatter_handlers& handlers /* = formatter_handlers()*/ );
   
   void operator()(
     std::ostream& os, 

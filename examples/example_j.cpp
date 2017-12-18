@@ -69,13 +69,18 @@ int main(int argc, char* argv[])
   signal(SIGINT, sig_handler);
   system("setterm -cursor off");
 
-  wlog::init_log(opt);
+  wlog::logger_handlers hdr;
+  hdr.customize["EXAMPLE"].ident = [](const std::string& ident) -> std::string
+  {
+    return "[" +  ident + "]";
+  };
+  wlog::init_log(opt, hdr);
   WLOG_MESSAGE("Demo progress LOG")
   WLOG_BEGIN("Progress...")
   for (int i = 0, j=0 ; i < LOG_LINES; ++i)
   {
     WLOG_PROGRESS( i << " " << std::fixed<<std::setprecision(3) << (i*100.0)/LOG_LINES << "%   ")
-    //usleep(1000);
+    usleep(1000);
     if ( i%1000==0 )
     {
            if ( j % 20 == 0)  {   WLOG_WARNING("Тестовое WARNING " << "сообщение №" << i ) }

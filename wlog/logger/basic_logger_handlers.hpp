@@ -7,10 +7,11 @@
 #pragma once
 
 #include <wlog/logger_fun.hpp>
+#include <wlog/formatter/formatter_handlers.hpp>
 
 namespace wlog{
   
-struct basic_logger_handlers
+struct basic_logger_handlers: formatter_handlers
 {
   formatter_fun file_formatter;
   formatter_fun stdout_formatter;
@@ -20,7 +21,7 @@ struct basic_logger_handlers
   writer_fun stdout_writer;
   writer_fun syslog_writer;
 
-  basic_logger_handlers& operator <<= (const basic_logger_handlers& other);
+  void upgrade (const basic_logger_handlers& other);
 
 };
 

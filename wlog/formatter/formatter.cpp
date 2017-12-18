@@ -34,7 +34,9 @@ formatter::formatter(const formatter_options& opt, const formatter_handlers& han
   
 bool formatter::set_color(std::ostream& os, const std::string& name, const std::string& color, const formatter_options& opt)
 {
-  auto itr = opt.color_map.find(name);
+  auto itr = opt.color_map.find("$all");
+  if ( itr==opt.color_map.end() )
+    itr = opt.color_map.find(name);
   if ( itr!=opt.color_map.end() )
   {
     os << itr->second;
@@ -63,7 +65,7 @@ void formatter::reset_color(std::ostream& os)
 }
 
 
-bool formatter::date( std::ostream& os, const time_point& tp, const formatter_options& opt)
+bool formatter::date( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( !!(opt.hide & hide_flags::date) )
     return false;
@@ -72,14 +74,6 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   time_t ts = time_point::clock::to_time_t(tp);
   struct tm t1;
   localtime_r(&ts, &t1);
-
-  /*
-  if ( !opt.format.empty() )
-  {
-    size_t pos = strftime(buf, 100, "%F", &t1);
-    return;
-  }*/
-  
   
   const char* old_locale=0; 
   if ( !opt.locale.empty() )
@@ -87,67 +81,63 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
     old_locale = std::setlocale(LC_TIME, nullptr);
     std::setlocale(LC_TIME, opt.locale.c_str() );
   }
-  
-  bool flag = false;
+
   if ( bool(opt.colorized & colorized_flags::date) )
     formatter::set_color(os, "$date", "\033[32m", opt);
 
-  
-  size_t pos=0;
-  bool fulldate = opt.resolution >= resolutions::days;
-  fulldate &= !(opt.hide & (hide_flags::year | hide_flags::month | hide_flags::days 
-                         | hide_flags::hours | hide_flags::minutes | hide_flags::seconds) );
-  if ( fulldate )
+  bool flag = false;
+  if ( hdr.date == nullptr )
   {
-    flag = true;
-    if (!opt.format.empty() )
+    size_t pos=0;
+    bool fulldate = opt.resolution >= resolutions::days;
+    fulldate &= !(opt.hide & (hide_flags::year | hide_flags::month | hide_flags::days 
+                          | hide_flags::hours | hide_flags::minutes | hide_flags::seconds) );
+    if ( fulldate )
     {
-      pos = strftime(buf, 100, opt.format.c_str(), &t1);
-    }
-    else if ( opt.locale.empty() || opt.resolution < resolutions::seconds )
-    {
-      //F (C++11)	equivalent to "%Y-%m-%d" (the ISO 8601 date format)
-      pos = strftime(buf, 100, "%F", &t1);
+      if (!opt.format.empty() )
+      {
+        pos = strftime(buf, 100, opt.format.c_str(), &t1);
+      }
+      else if ( opt.locale.empty() || opt.resolution < resolutions::seconds )
+      {
+        //F (C++11)	equivalent to "%Y-%m-%d" (the ISO 8601 date format)
+        pos = strftime(buf, 100, "%F", &t1);
+      }
+      else
+      {
+        // c	writes standard date and time string, e.g. Sun Oct 17 04:41:13 2010 (locale dependent)
+        pos = strftime(buf, 100, "%c", &t1);
+      }
     }
     else
     {
-      // c	writes standard date and time string, e.g. Sun Oct 17 04:41:13 2010 (locale dependent)
-      pos = strftime(buf, 100, "%c", &t1);
+      bool fyear = !(opt.hide & hide_flags::year ) && (opt.resolution >= resolutions::year);
+      bool fmon = !(opt.hide & hide_flags::month ) && (opt.resolution >= resolutions::month);
+      bool fday = !(opt.hide & hide_flags::days ) && (opt.resolution >= resolutions::days);
+      bool fweek = !(opt.hide & hide_flags::weekday );
+      
+      
+      if ( fyear && fmon ) pos += strftime(buf + pos, 100, "%Y %b", &t1);
+      else if ( fyear && fday && fweek) pos += strftime(buf + pos, 100, "%d %a %Y", &t1);
+      else if ( fyear && fday && !fweek) pos += strftime(buf + pos, 100, "%d %Y", &t1);
+      else if ( fmon && fday && fweek) pos += strftime(buf + pos, 100, "%a %b %d", &t1);
+      else if ( fmon && fday && !fweek) pos += strftime(buf + pos, 100, "%b %d", &t1);
+      else if ( fyear ) pos += strftime(buf + pos, 100, "%Y", &t1);
+      else if ( fmon ) pos += strftime(buf + pos, 100, "%b", &t1);
+      else if ( fday && fweek ) pos += strftime(buf + pos, 100, "%a %d", &t1);
+      else if ( fday && !fweek ) pos += strftime(buf + pos, 100, "%d", &t1);
     }
+    
+    flag = pos != 0;
+    if ( flag )
+      os << buf;
   }
   else
   {
-    if ( !(opt.hide & hide_flags::year ) && (opt.resolution >= resolutions::year) )
-    {
-      flag = true;
-      // Y	writes year as a decimal number, e.g. 2017	
-      pos = strftime(buf, 100, "%Y", &t1);
-    }
-
-    if ( !(opt.hide & hide_flags::month ) && (opt.resolution >= resolutions::month) )
-    {
-      // b writes abbreviated month name, e.g. Oct (locale dependent)
-      if (flag)
-        pos += strftime(buf + pos, 100-pos, " %b", &t1);
-      else
-        pos += strftime(buf + pos, 100-pos, "%b", &t1);
-      flag = true;
-    }
-
-    if ( !(opt.hide & hide_flags::days ) && (opt.resolution >= resolutions::days) )
-    {
-      // d writes day of the month as a decimal number (range [01,31])
-      // a writes abbreviated weekday name, e.g. Fri (locale dependent)
-      if (flag) buf[pos++]=' ';
-      pos += strftime(buf + pos, 100-pos, "%d", &t1);
-      if ( !(opt.hide & hide_flags::weekday ) )
-      pos += strftime(buf + pos, 100-pos, " %a", &t1);
-      flag = true;
-    }
+    std::string sd = hdr.date(tp);
+    flag = !sd.empty();
+    if ( flag ) os << sd;
   }
-  
-  if ( pos != 0)
-    os << buf;
   
   if ( bool(opt.colorized & colorized_flags::date) )
     formatter::reset_color(os);
@@ -161,7 +151,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
 }
 
 
-bool formatter::time( std::ostream& os, const time_point& tp, const formatter_options& opt)
+bool formatter::time( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( !!(opt.hide & hide_flags::time) )
     return false;
@@ -176,62 +166,55 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
   if ( bool(opt.colorized & colorized_flags::time) )
     formatter::set_color(os, "$time", "\033[92m", opt);
 
-  time_t ts = time_point::clock::to_time_t(tp);
-  struct tm t1;
-  localtime_r(&ts, &t1);
-  char buf[100]={0};
-  size_t pos=0;
-
-  bool fulltime = opt.resolution >= resolutions::seconds;
-  fulltime &= !(opt.hide & (hide_flags::hours | hide_flags::minutes | hide_flags::seconds) );
-  if ( fulltime )
+  bool flag = false;
+  if ( hdr.time == nullptr )
   {
-    if ( opt.locale.empty() )
-    {
-      // T (C++11) equivalent to "%H:%M:%S" (the ISO 8601 time format)
-      pos += strftime(buf + pos, 100-pos, "%T", &t1);
+    time_t ts = time_point::clock::to_time_t(tp);
+    struct tm t1;
+    localtime_r(&ts, &t1);
+    char buf[100]={0};
+    size_t pos=0;
 
+    bool fulltime = opt.resolution >= resolutions::seconds;
+    fulltime &= !(opt.hide & (hide_flags::hours | hide_flags::minutes | hide_flags::seconds) );
+    if ( fulltime )
+    {
+      if ( opt.locale.empty() )
+      {
+        // T (C++11) equivalent to "%H:%M:%S" (the ISO 8601 time format)
+        pos += strftime(buf + pos, 100-pos, "%T", &t1);
+
+      }
+      else
+      {
+        // X writes localized time representation (locale dependent)
+        pos += strftime(buf + pos, 100-pos, "%X", &t1);
+      }
     }
     else
     {
-      // X writes localized time representation (locale dependent)
-      pos += strftime(buf + pos, 100-pos, "%X", &t1);
+      bool fhour = !(opt.hide & hide_flags::hours ) && (opt.resolution >= resolutions::hours);
+      bool fmin = !(opt.hide & hide_flags::minutes ) && (opt.resolution >= resolutions::minutes);
+      bool fsec = !(opt.hide & hide_flags::seconds ) && (opt.resolution >= resolutions::seconds);
+      
+      if ( fhour && fmin) pos += strftime(buf + pos, 100, "%R", &t1);
+      else if ( fhour && fsec) pos += strftime(buf + pos, 100, "%Hh %Ss", &t1);
+      else if ( fmin && fsec) pos += strftime(buf + pos, 100, "%Mm %Ss", &t1);
+      else if ( fhour ) pos += strftime(buf + pos, 100, "%Hh", &t1);
+      else if ( fmin ) pos += strftime(buf + pos, 100, "%Mm", &t1);
+      else if ( fsec ) pos += strftime(buf + pos, 100, "%Ss", &t1);
     }
+
+    flag = pos != 0;
+    if ( pos != 0)
+      os << buf;
   }
   else
   {
-    bool flag = false;
-    
-    if ( !(opt.hide & hide_flags::hours ) && (opt.resolution >= resolutions::hours) )
-    {
-      // Hour in 24h format (00-23)	
-      pos += strftime(buf + pos, 100, "%H", &t1);
-      flag = true;
-    }
-    
-    if ( !(opt.hide & hide_flags::minutes ) && (opt.resolution >= resolutions::minutes) )
-    {
-      // Minute (00-59)	
-      if ( flag )
-        pos += strftime(buf + pos, 100, ":%M", &t1);
-      else
-        pos += strftime(buf + pos, 100, "%Mm ", &t1);
-      flag = true;
-    }
-    
-    if ( !(opt.hide & hide_flags::seconds ) && (opt.resolution >= resolutions::seconds) )
-    {
-      // Second (00-61)	
-      if ( flag && !(opt.hide & hide_flags::hours ) )
-        pos += strftime(buf + pos, 100, ":%S", &t1);
-      else
-        pos += strftime(buf + pos, 100, "%Ss", &t1);
-      flag = true;
-    }
+    std::string sd = hdr.time(tp);
+    flag = !sd.empty();
+    if ( flag ) os << sd;
   }
-  
-  if ( pos != 0)
-    os << buf;
 
   if ( bool(opt.colorized & colorized_flags::time) )
     formatter::reset_color(os);
@@ -239,7 +222,7 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
   if ( !opt.locale.empty() )
     std::setlocale(LC_TIME, old_locale );
   
-  return true;
+  return flag;
 }
 
 template<typename Ratio>
@@ -250,69 +233,90 @@ void formatter::fraction_t(std::ostream& os, const time_point& tp)
   auto tsr = (ts/Ratio::den) * Ratio::den;
   int w = 0;
   for ( long R = Ratio::den; R!=0; R/=10, ++w );
+  os << std::use_facet< std::numpunct<char> >(os.getloc()).decimal_point();
   os << std::setfill('0') << std::setw(w-1)<< ts - tsr;
 }
 
 
-bool formatter::fraction( std::ostream& os, const time_point& tp, const formatter_options& opt)
+bool formatter::fraction( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( bool(opt.hide & hide_flags::fraction) || opt.resolution <= resolutions::seconds)
     return false;
   
   if ( bool(opt.colorized & colorized_flags::fraction) )
     formatter::set_color(os, "$fraction", "\033[32m", opt);
-
-  if ( opt.resolution == resolutions::nanoseconds )
-    fraction_t<std::nano>(os, tp);
-  else if ( opt.resolution == resolutions::microseconds )
-    fraction_t<std::micro>(os, tp);
-  else if ( opt.resolution == resolutions::milliseconds )
-    fraction_t<std::milli>(os, tp);
-  else if ( opt.resolution == resolutions::centiseconds )
-    fraction_t<std::centi>(os, tp);
-  else if ( opt.resolution == resolutions::deciseconds )
-    fraction_t<std::deci>(os, tp);
+  bool flag = true;
+  if ( hdr.fraction == nullptr )
+  {
+    if ( opt.resolution == resolutions::nanoseconds )
+      fraction_t<std::nano>(os, tp);
+    else if ( opt.resolution == resolutions::microseconds )
+      fraction_t<std::micro>(os, tp);
+    else if ( opt.resolution == resolutions::milliseconds )
+      fraction_t<std::milli>(os, tp);
+    else if ( opt.resolution == resolutions::centiseconds )
+      fraction_t<std::centi>(os, tp);
+    else if ( opt.resolution == resolutions::deciseconds )
+      fraction_t<std::deci>(os, tp);
+    else
+      flag = false;
+  }
+  else
+  {
+    std::string sd = hdr.fraction(tp);
+    flag = !sd.empty();
+    if ( flag ) os << sd;
+  }
 
   if ( bool(opt.colorized & colorized_flags::fraction) )
     formatter::reset_color(os);
-  return true;
+  return flag;
 }
 
 
-bool formatter::name( std::ostream& os, const std::string& name, const formatter_options& opt)
+bool formatter::name( std::ostream& os, const std::string& name, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( bool(opt.hide & hide_flags::name) )
     return false;
   
   if ( bool(opt.colorized & colorized_flags::name) )
   {
-    if ( !formatter::set_color(os, name, "", opt) )
-      formatter::set_color(os, "$name", "\033[36m", opt);
+    if ( !formatter::set_color(os, "$name", "", opt) )
+      formatter::set_color(os, name, "\033[36m", opt);
   }
   
-  os << name;
-  return true;
+  std::string str = ( hdr.name != nullptr ) ? hdr.name(name) : name;
+  if ( !str.empty() ) os << str;
+  
+  return !str.empty();
 }
 
-
-bool formatter::ident( std::ostream& os, const std::string& ident, const formatter_options& opt)
+bool formatter::ident( std::ostream& os, const std::string& ident, const formatter_options& opt, const formatter_handlers& hdr)
 {
+
   bool flag = false;
   bool is_colorized = bool( opt.colorized & (colorized_flags::ident | colorized_flags::notice) );
   
   if ( is_colorized )
   {
-    if ( !formatter::set_color(os, ident, "", opt) )
+    if ( !formatter::set_color(os, "$ident", "", opt) )
+      formatter::set_color(os, ident, "\033[36m", opt);
+
+
+      /*
+    if ( !formatter::set_color(os, "$ident", "", opt) )
     {
       if ( !(opt.hide & hide_flags::ident) )
       {
-        formatter::set_color(os, "$ident", "\033[0m", opt);
+        formatter::set_color(os, ident, "\033[0m", opt);
       }
       else
       {
-        formatter::set_color(os, "$ident", "", opt);
+        formatter::set_color(os, ident, "", opt);
       }
     }
+    */
+    
   }
   else if ( opt.colorized!=colorized_flags::none )
   {
@@ -321,8 +325,9 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
   
   if ( !(opt.hide & hide_flags::ident) )
   {
-    flag = true;
-    os << ident;
+    std::string str = ( hdr.ident != nullptr ) ? hdr.ident(ident) : ident;
+    flag = !str.empty();
+    if ( flag ) os << str;
   }
 
   if ( is_colorized )
@@ -333,9 +338,10 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
     }
   }
   return flag;
+  
 }
 
-bool formatter::message( std::ostream& os, const std::string& txt, const formatter_options& opt)
+bool formatter::message( std::ostream& os, const std::string& txt, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( bool(opt.hide & hide_flags::message) )
     return false;
@@ -348,15 +354,15 @@ bool formatter::message( std::ostream& os, const std::string& txt, const formatt
     }
   }
   
-  os << txt;
+  if ( hdr.message!=nullptr) os << hdr.message(txt);
+  else os << txt;
 
   if ( opt.colorized != colorized_flags::none)
   {
     formatter::reset_color(os);
   }
-  return true;
+  return !txt.empty();
 }
-
 
 
 void formatter::operator()(std::ostream& os, const time_point& tp, 
@@ -366,28 +372,22 @@ void formatter::operator()(std::ostream& os, const time_point& tp,
   if ( !_opt.locale.empty() )
     os.imbue(std::locale(_opt.locale.c_str()));
 
-  bool flag = false;
-  if ( _handlers.date != nullptr )
-    flag = _handlers.date( os, tp, _opt);
-  else
-    flag = formatter::date(os, tp, _opt);
-
-  if ( flag )
-    os << " ";
-  
-  flag = false;
-  if ( _showtime )
-  {
-    if ( _handlers.time != nullptr )
-      flag = _handlers.time( os, tp, _opt);
-    else
-      flag = formatter::time(os, tp, _opt);
-  }
-
+  bool wflag = formatter::date(os, tp, _opt, _handlers);
+  if ( wflag ) os << " ";
+  wflag = false;
+  if ( _showtime ) wflag = formatter::time(os, tp, _opt, _handlers);
+  if ( _showfract ) wflag |= formatter::fraction(os, tp, _opt, _handlers);
+  if ( wflag ) os << " ";
+  wflag = formatter::name(os, log_name, _opt, _handlers);
+  if ( wflag ) os << " ";
+  wflag = formatter::ident(os, log_ident, _opt, _handlers);
+  if ( wflag ) os << " ";
+  formatter::message(os, str, _opt, _handlers);
+  /*
   if ( _showfract )
     os << std::use_facet< std::numpunct<char> >(os.getloc()).decimal_point();;
   
-  if ( ( (_handlers.fraction != nullptr) && _handlers.fraction( os, tp, _opt) ) || formatter::fraction(os, tp, _opt) )
+  if ( ( (_handlers.fraction != nullptr) && _handlers.fraction( os, tp) ) || formatter::fraction(os, tp, _opt, _handlers) )
   {
     flag = true;
   }
@@ -395,16 +395,17 @@ void formatter::operator()(std::ostream& os, const time_point& tp,
   if ( flag )
     os << " ";
 
-  if ( ( (_handlers.name != nullptr) && _handlers.name( os, log_name, _opt) ) || formatter::name(os, log_name, _opt) )
+  if ( ( (_handlers.name != nullptr) && _handlers.name( os, log_name) ) || formatter::name(os, log_name, _opt, _handlers) )
      os << " ";
 
-  if ( ( (_handlers.ident != nullptr) && _handlers.ident( os, log_ident, _opt) ) || formatter::ident(os, log_ident, _opt) )
+  if ( ( (_handlers.ident != nullptr) && _handlers.ident( os, log_ident) ) || formatter::ident(os, log_ident, _opt, _handlers) )
      os << " ";
 
   if ( _handlers.message != nullptr )
-    _handlers.message( os, str, _opt);
+    _handlers.message( os, str);
   else
-    formatter::message(os, str, _opt);
+    formatter::message(os, str, _opt, _handlers);
+    */
 }
 
   

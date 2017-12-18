@@ -12,7 +12,7 @@
 #include <string>
 
 namespace wlog{
-
+  
 void init_log(const logger_fun& log);
 
 void init_log(

@@ -37,7 +37,7 @@ void formatter_options::finalize()
   formatter_options& self = *this;
   
   if ( self.resolution == resolutions::inherited )
-    self.resolution = resolutions::milliseconds;
+    self.resolution = resolutions::seconds;
   
   if ( self.hide == hide_flags::inherited )
     self.hide = hide_flags::none;

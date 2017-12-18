@@ -104,7 +104,7 @@ void default_logger::impl::init_context_(context& cntx, const basic_logger_optio
     auto itr = _file_map.find(opt.path);
     if ( itr == _file_map.end() )
     {
-      auto fwp = std::make_shared<file_writer>( hdr.file_formatter!=nullptr ? hdr.file_formatter : formatter(opt), opt);
+      auto fwp = std::make_shared<file_writer>( hdr.file_formatter!=nullptr ? hdr.file_formatter : formatter(opt, hdr), opt);
       itr = _file_map.emplace( opt.path, fwp ).first;
     }
     using namespace std::placeholders;
@@ -113,7 +113,7 @@ void default_logger::impl::init_context_(context& cntx, const basic_logger_optio
 
   if ( cntx.stdout_writer==nullptr && !opt.stdout.name.empty() )
   {
-    cntx.stdout_writer = stdout_writer( hdr.stdout_formatter!=nullptr ? hdr.stdout_formatter : formatter(opt.stdout), opt.stdout );
+    cntx.stdout_writer = stdout_writer( hdr.stdout_formatter!=nullptr ? hdr.stdout_formatter : formatter(opt.stdout, hdr), opt.stdout );
   }
 
   if ( cntx.syslog_writer==nullptr && !opt.syslog.name.empty() )

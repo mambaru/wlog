@@ -15,8 +15,8 @@ namespace wlog{
   
 struct formatter_handlers
 {
-  typedef std::function<bool( std::ostream&, const time_point&, const formatter_options&) >  date_fun_t;
-  typedef std::function<bool( std::ostream&, const std::string&, const formatter_options&) > str_fun_t;
+  typedef std::function<std::string(const time_point&) >  date_fun_t;
+  typedef std::function<std::string(const std::string&) > str_fun_t;
   
   date_fun_t date;
   date_fun_t time;
@@ -26,7 +26,7 @@ struct formatter_handlers
   str_fun_t ident;
   str_fun_t message;
   
-  formatter_handlers& operator <<= (const formatter_handlers& other);
+  void upgrade (const formatter_handlers& other);
 };
 
 

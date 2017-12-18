@@ -10,6 +10,7 @@
 #include <string>
 #include <memory>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <cstdio>
 
@@ -181,7 +182,9 @@ void file_writer::write_(
   
   if ( _formatter != nullptr )
   {
-    _formatter(oflog, tp, name, ident, str);
+    std::stringstream ss;
+    _formatter(ss, tp, name, ident, str);
+    oflog << ss.str();
   }
   else
     oflog << name << " " << ident << " " << str;
