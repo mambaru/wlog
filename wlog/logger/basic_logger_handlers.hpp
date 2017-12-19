@@ -8,6 +8,7 @@
 
 #include <wlog/logger_fun.hpp>
 #include <wlog/formatter/formatter_handlers.hpp>
+#include <vector>
 
 namespace wlog{
   
@@ -20,6 +21,8 @@ struct basic_logger_handlers: formatter_handlers
   writer_fun file_writer;
   writer_fun stdout_writer;
   writer_fun syslog_writer;
+  
+  std::vector<after_fun> after;
 
   void upgrade (const basic_logger_handlers& other);
 

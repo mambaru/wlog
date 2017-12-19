@@ -71,8 +71,8 @@ void formatter_options::finalize()
       this->color_map.emplace("INFO",     "\033[97m");
       this->color_map.emplace("TRACE",    "\033[90m");
       this->color_map.emplace("DEBUG",    "\033[33m");
-      this->color_map.emplace("BEGIN",    "\033[95m");
-      this->color_map.emplace("END",      "\033[95m");
+      this->color_map.emplace("BEGIN",    "cyan");
+      this->color_map.emplace("END",      "cyan");
       this->color_map.emplace("PROGRESS", "\033[96m"); 
     }
     

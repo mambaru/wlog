@@ -282,7 +282,7 @@ bool formatter::name( std::ostream& os, const std::string& name, const formatter
   if ( bool(opt.colorized & colorized_flags::name) )
   {
     if ( !formatter::set_color(os, "$name", "", opt) )
-      formatter::set_color(os, name, "\033[36m", opt);
+      formatter::set_color(os, name, "\033[96m", opt);
   }
   
   std::string str = ( hdr.name != nullptr ) ? hdr.name(name) : name;
@@ -300,7 +300,10 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
   if ( is_colorized )
   {
     if ( !formatter::set_color(os, "$ident", "", opt) )
+    {
       formatter::set_color(os, ident, "\033[36m", opt);
+        
+    }
   }
   else if ( opt.colorized!=colorized_flags::none )
   {

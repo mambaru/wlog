@@ -1,4 +1,6 @@
 #include "basic_logger_handlers.hpp"
+#include <algorithm>
+
 
 namespace wlog{
   
@@ -15,6 +17,7 @@ void basic_logger_handlers::upgrade(const basic_logger_handlers& other)
   if ( self.file_writer==nullptr ) self.file_writer = other.file_writer;
   if ( self.stdout_writer==nullptr ) self.stdout_writer = other.stdout_writer;
   if ( self.stdout_writer==nullptr ) self.stdout_writer = other.stdout_writer;
+  std::copy( other.after.begin(), other.after.end(), std::back_inserter(self.after) );
 }
 
 }

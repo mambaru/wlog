@@ -95,7 +95,7 @@ void default_logger::impl::init_context_(context& cntx, const basic_logger_optio
   if ( cntx.file_writer==nullptr )   cntx.file_writer = hdr.file_writer;
   if ( cntx.stdout_writer==nullptr ) cntx.stdout_writer = hdr.stdout_writer;
   if ( cntx.syslog_writer==nullptr ) cntx.syslog_writer = hdr.syslog_writer;
-  
+  if ( cntx.after.empty() ) cntx.after = hdr.after;
   cntx.allow = opt.allow;
   cntx.deny = opt.deny;
   
@@ -145,11 +145,9 @@ bool default_logger::impl::write(
   
   const auto* handlers = &_common;
   
-  bool is_allow = allow_(name, ident, handlers->allow, handlers->deny);
+  bool is_allow = this->allow_(name, ident, handlers->allow, handlers->deny);
   if ( !is_allow && _customize.empty() )
     return false;
-  /*if ( !allow_(name, ident, handlers->allow, handlers->deny) )
-    return false;*/
 
   auto itr = _customize.find(name);
   if ( itr == _customize.end() )
@@ -161,8 +159,11 @@ bool default_logger::impl::write(
     if (!is_allow && handlers->allow.count(ident) == 0)
       return false;
 
-    if ( !allow_(name, ident, handlers->allow, handlers->deny) )
+    auto custom_allow = this->allow_(name, ident, handlers->allow, handlers->deny);
+    if ( !is_allow && !custom_allow)
       return false;
+    else if ( is_allow && !custom_allow)
+      handlers = &_common;
   }
   
   if ( handlers->file_writer != nullptr )
