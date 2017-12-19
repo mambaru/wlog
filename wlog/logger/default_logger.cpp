@@ -142,28 +142,34 @@ bool default_logger::impl::write(
   const std::string& ident, 
   const std::string& str) const
 {
+  const context* handlers = nullptr;
   
-  const auto* handlers = &_common;
-  
-  bool is_allow = this->allow_(name, ident, handlers->allow, handlers->deny);
-  if ( !is_allow && _customize.empty() )
+  if ( this->allow_(name, ident, _common.allow, _common.deny) )
+    handlers = &_common;
+  if ( handlers==nullptr && _customize.empty() )
+  {
     return false;
-
-  auto itr = _customize.find(name);
-  if ( itr == _customize.end() )
-    itr = _customize.find(ident);
+  }
   
+  auto itr = _customize.find(ident);
   if ( itr != _customize.end() )
   {
-    handlers = &(itr->second);
-    if (!is_allow && handlers->allow.count(ident) == 0)
-      return false;
+    const context& cntx = itr->second;
+    if ( this->allow_(name, ident, cntx.allow, cntx.deny) )
+      handlers = &cntx;
+  }
 
-    auto custom_allow = this->allow_(name, ident, handlers->allow, handlers->deny);
-    if ( !is_allow && !custom_allow)
-      return false;
-    else if ( is_allow && !custom_allow)
-      handlers = &_common;
+  itr = _customize.find(name);
+  if ( itr != _customize.end() )
+  {
+    const context& cntx = itr->second;
+    if ( this->allow_(name, ident, cntx.allow, cntx.deny) )
+      handlers = &cntx;
+  }
+  
+  if ( handlers == nullptr )
+  {
+    return false;
   }
   
   if ( handlers->file_writer != nullptr )
