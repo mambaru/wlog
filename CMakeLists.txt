@@ -60,7 +60,8 @@ add_library(
 )
 
 include(CMakePackageConfigHelpers)
-set(LIB_INSTALL_DIR lib/ )
+
+set(LIB_INSTALL_DIR lib)
 set(LIB_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 set(INCLUDE_INSTALL_DIR wlog)
 set(INCLUDE_CURRENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
