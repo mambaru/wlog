@@ -20,6 +20,8 @@ struct logger_options: basic_logger_options
 
   void upgrade(const logger_options& other);
   void finalize();
+  
+  custom_logger_options* get_customize(const std::string& name);
 };
 
 

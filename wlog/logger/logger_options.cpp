@@ -33,6 +33,19 @@ void logger_options::finalize()
   }
 }
 
+custom_logger_options* logger_options::get_customize(const std::string& name)
+{
+  for ( custom_logger_options& c : this->customize )
+  {
+    for ( const auto& n : c.names)
+    {
+      if ( n == name)
+        return &c;
+    }
+  }
+  return nullptr;
+}
+
   std::string expanse_path(const std::string& path, const std::string& name)
   {
     std::string result;
