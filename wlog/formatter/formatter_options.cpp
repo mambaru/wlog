@@ -105,7 +105,7 @@ void formatter_options::finalize()
       else if ( color == "light_magenta" ) color="\033[95m";
       else if ( color == "light_cyan" ) color="\033[96m";
       else if ( color == "white" ) color="\033[97m";
-      else if ( color == "none" ) color="\033[0m";
+      //else if ( color == "none" ) color="\033[0m";
       else 
         color="\033[0m";
     }

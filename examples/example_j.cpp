@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
       else if ( j % 20 == 7)  {   WLOG_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );   }
       else if ( j % 20 == 8)  {   EXAMPLE_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );   }
       else if ( j % 20 == 9)  {   EXAMPLE_WARNING("Тестовое WARNING " << "сообщение №" << i ) }
-      else if ( j % 20 == 10)  {   EXAMPLE_TRACE("Тестовое TRACE " << "сообщение №" << i ) }
+      else if ( j % 20 == 10)  {  EXAMPLE_TRACE("Тестовое TRACE " << "сообщение №" << i ) }
       else if ( j % 20 == 11) {   EXAMPLE_DEBUG("Тестовое DEBUG " << "сообщение №" << i ) }
       else if ( j % 20 == 12) {   EXAMPLE_ERROR("Тестовое ERROR " << "сообщение №" << i ) }
       else if ( j % 20 == 13) {   EXAMPLE_FATAL("Тестовое FATAL " << "сообщение №" << i ) }
@@ -104,10 +104,7 @@ int main(int argc, char* argv[])
       else if ( j % 20 == 16)  {  SYSLOG_INFO("Тестовое INFO " << "сообщение №" << i)  }
       else if ( j % 20 == 17)  {  SYSLOG_NOTICE("Тестовое NOTICE " << "сообщение №" << i)  }
       else if ( j % 20 == 18)  {  SYSLOG_ALERT("Тестовое ALERT " << "сообщение №" << i)  }
-      else if ( j % 20 == 19)  {  SYSLOG_EMERG("Тестовое EMERG " << "сообщение №" << i)  }
-      else if ( j % 20 == 20)  {  SYSLOG_CRIT("Тестовое CRIT " << "сообщение №" << i)  }
-      
-      else  EXAMPLE_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );   
+      else if ( j % 20 == 19)  {  SYSLOG_CRIT("Тестовое CRIT " << "сообщение №" << i)  }
       ++j;
     }
   }

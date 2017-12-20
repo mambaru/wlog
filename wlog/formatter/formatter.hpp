@@ -32,17 +32,17 @@ public:
   static void fraction_t(std::ostream& os, const time_point& tp);
   static bool fraction( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr);
   
-  static bool name( std::ostream& os, const std::string& tp, const formatter_options& opt, const formatter_handlers& hdr);
-  static bool ident( std::ostream& os, const std::string& tp, const formatter_options& opt, const formatter_handlers& hdr);
-  static bool message( std::ostream& os, const std::string& tp, const formatter_options& opt, const formatter_handlers& hdr);
+  static bool name( std::ostream& os, const std::string& nm, const formatter_options& opt, const formatter_handlers& hdr);
+  static bool ident( std::ostream& os, const std::string& id, const formatter_options& opt, const formatter_handlers& hdr);
+  static bool message( std::ostream& os, const std::string& mes, const formatter_options& opt, const formatter_handlers& hdr);
   
   formatter(const formatter_options& opt, const formatter_handlers& handlers /* = formatter_handlers()*/ );
   
   void operator()(
     std::ostream& os, 
     const time_point& tp, 
-    const std::string& name, 
-    const std::string& ident, 
+    const std::string& log_name, 
+    const std::string& log_ident, 
     const std::string& str
   ) const;
   

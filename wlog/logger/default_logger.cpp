@@ -30,7 +30,7 @@ public:
     writer_fun syslog_writer;
   };
   
-  impl( const options& copt, const handlers& hdr);
+  impl( const options& copt, const handlers& chdr);
   
   bool write(
     const time_point& tp,
@@ -219,9 +219,9 @@ bool default_logger::operator()(
   const time_point& tp,
   const std::string& name, 
   const std::string& ident, 
-  const std::string& str) const
+  const std::string& msg) const
 {
-  return _impl->write(tp, name, ident, str);
+  return _impl->write(tp, name, ident, msg);
 }
 
 }

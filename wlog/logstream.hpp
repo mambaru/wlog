@@ -19,13 +19,13 @@ class logstream final
 public:
   ~logstream();
   
-  logstream(const logstream& ll) = delete;
+  logstream(const logstream& other) = delete;
   
-  logstream& operator = (logstream& ll) = delete;
+  logstream& operator = (logstream& other) = delete;
 
-  logstream& operator = (logstream&& ll) = delete;
+  logstream& operator = (logstream&& other) = delete;
 
-  logstream(logstream&& ll);
+  logstream(logstream&& other);
   
   logstream(mutex_type& m, const std::string& name, const std::string& ident, const logger_fun& writer);
   
@@ -44,15 +44,15 @@ class stdstream final
 public:
   ~stdstream();
   
-  stdstream(const stdstream& ll) = delete;
+  stdstream(const stdstream& other) = delete;
   
-  stdstream& operator = (stdstream& ll) = delete;
+  stdstream& operator = (stdstream& other) = delete;
 
-  stdstream& operator = (stdstream&& ll) = delete;
+  stdstream& operator = (stdstream&& other) = delete;
 
-  stdstream(stdstream&& ll);
+  stdstream(stdstream&& other);
   
-  stdstream(mutex_type& m, std::ostream& writer);
+  stdstream(mutex_type& m, std::ostream& out);
   
   std::ostream& log();
 

@@ -72,7 +72,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   if ( !!(opt.hide & hide_flags::date) )
     return false;
 
-  char buf[256]={0};
+  char buf[100]={0};
   time_t ts = time_point::clock::to_time_t(tp);
   struct tm t1;
   localtime_r(&ts, &t1);
@@ -277,7 +277,7 @@ bool formatter::fraction( std::ostream& os, const time_point& tp, const formatte
 }
 
 
-bool formatter::name( std::ostream& os, const std::string& name, const formatter_options& opt, const formatter_handlers& hdr)
+bool formatter::name( std::ostream& os, const std::string& nm, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( bool(opt.hide & hide_flags::name) )
     return false;
@@ -285,16 +285,16 @@ bool formatter::name( std::ostream& os, const std::string& name, const formatter
   if ( bool(opt.colorized & colorized_flags::name) )
   {
     if ( !formatter::set_color(os, "$name", "", opt) )
-      formatter::set_color(os, name, "\033[34m", opt);
+      formatter::set_color(os, nm, "\033[34m", opt);
   }
   
-  std::string str = ( hdr.name != nullptr ) ? hdr.name(name) : name;
+  std::string str = ( hdr.name != nullptr ) ? hdr.name(nm) : nm;
   if ( !str.empty() ) os << str;
   
   return !str.empty();
 }
 
-bool formatter::ident( std::ostream& os, const std::string& ident, const formatter_options& opt, const formatter_handlers& hdr)
+bool formatter::ident( std::ostream& os, const std::string& id, const formatter_options& opt, const formatter_handlers& hdr)
 {
 
   bool flag = false;
@@ -304,7 +304,7 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
   {
     if ( !formatter::set_color(os, "$ident", "", opt) )
     {
-      formatter::set_color(os, ident, "\033[36m", opt);
+      formatter::set_color(os, id, "\033[36m", opt);
         
     }
   }
@@ -315,7 +315,7 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
   
   if ( !(opt.hide & hide_flags::ident) )
   {
-    std::string str = ( hdr.ident != nullptr ) ? hdr.ident(ident) : ident;
+    std::string str = ( hdr.ident != nullptr ) ? hdr.ident(id) : id;
     flag = !str.empty();
     if ( flag ) os << str;
   }
@@ -331,14 +331,14 @@ bool formatter::ident( std::ostream& os, const std::string& ident, const formatt
   
 }
 
-bool formatter::message( std::ostream& os, const std::string& txt, const formatter_options& opt, const formatter_handlers& hdr)
+bool formatter::message( std::ostream& os, const std::string& mes, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( bool(opt.hide & hide_flags::message) )
     return false;
   
-  std::string msg = txt;
+  std::string msg = mes;
   if ( hdr.message != nullptr)
-    msg = txt;
+    msg = mes;
   
   if ( opt.colorized == colorized_flags::none )
   {

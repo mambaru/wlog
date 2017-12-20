@@ -1,4 +1,5 @@
 #include <wlog/logstream.hpp>
+#include <wlog/logging.hpp>
 #include "test.hpp"
 
 int test1();
@@ -14,7 +15,7 @@ int test1()
     wlog::logstream log(m, "test", "message", 
       [&message](const wlog::time_point&, const std::string& name, const std::string& ident, const std::string& text)
       {
-        std::cout << name << "," << ident << "," << text << " >> " << message << std::endl;
+        WCOUT( name << "," << ident << "," << text << " >> " << message << std::endl );
         message = name + ident + text;
         std::cout << "<<" << message << std::endl;
         return true;
@@ -27,7 +28,9 @@ int test1()
     TEST( !log.str().empty() );
     TEST( log.str()=="hello 12" );
   }
-  std::cout << message << std::endl;
+  WCOUT( message << std::endl )
+  WCLOG( "WCLOG" )
+  WCERR( "WCERR" )
   TEST( message=="testmessagehello 12" );
   return 0;
 }

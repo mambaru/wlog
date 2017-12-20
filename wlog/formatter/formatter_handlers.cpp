@@ -5,12 +5,18 @@ void formatter_handlers::upgrade(const formatter_handlers& other)
 {
   formatter_handlers& self = *this;
   
-  if ( self.date==nullptr )     self.date = other.date;
-  if ( self.time==nullptr )     self.time = other.time;
-  if ( self.fraction==nullptr ) self.fraction = other.fraction;
-  if ( self.name==nullptr )     self.name = other.name;
-  if ( self.ident==nullptr )    self.ident = other.ident;
-  if ( self.message==nullptr )  self.message = other.message;
+  if ( self.date==nullptr )
+    self.date = other.date;
+  if ( self.time==nullptr )
+    self.time = other.time;
+  if ( self.fraction==nullptr )
+    self.fraction = other.fraction;
+  if ( self.name==nullptr )
+    self.name = other.name;
+  if ( self.ident==nullptr )
+    self.ident = other.ident;
+  if ( self.message==nullptr )
+    self.message = other.message;
 }
 
 }
