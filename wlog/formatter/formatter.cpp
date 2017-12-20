@@ -8,6 +8,9 @@
 #include <iomanip>
 #include <iostream>
 
+#pragma GCC diagnostic ignored "-Wformat-y2k"
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+
 namespace wlog
 {
 
@@ -64,7 +67,6 @@ void formatter::reset_color(std::ostream& os)
   os << "\033[0m";
 }
 
-
 bool formatter::date( std::ostream& os, const time_point& tp, const formatter_options& opt, const formatter_handlers& hdr)
 {
   if ( !!(opt.hide & hide_flags::date) )
@@ -96,17 +98,18 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
     {
       if (!opt.datetime_format.empty() )
       {
-        pos = strftime(buf, 100, opt.datetime_format.c_str(), &t1);
+        const char* fmt = opt.datetime_format.c_str();
+        pos = std::strftime(buf, 100, fmt, &t1);
       }
       else if ( opt.locale.empty() || opt.resolution < resolutions::seconds )
       {
         //F (C++11)	equivalent to "%Y-%m-%d" (the ISO 8601 date format)
-        pos = strftime(buf, 100, "%F", &t1);
+        pos = std::strftime(buf, 100, "%F", &t1);
       }
       else
       {
         // c	writes standard date and time string, e.g. Sun Oct 17 04:41:13 2010 (locale dependent)
-        pos = strftime(buf, 100, "%c", &t1);
+        pos = std::strftime(buf, 100, "%c", &t1);
       }
     }
     else
