@@ -47,7 +47,7 @@ private:
     const std::string& ident, 
     const std::set<std::string>& allow,
     const std::set<std::string>& deny
-  ) const;
+  ) ;
 
 private:
   typedef std::string key_type;
@@ -128,7 +128,7 @@ bool default_logger::impl::allow_(
   const std::string& ident,
   const std::set<std::string>& allow,
   const std::set<std::string>& deny
-) const
+)
 {
   return 
     ( allow.empty() || allow.count(name)!=0 || allow.count(ident)!=0 )
