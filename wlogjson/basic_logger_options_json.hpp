@@ -26,9 +26,9 @@ struct basic_logger_options_json
   typedef wjson::object<
     basic_logger_options,
     wjson::member_list<
-      wjson::base<file_logger_options_json>,
       wjson::member<n_allow,  basic_logger_options, std::set<std::string>, &basic_logger_options::allow, string_set_json>,
       wjson::member<n_deny,   basic_logger_options, std::set<std::string>, &basic_logger_options::deny, string_set_json>,
+      wjson::base<file_logger_options_json>,
       wjson::member<n_stdout, basic_logger_options, stdout_logger_options, &basic_logger_options::stdout, stdout_logger_options_json>,
       wjson::member<n_syslog, basic_logger_options, syslog_logger_options, &basic_logger_options::syslog, syslog_logger_options_json>
     >,

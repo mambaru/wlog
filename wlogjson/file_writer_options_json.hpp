@@ -38,11 +38,11 @@ struct file_writer_options_json
     file_writer_options,
     wjson::member_list<
       wjson::member<n_path, file_writer_options, std::string, &file_writer_options::path>,
+      wjson::member_p<n_sync, file_writer_options, bool, sync >,
+      wjson::member_p<n_startup_rotate, file_writer_options, bool, startup_rotate>,
       wjson::member<n_size_limit, file_writer_options, long, &file_writer_options::size_limit>,
       wjson::member<n_time_limit, file_writer_options, long, &file_writer_options::time_limit>,
-      wjson::member<n_rotation, file_writer_options, long, &file_writer_options::rotation>,
-      wjson::member_p<n_startup_rotate, file_writer_options, bool, startup_rotate>,
-      wjson::member_p<n_sync, file_writer_options, bool, sync >
+      wjson::member<n_rotation, file_writer_options, long, &file_writer_options::rotation>
     >,
     wjson::strict_mode
   > type;

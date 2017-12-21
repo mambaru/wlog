@@ -65,7 +65,9 @@ file_writer::file_writer(const formatter_fun& formatter, const options& opt, con
   }
   
   if ( _opt.startup_rotate > 0 && _opt.rotation == 0  )
+  {
     _oflog.open( _opt.path);
+  }
   else
     _oflog.open( _opt.path, std::ios_base::app );
   
