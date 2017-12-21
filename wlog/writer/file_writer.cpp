@@ -5,7 +5,7 @@
 //
 
 #include "file_writer.hpp"
-
+#include "../strftime.hpp"
 #include <sys/stat.h>
 #include <string>
 #include <memory>
@@ -193,7 +193,7 @@ void file_writer::write_head(std::ostream& os, const context_type& contex)
   struct tm t1;
   localtime_r(&ts, &t1);
   char buf[100]={0};
-  std::strftime(buf, 100, "%c", &t1);
+  ::wlog::strftime(buf, 100, "%c", &t1);
 
   os << "! ---------------- rotated ----------------" << std::endl
      << "! Start time: "    << buf  << std::endl

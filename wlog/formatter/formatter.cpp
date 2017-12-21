@@ -5,8 +5,10 @@
 //
 
 #include "formatter.hpp"
+#include "../strftime.hpp"
 #include <iomanip>
 #include <iostream>
+
 
 #pragma GCC diagnostic ignored "-Wformat-y2k"
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
@@ -99,17 +101,17 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
       if (!opt.datetime_format.empty() )
       {
         const char* fmt = opt.datetime_format.c_str();
-        pos = std::strftime(buf, 100, fmt, &t1);
+        pos = wlog::strftime(buf, 100, fmt, &t1);
       }
       else if ( opt.locale.empty() || opt.resolution < resolutions::seconds )
       {
         //F (C++11)	equivalent to "%Y-%m-%d" (the ISO 8601 date format)
-        pos = std::strftime(buf, 100, "%F", &t1);
+        pos = wlog::strftime(buf, 100, "%F", &t1);
       }
       else
       {
         // c	writes standard date and time string, e.g. Sun Oct 17 04:41:13 2010 (locale dependent)
-        pos = std::strftime(buf, 100, "%c", &t1);
+        pos = wlog::strftime(buf, 100, "%c", &t1);
       }
     }
     else
@@ -120,15 +122,15 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
       bool fweek = !(opt.hide & hide_flags::weekday );
       
       
-      if ( fyear && fmon ) pos += strftime(buf + pos, 100-pos, "%Y %b", &t1);
-      else if ( fyear && fday && fweek) pos += strftime(buf + pos, 100-pos, "%d %a %Y", &t1);
-      else if ( fyear && fday && !fweek) pos += strftime(buf + pos, 100-pos, "%d %Y", &t1);
-      else if ( fmon && fday && fweek) pos += strftime(buf + pos, 100-pos, "%a %b %d", &t1);
-      else if ( fmon && fday && !fweek) pos += strftime(buf + pos, 100-pos, "%b %d", &t1);
-      else if ( fyear ) pos += strftime(buf + pos, 100-pos, "%Y", &t1);
-      else if ( fmon ) pos += strftime(buf + pos, 100-pos, "%b", &t1);
-      else if ( fday && fweek ) pos += strftime(buf + pos, 100-pos, "%a %d", &t1);
-      else if ( fday && !fweek ) pos += strftime(buf + pos, 100-pos, "%d", &t1);
+      if ( fyear && fmon ) pos += ::wlog::strftime(buf + pos, 100-pos, "%Y %b", &t1);
+      else if ( fyear && fday && fweek) pos += ::wlog::strftime(buf + pos, 100-pos, "%d %a %Y", &t1);
+      else if ( fyear && fday && !fweek) pos += ::wlog::strftime(buf + pos, 100-pos, "%d %Y", &t1);
+      else if ( fmon && fday && fweek) pos += ::wlog::strftime(buf + pos, 100-pos, "%a %b %d", &t1);
+      else if ( fmon && fday && !fweek) pos += ::wlog::strftime(buf + pos, 100-pos, "%b %d", &t1);
+      else if ( fyear ) pos += ::wlog::strftime(buf + pos, 100-pos, "%Y", &t1);
+      else if ( fmon ) pos += ::wlog::strftime(buf + pos, 100-pos, "%b", &t1);
+      else if ( fday && fweek ) pos += ::wlog::strftime(buf + pos, 100-pos, "%a %d", &t1);
+      else if ( fday && !fweek ) pos += ::wlog::strftime(buf + pos, 100-pos, "%d", &t1);
     }
     
     flag = pos != 0;
@@ -185,13 +187,13 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
       if ( opt.locale.empty() )
       {
         // T (C++11) equivalent to "%H:%M:%S" (the ISO 8601 time format)
-        pos += strftime(buf + pos, 100-pos, "%T", &t1);
+        pos += ::wlog::strftime(buf + pos, 100-pos, "%T", &t1);
 
       }
       else
       {
         // X writes localized time representation (locale dependent)
-        pos += strftime(buf + pos, 100-pos, "%X", &t1);
+        pos += ::wlog::strftime(buf + pos, 100-pos, "%X", &t1);
       }
     }
     else
@@ -200,11 +202,11 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
       bool fmin = !(opt.hide & hide_flags::minutes ) && (opt.resolution >= resolutions::minutes);
       bool fsec = !(opt.hide & hide_flags::seconds ) && (opt.resolution >= resolutions::seconds);
       
-      if ( fhour && fmin) pos += strftime(buf + pos, 100-pos, "%R", &t1);
-      else if ( fhour && fsec) pos += strftime(buf + pos, 100-pos, "%Hh %Ss", &t1);
-      else if ( fmin && fsec) pos += strftime(buf + pos, 100-pos, "%Mm %Ss", &t1);
-      else if ( fhour ) pos += strftime(buf + pos, 100-pos, "%Hh", &t1);
-      else if ( fmin ) pos += strftime(buf + pos, 100-pos, "%Mm", &t1);
+      if ( fhour && fmin) pos += ::wlog::strftime(buf + pos, 100-pos, "%R", &t1);
+      else if ( fhour && fsec) pos += ::wlog::strftime(buf + pos, 100-pos, "%Hh %Ss", &t1);
+      else if ( fmin && fsec) pos += ::wlog::strftime(buf + pos, 100-pos, "%Mm %Ss", &t1);
+      else if ( fhour ) pos += ::wlog::strftime(buf + pos, 100-pos, "%Hh", &t1);
+      else if ( fmin ) pos += ::wlog::strftime(buf + pos, 100-pos, "%Mm", &t1);
       else if ( fsec ) pos += size_t(snprintf(buf + pos, 100-pos, "%lu", std::time(0) ));
     }
 
