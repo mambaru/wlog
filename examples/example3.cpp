@@ -6,8 +6,16 @@
 #define LOG_LINES 1000000
 int main(int argc, char* argv[])
 {
-  //
   wlog::logger_options opt;
+
+  {
+    // TODO: протестировать
+    opt.get_customize("unusedFunction");
+    wlog::log_status();
+  }
+  //
+  
+  
   opt.path = "./example3.log";
   //opt.sync = 0;
   if ( argc > 1 )

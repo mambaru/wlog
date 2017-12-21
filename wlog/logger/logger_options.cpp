@@ -48,7 +48,6 @@ custom_logger_options* logger_options::get_customize(const std::string& name)
 
   std::string expanse_path(const std::string& path, const std::string& name)
   {
-    std::string result;
     auto pos = path.rfind('.');
     if ( pos == std::string::npos )
       return path + name + std::string(".log");

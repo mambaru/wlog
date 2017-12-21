@@ -8,16 +8,14 @@ void basic_logger_handlers::upgrade(const basic_logger_handlers& other)
 {
   formatter_handlers::upgrade(static_cast<const formatter_handlers& >(other) );
   
-  basic_logger_handlers& self = *this;
+  if ( this->file_formatter==nullptr ) this->file_formatter = other.file_formatter;
+  if ( this->stdout_formatter==nullptr ) this->stdout_formatter = other.stdout_formatter;
+  if ( this->syslog_formatter==nullptr ) this->syslog_formatter = other.syslog_formatter;
   
-  if ( self.file_formatter==nullptr ) self.file_formatter = other.file_formatter;
-  if ( self.stdout_formatter==nullptr ) self.stdout_formatter = other.stdout_formatter;
-  if ( self.syslog_formatter==nullptr ) self.syslog_formatter = other.syslog_formatter;
-  
-  if ( self.file_writer==nullptr ) self.file_writer = other.file_writer;
-  if ( self.stdout_writer==nullptr ) self.stdout_writer = other.stdout_writer;
-  if ( self.stdout_writer==nullptr ) self.stdout_writer = other.stdout_writer;
-  std::copy( other.after.begin(), other.after.end(), std::back_inserter(self.after) );
+  if ( this->file_writer==nullptr ) this->file_writer = other.file_writer;
+  if ( this->stdout_writer==nullptr ) this->stdout_writer = other.stdout_writer;
+  if ( this->stdout_writer==nullptr ) this->stdout_writer = other.stdout_writer;
+  std::copy( other.after.begin(), other.after.end(), std::back_inserter(this->after) );
 }
 
 }

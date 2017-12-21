@@ -42,7 +42,7 @@ public:
 private: 
   void init_context_(context& cntx, const basic_logger_options& opt, const basic_logger_handlers& hdr);
 
-  bool allow_(
+  static bool allow_(
     const std::string& name,
     const std::string& ident, 
     const std::set<std::string>& allow,

@@ -72,7 +72,6 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   if ( !!(opt.hide & hide_flags::date) )
     return false;
 
-  char buf[100]={0};
   time_t ts = time_point::clock::to_time_t(tp);
   struct tm t1;
   localtime_r(&ts, &t1);
@@ -90,6 +89,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   bool flag = false;
   if ( hdr.date == nullptr )
   {
+    char buf[100]={0};
     size_t pos=0;
     bool fulldate = opt.resolution >= resolutions::days;
     fulldate &= !(opt.hide & (hide_flags::year | hide_flags::month | hide_flags::days 

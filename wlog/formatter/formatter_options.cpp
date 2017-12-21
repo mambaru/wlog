@@ -10,48 +10,44 @@ namespace wlog{
  
 void formatter_options::upgrade(const formatter_options& other)
 {
-  formatter_options& self = *this;
+  if ( this->resolution == resolutions::inherited )
+    this->resolution = other.resolution;
   
-  if ( self.resolution == resolutions::inherited )
-    self.resolution = other.resolution;
-  
-  if ( self.hide == hide_flags::inherited )
-    self.hide = other.hide;
+  if ( this->hide == hide_flags::inherited )
+    this->hide = other.hide;
     
-  if ( self.colorized == colorized_flags::inherited) 
-    self.colorized = other.colorized;
+  if ( this->colorized == colorized_flags::inherited) 
+    this->colorized = other.colorized;
     
-  if ( self.locale == "" )
-    self.locale = other.locale;
+  if ( this->locale == "" )
+    this->locale = other.locale;
     
-  if ( self.datetime_format == "" )
-    self.datetime_format = other.datetime_format;
+  if ( this->datetime_format == "" )
+    this->datetime_format = other.datetime_format;
       
   for (const auto& c : other.color_map)
-    if ( 0 == self.color_map.count(c.first) )
-      self.color_map.emplace(c);
+    if ( 0 == this->color_map.count(c.first) )
+      this->color_map.emplace(c);
 }
 
 void formatter_options::finalize()
 {
-  formatter_options& self = *this;
+  if ( this->resolution == resolutions::inherited )
+    this->resolution = resolutions::seconds;
   
-  if ( self.resolution == resolutions::inherited )
-    self.resolution = resolutions::seconds;
-  
-  if ( self.hide == hide_flags::inherited )
-    self.hide = hide_flags::none;
+  if ( this->hide == hide_flags::inherited )
+    this->hide = hide_flags::none;
     
-  if ( self.colorized == colorized_flags::inherited) 
-    self.colorized = colorized_flags::none;
+  if ( this->colorized == colorized_flags::inherited) 
+    this->colorized = colorized_flags::none;
     
-  if ( self.locale == "#" )
-    self.locale.clear();
+  if ( this->locale == "#" )
+    this->locale.clear();
 
-  if ( self.datetime_format == "#" )
-    self.datetime_format.clear();
+  if ( this->datetime_format == "#" )
+    this->datetime_format.clear();
   
-  if ( self.colorized == colorized_flags::none )
+  if ( this->colorized == colorized_flags::none )
   {
     this->color_map.clear();
   }
