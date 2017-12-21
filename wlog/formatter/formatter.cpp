@@ -10,8 +10,8 @@
 #include <iostream>
 
 
-#pragma GCC diagnostic ignored "-Wformat-y2k"
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+//#pragma GCC diagnostic ignored "-Wformat-y2k"
+//#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 
 namespace wlog
 {

@@ -35,6 +35,7 @@ add_library(
   wlog/logstream.cpp
   wlog/global_log.cpp
   wlog/init_log.cpp
+  wlog/strftime.cpp
   
   wlog/formatter/formatter.cpp
   wlog/formatter/formatter_options.cpp
