@@ -11,10 +11,11 @@
 #include <wlog/logger_fun.hpp>
 #include <wlog/writer/file_writer_options.hpp>
 #include <wlog/writer/file_writer_handlers.hpp>
+#include <wlog/writer/writer_context.hpp>
 #include <fstream>
+#include <list>
 
 namespace wlog{
-
 
 class file_writer final
 {
@@ -22,6 +23,7 @@ public:
   ~file_writer();
   typedef file_writer_options options;
   typedef file_writer_handlers handlers;
+  typedef writer_context context_type;
   
   file_writer(const formatter_fun& formatter, const options& opt, const handlers& hdlr = handlers() );
   
@@ -44,16 +46,14 @@ private:
   bool rotate_if_( std::ofstream& oflog);
   void rotate_( std::ofstream& oflog);
 
-  formatter_fun _formatter;
-  options _opt;
-  handlers _handlers;
-  long _save_count;
-  long _summary;
-  time_t _rotate_time;
-  //time_t _file_time;
-  const std::string _starttime;
-  //mutex_type _mutex;
-  std::ofstream _oflog;
+private:
+  static void write_head(std::ostream& os, const context_type& contex);
+  
+  static void write_footer(std::ostream& os,const context_type& contex);
+  
+private:
+  context_type _contex;
+  std::ofstream _flog;
 };
 
 }

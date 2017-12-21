@@ -5,7 +5,8 @@
 //
 
 #pragma once
-
+#include <functional>
+#include <string>
 namespace wlog{
 
 struct file_writer_handlers
