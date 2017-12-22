@@ -56,8 +56,9 @@ add_library(
   wlog/logger/custom_logger_options.cpp
   wlog/logger/logger_options.cpp
   wlog/logger/basic_logger_handlers.cpp
-  
   wlog/logger/logger_handlers.cpp
+  
+  wlog/aux/aux.cpp
 )
 
 include(CMakePackageConfigHelpers)

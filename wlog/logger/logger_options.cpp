@@ -1,9 +1,8 @@
 #include "logger_options.hpp"
+#include <wlog/aux/aux.hpp>
 
 namespace wlog{
 
-static std::string expanse_path(const std::string& path, const std::string& name);
-  
 void logger_options::upgrade(const logger_options& other)
 {
   basic_logger_options::upgrade( static_cast<const basic_logger_options&>(other) );
@@ -45,18 +44,5 @@ custom_logger_options* logger_options::get_customize(const std::string& name)
   }
   return nullptr;
 }
-
-  std::string expanse_path(const std::string& path, const std::string& name)
-  {
-    auto pos = path.rfind('.');
-    if ( pos == std::string::npos )
-      return path + name + std::string(".log");
-
-    std::ptrdiff_t diff = static_cast<std::ptrdiff_t>(pos);
-    return std::string( path.begin(), path.begin() + diff ) 
-      + std::string("-") 
-      + name 
-      + std::string( path.begin() + diff, path.end() );
-  }
 
 }

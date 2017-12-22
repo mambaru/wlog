@@ -19,20 +19,22 @@ struct file_writer_options_json
   JSON_NAME(size_limit)
   JSON_NAME(time_limit)
   JSON_NAME(rotation)
+  JSON_NAME(rotation_header)
+  JSON_NAME(rotation_footer)
+  JSON_NAME(unixtime_suffix)
   
-  struct sync
+  template<int file_writer_options:: *field>
+  struct bool_getter
   {
-    // -1 по умолчанию всегда sync
-    bool operator()(const file_writer_options& opt) const { return opt.sync!=0; }
-    void operator()(file_writer_options& opt, bool value) const { opt.sync = int(value); }
+    bool operator()(const file_writer_options& opt) const { return opt.*field!=0; }
+    void operator()(file_writer_options& opt, bool value) const { opt.*field = int(value); }
   };
-
-  struct startup_rotate
-  {
-    // по умолчанию всегда без ротации
-    bool operator()(const file_writer_options& opt) const { return opt.startup_rotate > 0; }
-    void operator()(file_writer_options& opt, bool value) const { opt.startup_rotate = value; }
-  };
+  
+  typedef bool_getter<&file_writer_options::sync> sync;
+  typedef bool_getter<&file_writer_options::startup_rotate>  startup_rotate;
+  typedef bool_getter<&file_writer_options::rotation_header> rotation_header;
+  typedef bool_getter<&file_writer_options::rotation_footer> rotation_footer;
+  typedef bool_getter<&file_writer_options::unixtime_suffix> unixtime_suffix;
 
   typedef wjson::object<
     file_writer_options,
@@ -42,7 +44,10 @@ struct file_writer_options_json
       wjson::member_p<n_startup_rotate, file_writer_options, bool, startup_rotate>,
       wjson::member<n_size_limit, file_writer_options, long, &file_writer_options::size_limit>,
       wjson::member<n_time_limit, file_writer_options, long, &file_writer_options::time_limit>,
-      wjson::member<n_rotation, file_writer_options, long, &file_writer_options::rotation>
+      wjson::member<n_rotation, file_writer_options, long, &file_writer_options::rotation>,
+      wjson::member_p<n_rotation_header, file_writer_options, bool, rotation_header>,
+      wjson::member_p<n_rotation_footer, file_writer_options, bool, rotation_footer>,
+      wjson::member_p<n_unixtime_suffix, file_writer_options, bool, unixtime_suffix>
     >,
     wjson::strict_mode
   > type;

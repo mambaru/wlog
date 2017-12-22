@@ -7,7 +7,6 @@
 #pragma once
 
 #include <wlog/writer/file_writer_options.hpp>
-#include <wlog/writer/file_writer_handlers.hpp>
 #include <wlog/logger_fun.hpp>
 #include <wlog/types.hpp>
 #include <list>
@@ -19,11 +18,9 @@ namespace wlog{
 struct writer_context
 {
   typedef file_writer_options options_type;
-  typedef file_writer_handlers handlers_type;
 
   const formatter_fun formatter;
   const file_writer_options options;
-  const file_writer_handlers handlers;
   const time_point start_time;
 
   size_t summary_size;
@@ -32,10 +29,9 @@ struct writer_context
   std::string current_path;
   std::list<std::string> path_list;
   
-  writer_context(const formatter_fun& fmt, const options_type& opt, const handlers_type& hdlr )
+  writer_context(const formatter_fun& fmt, const options_type& opt )
     : formatter(fmt)
     , options(opt)
-    , handlers(hdlr)
     , start_time(time_point::clock::now())
     , summary_size(0)
     , rotation_counter(0)

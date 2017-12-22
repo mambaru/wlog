@@ -6,6 +6,7 @@
 
 #include "file_writer.hpp"
 #include "../strftime.hpp"
+#include "../aux/aux.hpp"
 #include <sys/stat.h>
 #include <string>
 #include <memory>
@@ -31,6 +32,20 @@ namespace{
 }
 */
 
+
+file_writer::handlers file_writer::upd_handlers( const file_writer::options& opt , const file_writer::handlers& hdlr )
+{
+  file_writer::handlers h = hdlr;
+  if ( h.footer == nullptr ) h.footer = &file_writer::write_footer;
+  if ( h.header == nullptr ) h.header = &file_writer::write_header;
+  if ( h.main_logname == nullptr ) h.main_logname = &file_writer::main_logname;
+  if ( h.rotate_logname == nullptr ) h.rotate_logname = &file_writer::rotate_logname;
+
+  if ( opt.rotation_footer == 0 ) h.footer = nullptr;
+  if ( opt.rotation_header == 0 ) h.header = nullptr;
+  return h; 
+}
+
 file_writer::~file_writer()
 {
   _flog.close();
@@ -38,12 +53,13 @@ file_writer::~file_writer()
   
 
 file_writer::file_writer(const formatter_fun& formatter, const options& opt, const handlers& hdlr)
-  : _contex(formatter, opt, hdlr)
+  : _contex(formatter, opt )
+  , _handlers(upd_handlers(opt, hdlr))
 {
-  
   time_t file_time = 0;
+  std::string path = _handlers.main_logname(_contex);
   struct stat t_stat;
-  if ( 0 == stat(_contex.options.path.c_str(), &t_stat) )
+  if ( 0 == stat(path.c_str(), &t_stat) )
   {
     file_time  = t_stat.st_ctime;
   }
@@ -55,10 +71,12 @@ file_writer::file_writer(const formatter_fun& formatter, const options& opt, con
   
   if ( _contex.options.startup_rotate > 0 && _contex.options.rotation == 0  )
   {
-    _flog.open( _contex.options.path);
+    _flog.open( path );
   }
   else
-    _flog.open( _contex.options.path, std::ios_base::app );
+    _flog.open( path, std::ios_base::app );
+  
+  _contex.path_list.push_back(path);
   
   if ( !this->rotate_if_(_flog)  )
   {
@@ -78,7 +96,7 @@ void file_writer::operator()(
 )
 {
   if ( _contex.options.sync != 0 )
-    _flog.open( _contex.options.path, std::ios_base::app );
+    _flog.open( _contex.path_list.back(), std::ios_base::app );
   
   this->write_(_flog, tp, name, ident, str);
   
@@ -87,8 +105,6 @@ void file_writer::operator()(
     _flog.flush();
     _flog.close();
   }
-  
-    
 }
 
 void file_writer::rotate_( std::ofstream& oflog)
@@ -98,30 +114,41 @@ void file_writer::rotate_( std::ofstream& oflog)
   std::string old_name;
   if ( _contex.options.rotation > 0 )
   {
-    if ( _contex.rotation_counter >= size_t(_contex.options.rotation)  )
+    if ( _contex.path_list.size() > size_t(_contex.options.rotation)  )
     {
-      std::string del_file = _contex.options.path + ".old-" 
-                             + std::to_string(_contex.rotation_counter - size_t(_contex.options.rotation) );
+      std::string del_file = _contex.path_list.front();
+      _contex.path_list.pop_front();
       if ( 0!=std::remove( del_file.c_str() ) )
       {
         perror( (std::string("Error remove old log file (") + del_file +")").c_str() );
+        return;
       }
     }
 
-    old_name = _contex.options.path + ".old-" + std::to_string(_contex.rotation_counter);
-    if ( 0 != std::rename(_contex.options.path.c_str(), old_name.c_str() ) )
+    std::string cur_name = _contex.path_list.back();
+    _contex.path_list.pop_back();
+    //old_name = _contex.options.path + ".old-" + std::to_string(_contex.rotation_counter);
+    old_name = _handlers.rotate_logname(_contex);
+    _contex.path_list.push_back(old_name);
+    if ( 0 != std::rename( cur_name.c_str(), old_name.c_str() ) )
     {
       perror( "Error renaming current log file" );
+      return;
     }
+    ++_contex.rotation_counter;
   }
   
-  oflog.open(_contex.options.path);
-    
+  std::string path = _handlers.main_logname(_contex);
+  _contex.path_list.push_back(path);
+  oflog.open(path);
+  
+/*  
   if ( _contex.options.rotation > 0 )
   {
     oflog << "Previous log: " << old_name << std::endl;
     ++_contex.rotation_counter;
   }
+*/
 
   //oflog.open(_opt.path);
 }
@@ -144,19 +171,11 @@ bool file_writer::rotate_if_( std::ofstream& oflog)
     {
       _contex.summary_size += size;
       
-      oflog << "---------------- truncate with " << size
-            << " summary size "    << _contex.summary_size
-            << " ( start time: "   << "_starttime" << ")"
-            << " ----------------" << std::endl;
-
+      if (_handlers.footer!=nullptr) _handlers.footer(oflog, _contex);
       this->rotate_(oflog);
       rotated = true;
       _contex.rotate_time = now + _contex.options.time_limit;
-      
-      oflog << "---------------- truncate with " << size
-            << " summary size "    << _contex.summary_size
-            << " ( start time: "   << "_starttime" << ")"
-            << " ----------------" << std::endl;
+      if (_handlers.header!=nullptr)  _handlers.header(oflog, _contex);
     }
   }
   return rotated;
@@ -184,7 +203,7 @@ void file_writer::write_(
     oflog << name << " " << ident << " " << str;
 }
 
-void file_writer::write_head(std::ostream& os, const context_type& contex)
+void file_writer::write_header(std::ostream& os, const context_type& contex)
 {
   if ( contex.path_list.empty() )
     return;
@@ -206,8 +225,22 @@ void file_writer::write_head(std::ostream& os, const context_type& contex)
   
 void file_writer::write_footer(std::ostream& os, const context_type& context)
 {
-  file_writer::write_head(os, context);
+  file_writer::write_header(os, context);
 }
 
+std::string file_writer::main_logname(const context_type& contex)
+{
+  return contex.options.path;
+}
+
+std::string file_writer::rotate_logname(const context_type& contex)
+{
+  if ( contex.options.unixtime_suffix == 0 )
+    return  contex.options.path + ".old-" + std::to_string(contex.rotation_counter);
+  
+  time_t now = time(0);
+  return expanse_path(contex.options.path, std::to_string(now));
+  
+}
 
 }
