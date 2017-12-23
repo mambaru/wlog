@@ -47,7 +47,7 @@ private:
   void rotate_( std::ofstream& oflog);
 
 private:
-  static handlers upd_handlers( const options& , const handlers& hdlr );
+  //static handlers upd_handlers( const options& , const handlers& hdlr );
   static void write_header(std::ostream& os, const context_type& contex);
   static void write_footer(std::ostream& os,const context_type& contex);
   static std::string main_logname(const context_type& contex);

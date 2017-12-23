@@ -32,7 +32,7 @@ namespace{
 }
 */
 
-
+/*
 file_writer::handlers file_writer::upd_handlers( const file_writer::options& opt , const file_writer::handlers& hdlr )
 {
   file_writer::handlers h = hdlr;
@@ -45,7 +45,7 @@ file_writer::handlers file_writer::upd_handlers( const file_writer::options& opt
   if ( opt.rotation_header == 0 ) h.header = nullptr;
   return h; 
 }
-
+*/
 file_writer::~file_writer()
 {
   _flog.close();
@@ -54,8 +54,24 @@ file_writer::~file_writer()
 
 file_writer::file_writer(const formatter_fun& formatter, const options& opt, const handlers& hdlr)
   : _contex(formatter, opt )
-  , _handlers(upd_handlers(opt, hdlr))
+  , _handlers(hdlr)
 {
+  _contex.options.finalize();
+
+  if ( _handlers.footer == nullptr ) 
+    _handlers.footer = &file_writer::write_footer;
+  if ( _handlers.header == nullptr ) 
+    _handlers.header = &file_writer::write_header;
+  if ( _handlers.main_logname == nullptr ) 
+    _handlers.main_logname = &file_writer::main_logname;
+  if ( _handlers.rotate_logname == nullptr ) 
+    _handlers.rotate_logname = &file_writer::rotate_logname;
+
+  if ( _contex.options.rotation_footer == 0 ) 
+    _handlers.footer = nullptr;
+  if (_contex.options.rotation_header == 0 ) 
+    _handlers.header = nullptr;
+  
   time_t file_time = 0;
   std::string path = _handlers.main_logname(_contex);
   struct stat t_stat;
@@ -170,7 +186,6 @@ bool file_writer::rotate_if_( std::ofstream& oflog)
     if ( by_size || by_time )
     {
       _contex.summary_size += size;
-      
       if (_handlers.footer!=nullptr) _handlers.footer(oflog, _contex);
       this->rotate_(oflog);
       rotated = true;
@@ -207,7 +222,7 @@ void file_writer::write_header(std::ostream& os, const context_type& contex)
 {
   if ( contex.path_list.empty() )
     return;
-  
+
   time_t ts = time_point::clock::to_time_t(contex.start_time);
   struct tm t1;
   localtime_r(&ts, &t1);
