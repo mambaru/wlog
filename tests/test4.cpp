@@ -24,7 +24,7 @@ int test1()
     std::ifstream ifs("./test4.log");
     std::string testline;
     std::getline( ifs, testline);
-    std::cout << testline << std::endl;
+    std::cout << "[" << testline << "]" << std::endl;
     TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
   }
   
@@ -50,7 +50,7 @@ int test1()
       std::string testline;
       std::getline( ifs, testline);
       std::cout << testline << std::endl;
-      TEST( testline == "Previous log: ./test4.log.old-0" );
+      TEST( testline == "2017-12-07 21:54:22 TEST4 MESSAGE test1" );
     }
   }
   return 0;
