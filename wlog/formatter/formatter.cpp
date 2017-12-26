@@ -94,16 +94,33 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
     char buf[100]={0};
     size_t pos=0;
     bool fulldate = opt.resolution >= resolutions::days;
-    fulldate &= !(opt.hide & (hide_flags::year | hide_flags::month | hide_flags::days 
-                          | hide_flags::hours | hide_flags::minutes | hide_flags::seconds) );
+    fulldate &= !(opt.hide & (hide_flags::year | hide_flags::month | hide_flags::days) );
+    bool fulltime = opt.resolution >= resolutions::seconds;
+    fulltime &= !( opt.hide & (hide_flags::hours | hide_flags::minutes | hide_flags::seconds) );
     if ( fulldate )
     {
-      if (!opt.datetime_format.empty() )
+      if ( fulltime && !opt.datetime_format.empty() )
       {
         const char* fmt = opt.datetime_format.c_str();
         pos = wlog::strftime(buf, 100, fmt, &t1);
       }
-      else if ( opt.locale.empty() || opt.resolution < resolutions::seconds )
+      else if ( fulltime && !opt.locale.empty())
+      {
+        // c	writes standard date and time string, e.g. Sun Oct 17 04:41:13 2010 (locale dependent)
+        pos = wlog::strftime(buf, 100, "%c", &t1);
+      }
+      else
+      {
+        //F (C++11)	equivalent to "%Y-%m-%d" (the ISO 8601 date format)
+        pos = wlog::strftime(buf, 100, "%F", &t1);
+      }
+      /*
+      if (!opt.datetime_format.empty() && fulltime )
+      {
+        const char* fmt = opt.datetime_format.c_str();
+        pos = wlog::strftime(buf, 100, fmt, &t1);
+      }
+      else if ( opt.locale.empty() || !fulltime )
       {
         //F (C++11)	equivalent to "%Y-%m-%d" (the ISO 8601 date format)
         pos = wlog::strftime(buf, 100, "%F", &t1);
@@ -113,6 +130,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
         // c	writes standard date and time string, e.g. Sun Oct 17 04:41:13 2010 (locale dependent)
         pos = wlog::strftime(buf, 100, "%c", &t1);
       }
+      */
     }
     else
     {
@@ -238,7 +256,6 @@ void formatter::fraction_t(std::ostream& os, const time_point& tp)
   auto tsr = (ts/Ratio::den) * Ratio::den;
   int w = 0;
   for ( long R = Ratio::den; R!=0; R/=10, ++w );
-  os << std::use_facet< std::numpunct<char> >(os.getloc()).decimal_point();
   os << std::setfill('0') << std::setw(w-1)<< ts - tsr;
 }
 
@@ -253,16 +270,32 @@ bool formatter::fraction( std::ostream& os, const time_point& tp, const formatte
   bool flag = true;
   if ( hdr.fraction == nullptr )
   {
-    if ( opt.resolution == resolutions::nanoseconds )
-      fraction_t<std::nano>(os, tp);
-    else if ( opt.resolution == resolutions::microseconds )
-      fraction_t<std::micro>(os, tp);
-    else if ( opt.resolution == resolutions::milliseconds )
-      fraction_t<std::milli>(os, tp);
-    else if ( opt.resolution == resolutions::centiseconds )
-      fraction_t<std::centi>(os, tp);
-    else if ( opt.resolution == resolutions::deciseconds )
-      fraction_t<std::deci>(os, tp);
+    if ( opt.resolution > resolutions::seconds )
+    {
+      os << std::use_facet< std::numpunct<char> >(os.getloc()).decimal_point();
+      if ( bool( opt.hide & hide_flags::seconds ) )
+      {
+        time_t ts = time_point::clock::to_time_t(tp);
+        struct tm t1;
+        localtime_r(&ts, &t1);
+        if ( !( opt.hide & hide_flags::minutes ) )
+          os << t1.tm_sec;
+        else if ( !( opt.hide & hide_flags::hours ) )
+          os << t1.tm_min*60 + t1.tm_sec ;
+        
+      }
+        
+      if ( opt.resolution == resolutions::nanoseconds )
+        fraction_t<std::nano>(os, tp);
+      else if ( opt.resolution == resolutions::microseconds )
+        fraction_t<std::micro>(os, tp);
+      else if ( opt.resolution == resolutions::milliseconds )
+        fraction_t<std::milli>(os, tp);
+      else if ( opt.resolution == resolutions::centiseconds )
+        fraction_t<std::centi>(os, tp);
+      else if ( opt.resolution == resolutions::deciseconds )
+        fraction_t<std::deci>(os, tp);
+    }
     else
       flag = false;
   }

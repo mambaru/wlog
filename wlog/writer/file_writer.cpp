@@ -17,35 +17,6 @@
 
 namespace wlog{
   
-/*  
-namespace{
-
-  std::string mkdate()
-  {
-    time_t ts = time(0);
-    struct tm t1;
-    localtime_r(&ts, &t1);
-    char buf[100];
-    int sz = strftime(buf,sizeof(buf), "%Y-%m-%d %H:%M:%S",&t1);
-    return std::string(buf, static_cast<std::string::size_type>(sz) );
-  }
-}
-*/
-
-/*
-file_writer::handlers file_writer::upd_handlers( const file_writer::options& opt , const file_writer::handlers& hdlr )
-{
-  file_writer::handlers h = hdlr;
-  if ( h.footer == nullptr ) h.footer = &file_writer::write_footer;
-  if ( h.header == nullptr ) h.header = &file_writer::write_header;
-  if ( h.main_logname == nullptr ) h.main_logname = &file_writer::main_logname;
-  if ( h.rotate_logname == nullptr ) h.rotate_logname = &file_writer::rotate_logname;
-
-  if ( opt.rotation_footer == 0 ) h.footer = nullptr;
-  if ( opt.rotation_header == 0 ) h.header = nullptr;
-  return h; 
-}
-*/
 file_writer::~file_writer()
 {
   _flog.close();
