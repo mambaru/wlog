@@ -405,10 +405,11 @@ void formatter::operator()(std::ostream& os, const time_point& tp,
     os.imbue(std::locale(_opt.locale.c_str()));
 
   bool wflag = formatter::date(os, tp, _opt, _handlers);
-  if ( wflag ) os << " ";
+  if ( wflag && _showtime) os << " ";
   wflag = false;
-  if ( _showtime ) wflag = formatter::time(os, tp, _opt, _handlers);
+  if ( _showtime )  wflag = formatter::time(os, tp, _opt, _handlers); 
   if ( _showfract ) wflag |= formatter::fraction(os, tp, _opt, _handlers);
+  else wflag = true;
   if ( wflag ) os << " ";
   wflag = formatter::name(os, log_name, _opt, _handlers);
   if ( wflag ) os << " ";
