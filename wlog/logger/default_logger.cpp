@@ -105,7 +105,7 @@ void default_logger::impl::init_context_(context& cntx, const basic_logger_optio
     if ( itr == _file_map.end() )
     {
       auto fwp = std::make_shared<file_writer>( hdr.file_formatter!=nullptr ? hdr.file_formatter : formatter(opt, hdr), opt);
-      itr = _file_map.emplace( opt.path, fwp ).first;
+      itr = _file_map.insert( std::make_pair(opt.path, fwp) ).first;
     }
     using namespace std::placeholders;
     cntx.file_writer = std::bind( &file_writer::operator(), itr->second, _1, _2, _3, _4 );
