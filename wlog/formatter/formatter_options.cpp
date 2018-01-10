@@ -27,7 +27,7 @@ void formatter_options::upgrade(const formatter_options& other)
       
   for (const auto& c : other.color_map)
     if ( 0 == this->color_map.count(c.first) )
-      this->color_map.emplace(c);
+      this->color_map.insert(c);
 }
 
 void formatter_options::finalize()
@@ -53,23 +53,23 @@ void formatter_options::finalize()
   }
   else
   {
-    this->color_map.emplace("WARNING", "\033[93m");
-    this->color_map.emplace("ERROR",   "\033[91m");
-    this->color_map.emplace("ERR",   "\033[91m");
-    this->color_map.emplace("FATAL",   "\033[31m");
-    this->color_map.emplace("EMERG",   "\033[31m");
-    this->color_map.emplace("CRIT",    "\033[31m");
-    this->color_map.emplace("ALERT",   "\033[31m");
+    this->color_map["WARNING"] = "\033[93m";
+    this->color_map["ERROR"] = "\033[91m";
+    this->color_map["ERR"] = "\033[91m";
+    this->color_map["FATAL"] = "\033[31m";
+    this->color_map["EMERG"] = "\033[31m";
+    this->color_map["CRIT"] = "\033[31m";
+    this->color_map["ALERT"] = "\033[31m";
     
     if ( bool( this->colorized & colorized_flags::ident) )
     {
-      this->color_map.emplace("MESSAGE",  "\033[97m");
-      this->color_map.emplace("INFO",     "\033[97m");
-      this->color_map.emplace("TRACE",    "\033[90m");
-      this->color_map.emplace("DEBUG",    "\033[33m");
-      this->color_map.emplace("BEGIN",    "cyan");
-      this->color_map.emplace("END",      "cyan");
-      this->color_map.emplace("PROGRESS", "\033[96m"); 
+      this->color_map["MESSAGE"] = "\033[97m";
+      this->color_map["INFO"] = "\033[97m";
+      this->color_map["TRACE"] = "\033[90m";
+      this->color_map["DEBUG"] = "\033[33m";
+      this->color_map["BEGIN"] = "\033[36m";
+      this->color_map["END"] = "\033[36m";
+      this->color_map["PROGRESS"] = "\033[96m"; 
     }
     
     for ( auto& c : this->color_map )
