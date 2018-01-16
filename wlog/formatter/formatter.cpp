@@ -323,8 +323,26 @@ bool formatter::name( std::ostream& os, const std::string& nm, const formatter_o
       formatter::set_color(os, nm, "\033[34m", opt);
   }
   
+  /*
+  if ( hdr.name != nullptr )
+  {
+    os << hdr.name(nm);
+  }
+  else
+  {
+    auto fmtn = nm;
+    fmtn.resize(6, ' ');
+    os << nm;
+  }
+  */
+  
   std::string str = ( hdr.name != nullptr ) ? hdr.name(nm) : nm;
-  if ( !str.empty() ) os << str;
+  if ( !str.empty() ) 
+  {
+    str.resize(6, ' ');
+    os << str;
+  }
+  
   
   return !str.empty();
 }
@@ -352,7 +370,11 @@ bool formatter::ident( std::ostream& os, const std::string& id, const formatter_
   {
     std::string str = ( hdr.ident != nullptr ) ? hdr.ident(id) : id;
     flag = !str.empty();
-    if ( flag ) os << str;
+    if ( flag ) 
+    {
+      str.resize(9, ' ');
+      os << str;
+    }
   }
 
   if ( is_colorized )

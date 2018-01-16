@@ -27,7 +27,6 @@ void file_writer_options::finalize()
   if ( this->rotation_header==-1 ) this->rotation_header = 1;
   if ( this->rotation_footer==-1 ) this->rotation_footer = 1;
   if ( this->unixtime_suffix==-1 ) this->unixtime_suffix = 0;
-
 }
 
 
