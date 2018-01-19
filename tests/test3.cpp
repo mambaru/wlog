@@ -135,7 +135,7 @@ int test4()
     wlog::formatter fmt(opt, wlog::formatter_handlers() );
     fmt(ss, tp, "hello", "world", "!");
     std::cout << "[" << ss.str() << "]" << std::endl;
-    std::string str1="2017-12-07 21:54:22.123456 hello world !";
+    std::string str1="2017-12-07 21:54:22.123456 hello  world     !";
     std::string str2=ss.str();
     TEST( str1 == str2 );
    
@@ -147,7 +147,7 @@ int test4()
     wlog::formatter fmt(opt, wlog::formatter_handlers());
     fmt(ss, tp, "hello", "world", "!");
     std::cout << ss.str() << std::endl;
-    TEST( ss.str() == "2017-12-07 21:54:22 hello world !" );
+    TEST( ss.str() == "2017-12-07 21:54:22 hello  world     !" );
   }
 
   opt.resolution = wlog::resolutions::minutes;
@@ -157,7 +157,7 @@ int test4()
     wlog::formatter fmt(opt, wlog::formatter_handlers());
     fmt(ss, tp, "hello", "world", "!");
     std::cout << ss.str() << std::endl;
-    TEST( ss.str() == "Thu Dec 07 21:54 hello world !" );
+    TEST( ss.str() == "Thu Dec 07 21:54 hello  world     !" );
   }
 
   opt.resolution = wlog::resolutions::minutes;
@@ -167,7 +167,7 @@ int test4()
     wlog::formatter fmt(opt, wlog::formatter_handlers());
     fmt(ss, tp, "hello", "world", "!");
     std::cout << ss.str() << std::endl;
-    TEST( ss.str() == "Dec 07 21:54 hello world !" );
+    TEST( ss.str() == "Dec 07 21:54 hello  world     !" );
   }
 
   opt.resolution = wlog::resolutions::minutes;
