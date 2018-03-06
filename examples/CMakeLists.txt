@@ -1,17 +1,3 @@
-find_package(wjson  HINTS ${CMAKE_SOURCE_DIR}/wjson/build ${CMAKE_SOURCE_DIR}/../wjson/build)
-find_package(faslib HINTS ${CMAKE_SOURCE_DIR}/faslib/build ${CMAKE_SOURCE_DIR}/../faslib/build)
-
-if (wjson_FOUND AND faslib_FOUND)
-  include_directories(${WJSON_INCLUDE_DIR})
-  include_directories(${FASLIB_INCLUDE_DIR})
-elseif (EXISTS ${CMAKE_SOURCE_DIR}/../wjson AND EXISTS ${CMAKE_SOURCE_DIR}/../faslib)
-  include_directories(${CMAKE_SOURCE_DIR}/../wjson)
-  include_directories(${CMAKE_SOURCE_DIR}/../faslib)
-else()
-  add_definitions(-DWLOG_DISABLE_JSON)
-  set( WLOG_DISABLE_JSON ON)
-endif ()
-
 add_executable(example1 example1.cpp)
 target_link_libraries(example1 wlog)
 

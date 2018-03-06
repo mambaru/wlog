@@ -59,13 +59,6 @@ int test2()
 }
 int main(int , char* [])
 {
-  /*
-  char x[10]={0};
-  int num = std::atoi(argv[1]);
-  for (int i =0; i < num; ++i)
-    x[i]='a' + i;
-  std::cout << x << std::endl;
-  */
   if ( int res = test1() )
     return res;
   if ( int res = test2() )

@@ -23,10 +23,12 @@
 #define EXAMPLE_PROGRESS(X) WLOG_LOG_PROGRESS( "EXAMPLE", X )
 
 void sig_handler(int );
-void sig_handler(int )
+void sig_handler(int sig)
 {
   system("setterm -cursor on");
-  exit(0);
+  if ( sig == SIGINT )
+    exit(0);
+  return;
 }  
 
 int main(int argc, char* argv[])

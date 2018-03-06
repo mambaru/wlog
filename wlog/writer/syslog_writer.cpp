@@ -29,7 +29,7 @@ namespace
    *      reporting and throughput measurement. No action is required.
    * 7 - Debug. Information useful to developers for debugging an application. This information is not useful during operations.
    */
-  size_t ident2pri(const std::string& ident)
+  int ident2pri(const std::string& ident)
   {
     if (ident=="EMERG")    return LOG_EMERG;
     if (ident=="ALERT")    return LOG_ALERT;
