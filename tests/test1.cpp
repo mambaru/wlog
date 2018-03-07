@@ -5,8 +5,6 @@
 int test1();
 int test2();
 
-
-
 int test1()
 {
   wlog::mutex_type m;

@@ -19,3 +19,11 @@ add_executable(test4 test4.cpp)
 add_test(test4 test4)
 add_test(test4v valgrind --error-exitcode=1 ${CMAKE_CURRENT_BINARY_DIR}/test4)
 target_link_libraries(test4 wlog)
+
+
+if (NOT WLOG_DISABLE_JSON)
+  add_executable(test5 test5.cpp)
+  add_test(test5 test5)
+  add_test(test5v valgrind --error-exitcode=1 ${CMAKE_CURRENT_BINARY_DIR}/test5)
+  target_link_libraries(test5 wlog)
+endif()

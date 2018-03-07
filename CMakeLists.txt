@@ -4,8 +4,8 @@ project(wlog)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(WLOG)
 
-add_library(
-  wlog
+set(
+  source_list
   wlog/logstream.cpp
   wlog/global_log.cpp
   wlog/init_log.cpp
@@ -31,8 +31,16 @@ add_library(
   wlog/logger/logger_options.cpp
   wlog/logger/basic_logger_handlers.cpp
   wlog/logger/logger_handlers.cpp
-  
   wlog/aux/aux.cpp
+)
+
+if (NOT WLOG_DISABLE_JSON)
+  list(APPEND source_list wlog/load_options.cpp )
+endif()
+
+add_library(
+  wlog
+  ${source_list}
 )
 
 include_directories(.)

@@ -2,9 +2,9 @@
 #include <signal.h>
 #include <iostream>
 #include <fstream>
-#include <wlogjson/logger_options_json.hpp>
 #include <wlog/logging.hpp>
 #include <wlog/init_log.hpp>
+#include <wlog/load_options.hpp>
 #include <wlog/logger_fun.hpp>
 #include <wjson/json.hpp>
 #include <wjson/strerror.hpp>
@@ -45,28 +45,23 @@ int main(int argc, char* argv[])
     return 0;
   }
   
+  wlog::logger_options opt;
+  
   if ( std::isdigit(argv[1][0]) )
   {
-    std::string json;
-    wlog::logger_options lopt;
     if ( argv[1][0] == '0' )
     {
-      lopt.finalize();
+      opt.finalize();
     }
-    wlog::logger_options_json::serializer()(lopt, std::back_inserter(json));
-    std::cout << json << std::endl;
+    std::cout << wlog::options_dumps(opt) << std::endl;
     return 0;
   }
   
-  std::ifstream ifs(argv[1]);
-  std::string json((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-  wlog::logger_options opt;
-  wjson::json_error e;
-  wlog::logger_options_json::serializer()(opt, json.begin(), json.end(), &e);
-  if ( e )
+  
+  std::string er;
+  if ( !wlog::load_options(argv[1], &opt, &er) )
   {
-    std::cerr << wjson::strerror::message_trace(e, json.begin(), json.end()) << std::endl;
-    return 1;
+    std::cerr << er << std::endl;
   }
 
   signal(SIGINT, sig_handler);
@@ -87,26 +82,26 @@ int main(int argc, char* argv[])
     usleep(1000);
     if ( i%1000==0 )
     {
-           if ( j % 20 == 0)  {   WLOG_WARNING("Тестовое WARNING " << "сообщение №" << i ) }
-      else if ( j % 20 == 1)  {   WLOG_TRACE("Тестовое TRACE " << "сообщение №" << i ) }
-      else if ( j % 20 == 2)  {   WLOG_DEBUG("Тестовое DEBUG " << "сообщение №" << i ) }
-      else if ( j % 20 == 3)  {   WLOG_ERROR("Тестовое ERROR " << "сообщение №" << i ) }
-      else if ( j % 20 == 4)  {   WLOG_FATAL("Тестовое FATAL " << "сообщение №" << i ) }
-      else if ( j % 20 == 5)  {   WLOG_BEGIN("Тестовое BEGIN " << "сообщение №" << i)  }
-      else if ( j % 20 == 6)  {   WLOG_END("Тестовое END " << "сообщение №" << i)  }
-      else if ( j % 20 == 7)  {   WLOG_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );   }
-      else if ( j % 20 == 8)  {   EXAMPLE_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );   }
-      else if ( j % 20 == 9)  {   EXAMPLE_WARNING("Тестовое WARNING " << "сообщение №" << i ) }
-      else if ( j % 20 == 10)  {  EXAMPLE_TRACE("Тестовое TRACE " << "сообщение №" << i ) }
-      else if ( j % 20 == 11) {   EXAMPLE_DEBUG("Тестовое DEBUG " << "сообщение №" << i ) }
-      else if ( j % 20 == 12) {   EXAMPLE_ERROR("Тестовое ERROR " << "сообщение №" << i ) }
-      else if ( j % 20 == 13) {   EXAMPLE_FATAL("Тестовое FATAL " << "сообщение №" << i ) }
-      else if ( j % 20 == 14) {   EXAMPLE_BEGIN("Тестовое BEGIN " << "сообщение №" << i)  }
-      else if ( j % 20 == 15) {   EXAMPLE_END("Тестовое END " << "сообщение №" << i)  }
-      else if ( j % 20 == 16)  {  SYSLOG_INFO("Тестовое INFO " << "сообщение №" << i)  }
-      else if ( j % 20 == 17)  {  SYSLOG_NOTICE("Тестовое NOTICE " << "сообщение №" << i)  }
-      else if ( j % 20 == 18)  {  SYSLOG_ALERT("Тестовое ALERT " << "сообщение №" << i)  }
-      else if ( j % 20 == 19)  {  SYSLOG_CRIT("Тестовое CRIT " << "сообщение №" << i)  }
+           if ( j % 20 == 0)  { WLOG_WARNING("Test WARNING " << "message №" << i )            }
+      else if ( j % 20 == 1)  { WLOG_TRACE("Test TRACE " << "message №" << i )                }
+      else if ( j % 20 == 2)  { WLOG_DEBUG("Test DEBUG " << "message №" << i )                }
+      else if ( j % 20 == 3)  { WLOG_ERROR("Test ERROR " << "message №" << i )                }
+      else if ( j % 20 == 4)  { WLOG_FATAL("Test FATAL " << "message №" << i )                }
+      else if ( j % 20 == 5)  { WLOG_BEGIN("Test BEGIN " << "message №" << i)                 }
+      else if ( j % 20 == 6)  { WLOG_END("Test END " << "message №" << i)                     }
+      else if ( j % 20 == 7)  { WLOG_MESSAGE("Test MESSAGE " << "message №" << i << "" )      }
+      else if ( j % 20 == 8)  { EXAMPLE_MESSAGE("Test MESSAGE " << "message №" << i << "")    }
+      else if ( j % 20 == 9)  { EXAMPLE_WARNING("Test WARNING " << "message №" << i )         }
+      else if ( j % 20 == 10) { EXAMPLE_TRACE("Test TRACE " << "message №" << i )             }
+      else if ( j % 20 == 11) { EXAMPLE_DEBUG("Test DEBUG " << "message №" << i )             }
+      else if ( j % 20 == 12) { EXAMPLE_ERROR("Test ERROR " << "message №" << i )             }
+      else if ( j % 20 == 13) { EXAMPLE_FATAL("Test FATAL " << "message №" << i )             }
+      else if ( j % 20 == 14) { EXAMPLE_BEGIN("Test BEGIN " << "message №" << i)              }
+      else if ( j % 20 == 15) { EXAMPLE_END("Test END " << "message №" << i)                  }
+      else if ( j % 20 == 16) { SYSLOG_INFO("Test INFO " << "message №" << i)                 }
+      else if ( j % 20 == 17) { SYSLOG_NOTICE("Test NOTICE " << "message №" << i)             }
+      else if ( j % 20 == 18) { SYSLOG_ALERT("Test ALERT " << "message №" << i)               }
+      else if ( j % 20 == 19) { SYSLOG_CRIT("Test CRIT " << "message №" << i)                 }
       ++j;
     }
   }

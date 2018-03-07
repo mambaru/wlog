@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 
 inline bool test( bool expr, const std::string& file, int line)
