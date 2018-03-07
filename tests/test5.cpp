@@ -1,5 +1,5 @@
-#include <wlog/init_log.hpp>
-#include <wlog/load_options.hpp>
+#include <wlog/init.hpp>
+#include <wlog/load.hpp>
 #include <iostream>
  
 int main(int argc, char* argv[])
@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
     custom.names.push_back("ERROR");
     options.customize.push_back(custom);
     options.finalize();
-    jsonsrc = wlog::options_dumps(options);
+    jsonsrc = wlog::dump(options);
     std::cout << jsonsrc << std::endl;
     options = wlog::logger_options();
   }
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     jsonsrc = argv[1];
   }
   
-  if ( !wlog::load_options(jsonsrc, &options, nullptr) )
+  if ( !wlog::load(jsonsrc, &options, nullptr) )
     return 1;
   
   return 0;  

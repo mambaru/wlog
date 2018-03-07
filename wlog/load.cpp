@@ -5,7 +5,7 @@
 //
 
 
-#include "load_options.hpp"
+#include "load.hpp"
 #include <wjson/json.hpp>
 #include <wjson/strerror.hpp>
 #include <wlogjson/logger_options_json.hpp>
@@ -48,7 +48,7 @@ logger_options load(const std::string& src, std::string* err)
   return logger_options();
 }
 
-std::string dumps(const logger_options& opt)
+std::string dump(const logger_options& opt)
 {
   std::string res;
   logger_options_json::serializer()(opt, std::back_inserter(res) );

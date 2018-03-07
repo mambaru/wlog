@@ -5,7 +5,7 @@
 //
 
 #include "formatter.hpp"
-#include "../strftime.hpp"
+#include "../aux/strftime.hpp"
 #include <iomanip>
 #include <iostream>
 

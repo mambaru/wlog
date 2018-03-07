@@ -3,8 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <wlog/logging.hpp>
-#include <wlog/init_log.hpp>
-#include <wlog/load_options.hpp>
+#include <wlog/init.hpp>
+#include <wlog/load.hpp>
 #include <wlog/logger_fun.hpp>
 #include <wjson/json.hpp>
 #include <wjson/strerror.hpp>
@@ -53,13 +53,13 @@ int main(int argc, char* argv[])
     {
       opt.finalize();
     }
-    std::cout << wlog::options_dumps(opt) << std::endl;
+    std::cout << wlog::dump(opt) << std::endl;
     return 0;
   }
   
   
   std::string er;
-  if ( !wlog::load_options(argv[1], &opt, &er) )
+  if ( !wlog::load(argv[1], &opt, &er) )
   {
     std::cerr << er << std::endl;
   }
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     return "[" +  ident + "]";
   };
   
-  wlog::init_log(opt, hdr);
+  wlog::init(opt, hdr);
   WLOG_MESSAGE("Demo progress LOG")
   WLOG_BEGIN("Progress...")
   for (int i = 0, j=0 ; i < LOG_LINES; ++i)
