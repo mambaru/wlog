@@ -11,10 +11,10 @@
 
 namespace wlog{
   
-bool load_options(const std::string& src, logger_options* opt, std::string* err = nullptr);
+bool load(const std::string& src, logger_options* opt, std::string* err = nullptr);
 
-logger_options load_options(const std::string& src, std::string* err = nullptr); 
+logger_options load(const std::string& src, std::string* err = nullptr); 
 
-std::string options_dumps(const logger_options& opt);
+std::string dump(const logger_options& opt);
 
 }

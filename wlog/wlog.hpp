@@ -8,4 +8,4 @@
 
 #include <wlog/logging.hpp>
 #include <wlog/global_log.hpp>
-#include <wlog/init_log.hpp>
+#include <wlog/init.hpp>

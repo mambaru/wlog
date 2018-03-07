@@ -1,23 +1,39 @@
 Библиотека логгирования и WFC-фреймворка, с большими возможностия кастомизации с помощью опций, обработчиков и конфигурационного json-файла.
-```bash
-2018-03-07 15:28:47.94 WLOG   MESSAGE   Demo progress LOG
-2018-03-07 15:28:47.94 WLOG   BEGIN     Progress...
-2018-03-07 15:28:47.94 WLOG   WARNING   Test WARNING message №0
-2018-03-07 15:28:49.07 WLOG   TRACE     Test TRACE message №1000
-2018-03-07 15:28:50.20 WLOG   DEBUG     Test DEBUG message №2000
-2018-03-07 15:28:51.32 WLOG   ERROR     Test ERROR message №3000
-2018-03-07 15:28:52.44 WLOG   FATAL     Test FATAL message №4000
-```
+
+![wlog](https://i.imgur.com/xdC2tVt.png)
+
 Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляеться с помощью набора макросов, например:
 ```cpp
-wlog::init_log("./exapmle.log");
-WLOG_ERROR( "Test ERROR message №" << 3000 )
-```
-Сообщения DEBUG и TRACE отключаются на уровне препроцессора в Release режиме.
+#define WLOG_ENABLE_DEBUG_LOG // Don't disable DEBUG and TRACE in Release 
 
+#include <wlog/wlog.hpp>
+#include <wlog/init.hpp>
+  
+int main()
+{
+  wlog::init("example.log"); 
+  WLOG_MESSAGE( "Example N" << 1 << " message" )
+  WLOG_WARNING( "Example N" << 1 << " warning" )
+  WLOG_ERROR( "Example N" << 2 << " error" )
+  WLOG_DEBUG( "Example N" << 3 << " debug" )
+  WLOG_TRACE( "Example N" << 4 << " trace" )
+  return 0;
+}
+```
+По умолчаню сообщения DEBUG и TRACE отключаются на уровне препроцессора в Release режиме.
+
+```bash
 git clone git@github.lan:cpp/wlog.git
 mkdir wlog/build
-
+cd wlog/build
+cmake ..
+# Для сборки примеров и тестов
+cmake -DBUILD_TESTING=ON ..
+# Если поддержка JSON не требуется 
+cmake -DWLOG_DISABLE_JSON=ON ..
+cmake --build make
+ctest 
+```
 
 * Дата 
 * Время + доли секунды

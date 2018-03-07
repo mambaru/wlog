@@ -13,7 +13,7 @@
 
 namespace wlog{
 
-bool load_options(const std::string& src, logger_options* opt, std::string* err)
+bool load(const std::string& src, logger_options* opt, std::string* err)
 {
   std::string jsonstr;
   wjson::json_error er;
@@ -40,15 +40,15 @@ bool load_options(const std::string& src, logger_options* opt, std::string* err)
   return false;
 }
 
-logger_options load_options(const std::string& src, std::string* err)
+logger_options load(const std::string& src, std::string* err)
 {
   logger_options opt;
-  if ( load_options(src, &opt, err) )
+  if ( load(src, &opt, err) )
     return opt;
   return logger_options();
 }
 
-std::string options_dumps(const logger_options& opt)
+std::string dumps(const logger_options& opt)
 {
   std::string res;
   logger_options_json::serializer()(opt, std::back_inserter(res) );

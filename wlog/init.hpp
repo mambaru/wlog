@@ -13,27 +13,27 @@
 
 namespace wlog{
   
-void init_log(const logger_fun& log);
+void init(const logger_fun& log);
 
-void init_log(
+void init(
   const logger_options& opt, 
   const logger_handlers& hdr=logger_handlers()
 );
 
-void init_log(
-  colorized_flags colorized = full_color,
-  resolutions resolution = resolutions::milliseconds
+void init(
+  resolutions resolution = resolutions::milliseconds,
+  colorized_flags colorized = full_color
 );
 
-void init_log(
+void init(
   const std::string& path, 
   resolutions resolution = resolutions::milliseconds, 
   const std::string& stdout = "clog", 
   colorized_flags colorized = full_color);
 
 // @return текущий логгер. М.б. использован для записи финального сообщения
-logger_fun&& release_log();
+logger_fun&& release();
 
-bool log_status();
+bool status();
 
 }

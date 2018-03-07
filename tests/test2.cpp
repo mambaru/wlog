@@ -1,5 +1,5 @@
 #include <wlog/global_log.hpp>
-#include <wlog/init_log.hpp>
+#include <wlog/init.hpp>
 #include <wlog/logging.hpp>
 #include "test.hpp"
 
@@ -10,7 +10,7 @@ int test3();
 int test1()
 {
   std::string message;
-  wlog::init_log(
+  wlog::init(
     [&message](wlog::time_point, std::string name, std::string type, std::string text)
     {
       message = name + type + text;
@@ -29,7 +29,7 @@ int test1()
 int test2()
 {
   std::string message;
-  wlog::init_log();
+  wlog::init();
   
   wlog::global_log("test", "message").log() << "hello " << 1 << 2;
 
@@ -43,7 +43,7 @@ int test2()
 int test3()
 {
   std::string message;
-  wlog::init_log(
+  wlog::init(
     [&message](wlog::time_point, std::string name, std::string type, std::string text)
     {
       message += name + type + text;

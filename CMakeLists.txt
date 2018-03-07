@@ -8,7 +8,7 @@ set(
   source_list
   wlog/logstream.cpp
   wlog/global_log.cpp
-  wlog/init_log.cpp
+  wlog/init.cpp
   wlog/strftime.cpp
   
   wlog/formatter/formatter.cpp
@@ -35,13 +35,10 @@ set(
 )
 
 if (NOT WLOG_DISABLE_JSON)
-  list(APPEND source_list wlog/load_options.cpp )
+  list(APPEND source_list wlog/load.cpp )
 endif()
 
-add_library(
-  wlog
-  ${source_list}
-)
+add_library(wlog ${source_list})
 
 include_directories(.)
 
@@ -51,3 +48,14 @@ if ( BUILD_TESTING )
   add_subdirectory(examples)
 endif()
 
+set(CPACK_PACKAGE_NAME "wlog")
+set(CPACK_PACKAGE_VERSION_MAJOR "0")
+set(CPACK_PACKAGE_VERSION_MINOR "7")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/Readme.md")
+set(CPACK_PACKAGE_CONTACT "migashko@gmail.com")
+
+install(DIRECTORY wlog DESTINATION include PATTERN "*.hpp")
+install(TARGETS wlog LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+include(CPack)

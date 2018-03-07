@@ -1,7 +1,7 @@
 #define WLOG_ENABLE_DEBUG_LOG
 
 #include <wlog/wlog.hpp>
-#include <wlog/init_log.hpp>
+#include <wlog/init.hpp>
 #include <iomanip>
 #include <unistd.h>
   
@@ -13,7 +13,7 @@ int main()
 {
   WLOG_MESSAGE("Message before init_log()")
   WCOUT("std::cout << " << "Message before init_log()")
-  wlog::init_log( wlog::full_color );
+  wlog::init(  );
   WLOG_MESSAGE("Demo progress LOG")
   WLOG_BEGIN("Progress...")
   for (int i = 0 ; i < TOTAL; ++i)

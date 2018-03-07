@@ -1,6 +1,6 @@
 #define WLOG_ENABLE_DEBUG_LOG ON
 #include <wlog/logging.hpp>
-#include <wlog/init_log.hpp>
+#include <wlog/init.hpp>
 #include <wlog/logger/logger_options.hpp>
 #include <iostream>
 #define LOG_LINES 1000000
@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
   {
     // TODO: протестировать
     opt.get_customize("unusedFunction");
-    wlog::log_status();
+    wlog::status();
   }
   //
   
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
   
   std::cout << argv[0] << " " << opt.sync << " " << opt.rotation << " " << opt.size_limit<< std::endl;
   
-  wlog::init_log( opt );
+  wlog::init( opt );
   for (int i = 0; i < LOG_LINES; ++i)
   {
     if ( i % 10 == 0 )
