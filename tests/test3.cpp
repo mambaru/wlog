@@ -12,6 +12,7 @@ int test3();
 
 static const time_t test_time = 1512672862;
 static const char* ru_date = "Чт 07 дек 2017 21:54:22";
+static const char* ru_date2 = "Чтв 07 Дек 2017 21:54:22";
 static const char* en_date = "Thu 07 Dec 2017 09:54:22 PM MSK";
 static wlog::time_point tp;
 
@@ -37,7 +38,7 @@ int test1()
   opt.locale="ru_RU.UTF-8";
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
-  TEST( ss.str() == ru_date );
+  TEST( ss.str() == ru_date || ss.str() == ru_date2);
   
   ss.str(""); ss.clear();
   opt.locale="ru_RU.UTF-8";
@@ -45,7 +46,7 @@ int test1()
   opt.resolution = wlog::resolutions::month;
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
-  TEST( ss.str() == "дек" );
+  TEST( ss.str() == "дек" || ss.str() == "Дек");
   
   ss.str(""); ss.clear();
   opt.locale="ru_RU.UTF-8";

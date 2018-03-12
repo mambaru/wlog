@@ -1,4 +1,4 @@
-Библиотека логгирования и WFC-фреймворка, с большими возможностия кастомизации с помощью опций, обработчиков и конфигурационного json-файла.
+Библиотека логгирования и WFC-фреймворка, с большими возможностия кастомизации с помощью опций, обработчиков и конфигурационного файла в формате JSON.
 
 ![wlog](https://i.imgur.com/xdC2tVt.png)
 
@@ -8,7 +8,7 @@
 
 #include <wlog/wlog.hpp>
 #include <wlog/init.hpp>
-  
+
 int main()
 {
   wlog::init("example.log"); 
@@ -22,8 +22,31 @@ int main()
 ```
 По умолчаню сообщения DEBUG и TRACE отключаются на уровне препроцессора в Release режиме.
 
+# Системные требования и особенности
+
+* linux
+* g++ 4.7 и выше, clang++
+* cmake 2.8 и выше
+* Стандарт c++11
+* thread-safe
+* Запись в файлы, stdout и syslog
+* **Не** header-only 
+* Большие возможности кастомизации форматирования и ротирования как на уровне конфигурации, так и с помощью програмных обработчиков 
+* Можно писать наборы логов в разные файлы с различным форматированием (в том числе stdout) и режимами ротации
+* Динамическое реконфигурирование в любой момент времени 
+* Поддержка JSON-конфигурации с комментариями в Си-стиле
+
+# Сборка и установка
+
 ```bash
-git clone git@github.lan:cpp/wlog.git
+make shared && sudo make install
+make static && sudo make install
+```
+
+Для сборки примеров и тестов, а также чтобы отключить поддержку JSON-конфигурации:
+
+```bash
+git clone git@github.com:mambaru/wlog.git
 mkdir wlog/build
 cd wlog/build
 cmake ..
@@ -34,6 +57,45 @@ cmake -DWLOG_DISABLE_JSON=ON ..
 cmake --build make
 ctest 
 ```
+
+Для компиляции с поддержкой JSON-конфигурации потребуются header-only библиотеки wjson и faslib, которые система сборки автоматически склонирует 
+в директорию сборки, если не найдет их в системе или на том же уровне файловой системы, куда вы склонировали wlog, но для использования они 
+не нужны.
+
+## подключение как submodule (TODO:)
+
+```cpp
+#include <wlog/logging.hpp>
+#include <wlog/init.hpp>
+#include <wlog/load.hpp>
+
+int main()
+{
+  wlog::init(wlog::load("{}"));
+  WLOG_MESSAGE("Hello")
+}
+```
+
+```cmake
+cmake_minimum_required(VERSION 2.8)
+set(CMAKE_CXX_FLAGS "-std=c++11")
+add_subdirectory(wlog)
+add_executable(main main.cpp)
+include_directories(wlog)
+target_link_libraries(main wlog)
+```
+
+```bash
+git init
+git submodule add git@github.lan:cpp/wlog.git
+mkdir build
+cd build
+cmake ..
+make
+```
+
+# TODO: submodule faslib и wjson
+
 
 * Дата 
 * Время + доли секунды

@@ -98,10 +98,10 @@ int main(int argc, char* argv[])
       else if ( j % 20 == 13) { EXAMPLE_FATAL("Test FATAL " << "message №" << i )             }
       else if ( j % 20 == 14) { EXAMPLE_BEGIN("Test BEGIN " << "message №" << i)              }
       else if ( j % 20 == 15) { EXAMPLE_END("Test END " << "message №" << i)                  }
-      else if ( j % 20 == 16) { SYSLOG_INFO("Test INFO " << "message №" << i)                 }
-      else if ( j % 20 == 17) { SYSLOG_NOTICE("Test NOTICE " << "message №" << i)             }
-      else if ( j % 20 == 18) { SYSLOG_ALERT("Test ALERT " << "message №" << i)               }
-      else if ( j % 20 == 19) { SYSLOG_CRIT("Test CRIT " << "message №" << i)                 }
+      else if ( j % 20 == 16) { WSYSLOG_INFO("Test INFO " << "message №" << i)                 }
+      else if ( j % 20 == 17) { WSYSLOG_NOTICE("Test NOTICE " << "message №" << i)             }
+      else if ( j % 20 == 18) { WSYSLOG_ALERT("Test ALERT " << "message №" << i)               }
+      else if ( j % 20 == 19) { WSYSLOG_CRIT("Test CRIT " << "message №" << i)                 }
       ++j;
     }
   }

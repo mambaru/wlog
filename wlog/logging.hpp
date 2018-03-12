@@ -59,16 +59,21 @@ inline void only_for_log( Args&& ... ){}
 #define WLOG_TRACE(X)    WLOG_LOG_TRACE   ( "WLOG", X )
 #define WLOG_PROGRESS(X) WLOG_LOG_PROGRESS( "WLOG", X )
 
-#define SYSLOG_EMERG(X)   WLOG( "SYSLOG", "EMERG",   X)
-#define SYSLOG_ALERT(X)   WLOG( "SYSLOG", "ALERT",   X)
-#define SYSLOG_CRIT(X)    WLOG( "SYSLOG", "CRIT",    X)
-#define SYSLOG_ERR(X)     WLOG( "SYSLOG", "ERR",     X)
-#define SYSLOG_WARNING(X) WLOG( "SYSLOG", "WARNING", X)
-#define SYSLOG_NOTICE(X)  WLOG( "SYSLOG", "NOTICE",  X)
-#define SYSLOG_INFO(X)    WLOG( "SYSLOG", "INFO",    X)
-#define SYSLOG_DEBUG(X)   WLOG( "SYSLOG", "DEBUG",   X)
+#define WSYSLOG_EMERG(X)   WLOG( "SYSLOG", "EMERG",   X)
+#define WSYSLOG_ALERT(X)   WLOG( "SYSLOG", "ALERT",   X)
+#define WSYSLOG_CRIT(X)    WLOG( "SYSLOG", "CRIT",    X)
+#define WSYSLOG_ERR(X)     WLOG( "SYSLOG", "ERR",     X)
+#define WSYSLOG_WARNING(X) WLOG( "SYSLOG", "WARNING", X)
+#define WSYSLOG_NOTICE(X)  WLOG( "SYSLOG", "NOTICE",  X)
+#define WSYSLOG_INFO(X)    WLOG( "SYSLOG", "INFO",    X)
+#define WSYSLOG_DEBUG(X)   WLOG( "SYSLOG", "DEBUG",   X)
 
-#define WCOUT(X) ::wlog::global_cout().log() << X << std::endl;
-#define WCLOG(X) ::wlog::global_clog().log() << X << std::endl;
-#define WCERR(X) ::wlog::global_cerr().log() << X << std::endl;
-
+#ifndef WLOG_DISABLE_STDOUT
+# define WCOUT(X) ::wlog::global_cout().log() << X << std::endl;
+# define WCLOG(X) ::wlog::global_clog().log() << X << std::endl;
+# define WCERR(X) ::wlog::global_cerr().log() << X << std::endl;
+#else
+# define WCOUT(X)
+# define WCLOG(X)
+# define WCERR(X)
+#endif

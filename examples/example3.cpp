@@ -50,9 +50,9 @@ int main(int argc, char* argv[])
     else if ( i % 10 == 7)
       {   WLOG_PROGRESS("Тестовое " << "сообщение №" << i << std::endl)  }
     else if ( i % 10 == 8)
-      {   SYSLOG_INFO("Тестовое " << "сообщение №" << i)  }
+      {   WSYSLOG_INFO("Тестовое " << "сообщение №" << i)  }
     else if ( i % 10 == 9)
-      {   SYSLOG_NOTICE("Тестовое " << "сообщение №" << i)  }
+      {   WSYSLOG_NOTICE("Тестовое " << "сообщение №" << i)  }
     else
       WLOG_MESSAGE("Тестовое " << "сообщение №" << i << "" );
   }
