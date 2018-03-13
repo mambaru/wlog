@@ -46,7 +46,7 @@ make static && sudo make install
 Для сборки примеров и тестов, а также чтобы отключить поддержку JSON-конфигурации:
 
 ```bash
-git clone git@github.com:mambaru/wlog.git
+git clone https://github.com/mambaru/wlog.git
 mkdir wlog/build
 cd wlog/build
 cmake ..
@@ -58,12 +58,13 @@ cmake --build make
 ctest 
 ```
 
-Для компиляции с поддержкой JSON-конфигурации потребуются header-only библиотеки wjson и faslib, которые система сборки автоматически склонирует 
-в директорию сборки, если не найдет их в системе или на том же уровне файловой системы, куда вы склонировали wlog, но для использования они 
+Для компиляции с поддержкой JSON-конфигурации потребуются header-only библиотеки wjson и faslib, которые система сборки автоматически клонирует 
+в директорию сборки, если не найдет их в системе или на том же уровне файловой системы, куда вы клонировали wlog, но для использования они 
 не нужны.
 
-## подключение как submodule (TODO:)
+## Подключение как submodule
 
+main.cpp:
 ```cpp
 #include <wlog/logging.hpp>
 #include <wlog/init.hpp>
@@ -76,6 +77,8 @@ int main()
 }
 ```
 
+### Если нужен только wlog
+CMakeLists.txt:
 ```cmake
 cmake_minimum_required(VERSION 2.8)
 set(CMAKE_CXX_FLAGS "-std=c++11")
@@ -87,31 +90,74 @@ target_link_libraries(main wlog)
 
 ```bash
 git init
-git submodule add git@github.lan:cpp/wlog.git
+git submodule add https://github.com/mambaru/wlog.git
 mkdir build
 cd build
 cmake ..
 make
 ```
 
-# TODO: submodule faslib и wjson
+### С подключение faslib и wjson
+CMakeLists.txt:
+```cmake
+cmake_minimum_required(VERSION 2.8)
+set(CMAKE_CXX_FLAGS "-std=c++11")
+add_subdirectory(faslib)
+add_subdirectory(wjson)
+add_subdirectory(wlog)
+include_directories(wlog wjson faslib)
+add_executable(main main.cpp)
+target_link_libraries(main wlog)
+```
+
+```bash
+git init
+git submodule add https://github.com/migashko/faslib.git
+git submodule add https://github.com/mambaru/wjson.git
+git submodule add https://github.com/mambaru/wlog.git
+mkdir build
+cd build
+cmake ..
+make
+```
+
+# Инициализация
+
+Если не вызвать `wlog::init` то вывод будет на экран без форматирования и синхронизации. Вызывать `wlog::init` можно в любое время в любом месте, 
+а также повторно для реконфигурации. 
+
+```cpp
+#include <wlog/init.hpp>                                                                                                                                                                
+#include <wlog/load.hpp>                                                                                                                                                                
+
+// По умолчанию вывод только в clog в цвете
+wlog::init();
+// Выводить с тысячными долями секунд и отключить цветовую раскраску 
+wlog::init(wlog::resolutions::milliseconds, wlog::colorized_flags::none);
+// Выводить в файл и clog
+wlog::init("main.log");
+// Выводить с тысячными долями секунд в файл и clog и отключить цветовую раскраску для clog
+wlog::init("main.log", wlog::resolutions::milliseconds, wlog::colorized_flags::none);
+
+// Так можно задать все остальные опции
+wlog::logger_options opt;
+opt.path="main.log";
+wlog::init(opt);
+
+// Загрузть конфигурацию из файла
+wlog::init(wlog::load("logger.json"));
+// Загрузть конфигурацию из строки
+wlog::init(wlog::load("{\"path\":\"main.log\"}"));
+```
 
 
-* Дата 
-* Время + доли секунды
-* Имя лога:
-  * SYSTEM - конфигурирование и инициализация системы
-  * DOMIAN - прикладной лог (важные сообщения)
-  * COMMON - общий лог (все остальное)
-  * SYSLOG - системный лог плюс запись в syslog (критические сообщения)
-  * DEBUG  - лог отладки (отключается в релиз-версии на уровне компилятора )
-  * JSONRPC - лог jsonrpc движка
-  * IOW     - лог сетевого движка
+
+* Дата и время + доли секунды
 * Тип сообщения:
   * ERROR   - ошибки, после которых система сохраняет работоспособность и согласованность данных 
   * WARNING - предупреждения, например о превышении размера очереди. 
   * MESSAGE - прочие уведомления
-  * FATAL   - фатальная ошибка. Обычно далее следует останов демона 
+  * FATAL   - фатальная ошибка. Обычно далее следует останов системы
   * BEGIN   - начало какого либо процесса (например загрузка БД)
   * END     - окончание какого либо процесса (например загрузка БД)
   * DEBUG   - отладочные сообщения (отключается в релиз-версии на уровне компилятора )

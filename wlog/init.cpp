@@ -48,13 +48,13 @@ void init(const logger_options& opt, const logger_handlers& hdr)
   global_writer = std::bind(&default_logger::operator(), plog, _1, _2, _3, _4);
 }
 
-void init(const std::string& path, resolutions resolution, const std::string& stdout, colorized_flags colorized)
+void init(const std::string& path, resolutions resolution, colorized_flags colorized)
 {
   logger_options opt;
   opt.path = path;
   opt.resolution = resolution;
   opt.stdout.resolution = resolution;
-  opt.stdout.name = stdout;
+  opt.stdout.name = "clog";
   opt.stdout.colorized = colorized;
   auto plog = std::make_shared<default_logger>(opt);
   std::lock_guard<mutex_type> lk(log_mutex);

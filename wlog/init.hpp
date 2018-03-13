@@ -21,14 +21,13 @@ void init(
 );
 
 void init(
-  resolutions resolution = resolutions::milliseconds,
+  resolutions resolution = resolutions::seconds,
   colorized_flags colorized = full_color
 );
 
 void init(
   const std::string& path, 
-  resolutions resolution = resolutions::milliseconds, 
-  const std::string& stdout = "clog", 
+  resolutions resolution = resolutions::seconds, 
   colorized_flags colorized = full_color);
 
 // @return текущий логгер. М.б. использован для записи финального сообщения
