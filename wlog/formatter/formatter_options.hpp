@@ -18,6 +18,8 @@ namespace wlog{
  
 struct formatter_options
 {
+  int name_width = -1;
+  int ident_width = -1;
   resolutions resolution = resolutions::inherited;
   colorized_flags colorized = colorized_flags::inherited;
   hide_flags hide = hide_flags::inherited;

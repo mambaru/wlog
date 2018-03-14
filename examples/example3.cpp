@@ -15,7 +15,6 @@ int main(int argc, char* argv[])
   }
   //
   
-  
   opt.path = "./example3.log";
   //opt.sync = 0;
   if ( argc > 1 )

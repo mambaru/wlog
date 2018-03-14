@@ -10,6 +10,12 @@ namespace wlog{
  
 void formatter_options::upgrade(const formatter_options& other)
 {
+  if ( this->name_width == -1 )
+    this->name_width = other.name_width;
+
+  if ( this->ident_width == -1 )
+    this->ident_width = other.ident_width;
+
   if ( this->resolution == resolutions::inherited )
     this->resolution = other.resolution;
   
@@ -32,6 +38,12 @@ void formatter_options::upgrade(const formatter_options& other)
 
 void formatter_options::finalize()
 {
+  if ( this->name_width == -1 )
+    this->name_width = 6;
+
+  if ( this->ident_width == -1 )
+    this->ident_width = 9;
+
   if ( this->resolution == resolutions::inherited )
     this->resolution = resolutions::seconds;
   

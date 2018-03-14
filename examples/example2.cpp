@@ -17,12 +17,31 @@ int main(int, char* [])
   opt.rotation = 10;
   opt.size_limit = 1024*1024*100;
   opt.time_limit = 1;
-  opt.hide = wlog::hide_flags::name | wlog::hide_flags::ident | wlog::hide_flags::date | wlog::hide_flags::hours;
+  //opt.hide = wlog::hide_flags::name | wlog::hide_flags::ident | wlog::hide_flags::date | wlog::hide_flags::hours;
   //opt.stdout.colorized = wlog::full_color;
   opt.stdout.name = "cout";
   wlog::init( opt );
   for (int i = 0; i < LOG_LINES; ++i)
   {
+    if ( i%3==0  )
+    {
+      opt.name_width = 6;
+      opt.ident_width = 9;
+      wlog::init( opt );
+    }
+    else if ( i%3==1  )
+    {
+      opt.name_width = 3;
+      opt.ident_width = 3;
+      wlog::init( opt );
+    }
+    else
+    {
+      opt.name_width = 0;
+      opt.ident_width = 0;
+      wlog::init( opt );
+    }
+
     if ( i % 10 == 0 )
       { WLOG_WARNING("Тестовое WARNING " << "сообщение №" << i ) }
     else if ( i % 10 == 1)
@@ -41,6 +60,7 @@ int main(int, char* [])
       {   WLOG_PROGRESS("Тестовое PROGRESS " << "сообщение №" << i << std::endl)  }
     else
       WLOG_MESSAGE("Тестовое MESSAGE " << "сообщение №" << i << "" );
+  
   }
   return 0;
 }

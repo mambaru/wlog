@@ -130,29 +130,50 @@ make
 #include <wlog/init.hpp>                                                                                                                                                                
 #include <wlog/load.hpp>                                                                                                                                                                
 
-// По умолчанию вывод только в clog в цвете
-wlog::init();
-// Выводить с тысячными долями секунд и отключить цветовую раскраску 
-wlog::init(wlog::resolutions::milliseconds, wlog::colorized_flags::none);
-// Выводить в файл и clog
-wlog::init("main.log");
-// Выводить с тысячными долями секунд в файл и clog и отключить цветовую раскраску для clog
-wlog::init("main.log", wlog::resolutions::milliseconds, wlog::colorized_flags::none);
+  // По умолчанию вывод только в clog в цвете
+  wlog::init();
+  // Выводить с тысячными долями секунд и отключить цветовую раскраску 
+  wlog::init(wlog::resolutions::milliseconds, wlog::colorized_flags::none);
+  // Выводить в файл и clog
+  wlog::init("main.log");
+  // Выводить с тысячными долями секунд в файл и clog и отключить цветовую раскраску для clog
+  wlog::init("main.log", wlog::resolutions::milliseconds, wlog::colorized_flags::none);
 
-// Так можно задать все остальные опции
-wlog::logger_options opt;
-opt.path="main.log";
-wlog::init(opt);
+  // Так можно задать все остальные опции
+  wlog::logger_options opt;
+  opt.path="main.log";
+  wlog::init(opt);
 
-// Загрузть конфигурацию из файла
-wlog::init(wlog::load("logger.json"));
-// Загрузть конфигурацию из строки
-wlog::init(wlog::load("{\"path\":\"main.log\"}"));
+  // Загрузть конфигурацию из файла
+  wlog::init(wlog::load("logger.json"));
+  // Загрузть конфигурацию из строки
+  wlog::init(wlog::load("{\"path\":\"main.log\"}"));
+
+  // Вариант с проверкой 
+  std::string err;
+  opt = wlog::logger_options();
+  if ( wlog::load("logger.json", &opt, &err) )
+    wlog::init(opt);
+  else
+    std::cerr << "ERROR: " << err << std::endl;
 ```
 
+Для вывода финального сообщения при завершении работы:
+```cpp
+  // Выключаем логгирование 
+  if (auto log = wlog::release() )
+  {
+    // Глобальный лог уже не доступен
+    // Но можем записать в лог финальное сообщение
+    log( wlog::time_point::clock::now(), "EXAMPLE4", "FINAL", "Bye!\n" );
+  }
+```
+Это может быть полезно, если нужна гарантия, что сообщение будет последним в файле лога (напрмер в многопоточной среде, и/или много отладочных сообщений в деструкторах объектов)
 
+# Использование
 
 * Дата и время + доли секунды
+* Имя лога
 * Тип сообщения:
   * ERROR   - ошибки, после которых система сохраняет работоспособность и согласованность данных 
   * WARNING - предупреждения, например о превышении размера очереди. 
@@ -160,65 +181,50 @@ wlog::init(wlog::load("{\"path\":\"main.log\"}"));
   * FATAL   - фатальная ошибка. Обычно далее следует останов системы
   * BEGIN   - начало какого либо процесса (например загрузка БД)
   * END     - окончание какого либо процесса (например загрузка БД)
-  * DEBUG   - отладочные сообщения (отключается в релиз-версии на уровне компилятора )
-  * TRACE   - трассировка ввода/вывода (отключается в релиз-версии на уровне компилятора )
+  * DEBUG   - отладочные сообщения (отключается в релиз-версии на уровне препроцессора )
+  * TRACE   - трассировка ввода/вывода (отключается в релиз-версии на уровне препроцессора )
   * PROGRESS - трассировка прогресса длительных операций без перевода строки (например процент загрузки БД)
 * Сообщение. Произвольный формат
+ 
+ По умолчанию используется лог WLOG в соответствующем наборе макросов:
 
-### Использование
 ```cpp
-#include <wfc/logger.hpp>
+//wlog/logging.hpp
+#define WLOG_ERROR(X)    WLOG_LOG_ERROR   ( "WLOG", X )
+#define WLOG_WARNING(X)  WLOG_LOG_WARNING ( "WLOG", X )
+#define WLOG_MESSAGE(X)  WLOG_LOG_MESSAGE ( "WLOG", X )
+#define WLOG_FATAL(X)    WLOG_LOG_FATAL   ( "WLOG", X )
+#define WLOG_BEGIN(X)    WLOG_LOG_BEGIN   ( "WLOG", X )
+#define WLOG_END(X)      WLOG_LOG_END     ( "WLOG", X )
+#define WLOG_DEBUG(X)    WLOG_LOG_DEBUG   ( "WLOG", X )
+#define WLOG_TRACE(X)    WLOG_LOG_TRACE   ( "WLOG", X )
+#define WLOG_PROGRESS(X) WLOG_LOG_PROGRESS( "WLOG", X )
 ```
-Доступен следующий набор макросов :
-```
-Имя_LOG_Тип("Это " << 10 << " сообщение" )
-```
-Например:
+Аналогичным образом можно сделать свой набор макросов для каждого лога. Если не устраивает предлагаемых сообщений, то можно задать свой, аналогично набору макросов для работы с syslog:
+
 ```cpp
-COMMON_LOG_MESSAGE("Это " << 10 << " сообщение" )
+//wlog/logging.hpp
+#define WSYSLOG_EMERG(X)   WLOG( "SYSLOG", "EMERG",   X)
+#define WSYSLOG_ALERT(X)   WLOG( "SYSLOG", "ALERT",   X)
+#define WSYSLOG_CRIT(X)    WLOG( "SYSLOG", "CRIT",    X)
+#define WSYSLOG_ERR(X)     WLOG( "SYSLOG", "ERR",     X)
+#define WSYSLOG_WARNING(X) WLOG( "SYSLOG", "WARNING", X)
+#define WSYSLOG_NOTICE(X)  WLOG( "SYSLOG", "NOTICE",  X)
+#define WSYSLOG_INFO(X)    WLOG( "SYSLOG", "INFO",    X)
+#define WSYSLOG_DEBUG(X)   WLOG( "SYSLOG", "DEBUG",   X)
 ```
-В прикладных модулях рекомендуется использовать DOMIAN, COMMON и DEBUG или определить свой набор макросов, например так
+
+Пример использования:
 ```cpp
-#define DEMO_LOG_ERROR(X)    WFC_LOG_ERROR( "DEMO", X )
-#define DEMO_LOG_WARNING(X)  WFC_LOG_WARNING( "DEMO", X )
-#define DEMO_LOG_MESSAGE(X)  WFC_LOG_MESSAGE( "DEMO", X )
-#define DEMO_LOG_FATAL(X)    WFC_LOG_FATAL( "DEMO", X )
-#define DEMO_LOG_BEGIN(X)    WFC_LOG_BEGIN( "DEMO", X )
-#define DEMO_LOG_END(X)      WFC_LOG_END( "DEMO", X )
-#define DEMO_LOG_DEBUG(X)    WFC_LOG_DEBUG( "DEMO", X )
-#define DEMO_LOG_TRACE(X)    WFC_LOG_TRACE( "DEMO", X )
-#define DEMO_LOG_PROGRESS(X) WFC_LOG_PROGRESS( "DEMO", X )
+WLOG_MESSAGE("Это " << 10 << " сообщение" )
+WLOG_ERROR("Это " << 25 << " ошибка" )
 ```
-Все макросы автоматически добавляют перевод строки после сообщения, за исключением ```*_PROGRESS``` который использует возврат каретки.
-Следующий набор логов отключаются в Release версии препроцессором:
-```
-DEBUG_LOG_*
-*_LOG_DEBUG
-*_LOG_TRACE
-```
-При любых ```*_FATAL``` система корректно пытается завершить работу. Т.к. процедура может быть длительной и 
-сопровождаться большим количеством записей в лог, последним сообщением, система логирование дублирует это сообщение, следующим образом:
-```bash
-2017-12-21 17:15:17 FINAL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-2017-12-21 17:15:17 FINAL ---------- Abnormal Shutdown! ----------
-2017-12-21 17:15:17 FINAL Date: 2017-12-21
-2017-12-21 17:15:17 FINAL Time: 17:15:17
-2017-12-21 17:15:17 FINAL Name: COMMON
-2017-12-21 17:15:17 FINAL Message: Сообщение об ошибке, вызвавшее останов системы
-2017-12-21 17:15:17 FINAL !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-```
+
+
 ## Настройки 
 Значения по умолчанию:
 ```cpp
 {
-  "logger": {
-    "enabled": true,
-    /* Рекомендуемое значение -1000 */
-    "startup_priority": 0,
-    /* Рекомендуемое значение 1000  */
-    "shutdown_priority": 0,
-    /* Останов системе при регистрации *_FATAL сообщения */
-    "stop_with_fatal_log_entry": true,
     /* Список доступных логов и типов сообщений */
     "allow": [],
     /* Список запрещенных логов и типов сообщений */
@@ -242,10 +248,14 @@ DEBUG_LOG_*
     "rotation_header": true,
     /* Сопроводительное сообщение ротирование в конце файла */
     "rotation_footer": true,
-
-    /* --- Опции форматирования --- */
     /* По умолчание к имени файла добавляется внутренний счетчи, если указать эту функцию - то unixtime*/
     "unixtime_suffix": false,
+
+    /* --- Опции форматирования --- */
+    // Ширина поля имени лога (в символах)
+    "name_width": 6,
+    // Ширина поля типа сообщения (в символах)
+    "ident_width": 9,
     /* Точность отображения времени (от наносекунд до года)  */
     "resolution": "seconds",
     /* Формат представления даты и времени в формате strftime (игнорируется если заданы resolution или hide) */
@@ -262,12 +272,11 @@ DEBUG_LOG_*
     /* --- Кастомизация --- */
     
     /* Настройки стандартного вывода */
-    "stdout": { },
+    "stdout": {},
     /* Настройки записи в системный лог */
-    "syslog": { },
+    "syslog": {},
     /* Индивидуальные настройки для логов и типов сообщений */
     "customize": []
-  }
 }
 ```
 Для минимальной конфигурации достаточно указать путь к файлу лога и, желательно, приоритеты запуска и останова, 

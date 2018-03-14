@@ -16,6 +16,9 @@ namespace wlog{
   
 struct formatter_options_json
 {
+  JSON_NAME(name_width)
+  JSON_NAME(ident_width)
+
   JSON_NAME(colorized)
   JSON_NAME(resolution)
   JSON_NAME(hide)
@@ -39,6 +42,8 @@ struct formatter_options_json
   typedef wjson::object<
     formatter_options,
     wjson::member_list<
+      wjson::member<n_name_width, formatter_options, int, &formatter_options::name_width>,
+      wjson::member<n_ident_width, formatter_options, int, &formatter_options::ident_width>,
       wjson::member<n_resolution, formatter_options, resolutions, &formatter_options::resolution, resolutions_json>,
       wjson::member<n_datetime_format, formatter_options, std::string, &formatter_options::datetime_format>,
       wjson::member<n_hide, formatter_options, hide_flags, &formatter_options::hide, hide_flags_json>,

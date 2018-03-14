@@ -22,7 +22,16 @@ bool load(const std::string& src, logger_options* opt, std::string* err)
   if ( !wjson::parser::is_object(beg, src.end()) )
   {
     std::ifstream ifs(src);
-    std::copy(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>(), std::back_inserter(jsonstr));
+    if ( ifs.good() )
+    {
+      std::copy(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>(), std::back_inserter(jsonstr));
+    }
+    else
+    {
+      if (err!=nullptr)
+        *err = strerror(errno);
+      return false;
+    }
   }
   else
     jsonstr.assign( beg, src.end());
