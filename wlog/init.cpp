@@ -25,7 +25,6 @@ logger_fun&& release()
 void init(resolutions resolution, colorized_flags colorized )
 {
   logger_options opt;
-  opt.stdout.name = "clog";
   opt.stdout.colorized = colorized;
   opt.stdout.resolution = resolution;
   auto plog = std::make_shared<default_logger>(opt);
@@ -54,7 +53,6 @@ void init(const std::string& path, resolutions resolution, colorized_flags color
   opt.path = path;
   opt.resolution = resolution;
   opt.stdout.resolution = resolution;
-  opt.stdout.name = "clog";
   opt.stdout.colorized = colorized;
   auto plog = std::make_shared<default_logger>(opt);
   std::lock_guard<mutex_type> lk(log_mutex);

@@ -326,8 +326,8 @@ bool formatter::name( std::ostream& os, const std::string& nm, const formatter_o
   std::string str = ( hdr.name != nullptr ) ? hdr.name(nm) : nm;
   if ( !str.empty() ) 
   {
-    if ( opt.name_width!=0)
-      str.resize(opt.name_width, ' ');
+    if ( opt.name_width > 0)
+      str.resize( static_cast<size_t>(opt.name_width), ' ');
     os << str;
   }
   
@@ -359,8 +359,8 @@ bool formatter::ident( std::ostream& os, const std::string& id, const formatter_
     flag = !str.empty();
     if ( flag ) 
     {
-      if ( opt.ident_width!=0)
-        str.resize(opt.ident_width, ' ');
+      if ( opt.ident_width > 0 )
+        str.resize( static_cast<size_t>(opt.ident_width), ' ');
       os << str;
     }
   }
