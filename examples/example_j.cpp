@@ -25,7 +25,8 @@
 void sig_handler(int );
 void sig_handler(int sig)
 {
-  system("setterm -cursor on");
+  if ( -1 == system("setterm -cursor on") )
+    abort();
   if ( sig == SIGINT )
     exit(0);
   return;
