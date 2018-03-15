@@ -24,15 +24,15 @@ CONFIGURE_LIBRARY( wjson/json.hpp "${cur_dirs} \
                                 /usr/local/include/wjson" 
                   wjson "" )
 
-if ( NOT HAVE_INCLUDE_faslib )
-  message(WARNING "faslib not found! Use 'git clone https://github.com/migashko/faslib.git' \
-                   in parent directory or install to system and set path in you project")
-endif()
+#if ( NOT HAVE_INCLUDE_faslib )
+#  message(WARNING "faslib not found! Use 'git clone https://github.com/migashko/faslib.git' \
+#                   in parent directory or install to system and set path in you project")
+#endif()
 
-if ( NOT HAVE_INCLUDE_wjson )
-  message(WARNING "wjson not found! Use 'git clone https://github.com/mambaru/wjson.git' \
-                   in parent directory or install to system and set path in you project")
-endif()
+#if ( NOT HAVE_INCLUDE_wjson )
+#  message(WARNING "wjson not found! Use 'git clone https://github.com/mambaru/wjson.git' \
+#                   in parent directory or install to system and set path in you project")
+#endif()
 
 
 if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") 
@@ -68,7 +68,7 @@ if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     endif()
   endif(PARANOID_WARNING)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
-    # using Intel C++
+# using Intel C++
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR- /W3 /wd4503 /wd4307 /EHsc /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS")
   set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")

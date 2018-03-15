@@ -67,7 +67,7 @@ delete-branches:
     - /^build.*$/
     - /^check.*$/
 
-faslib-push:
+push-to-github:
   stage: publish
   only:
     - master
