@@ -66,7 +66,8 @@ int main(int argc, char* argv[])
   }
 
   signal(SIGINT, sig_handler);
-  system("setterm -cursor off");
+  if ( -1 == system("setterm -cursor off") )
+    abort();
 
   wlog::logger_handlers hdr;
   hdr.customize["EXAMPLE"].ident = [](const std::string& ident) -> std::string
@@ -106,7 +107,8 @@ int main(int argc, char* argv[])
       ++j;
     }
   }
-  system("setterm -cursor on");
+  if ( -1 == system("setterm -cursor on") )
+    abort();
   WLOG_PROGRESS( LOG_LINES << " " << 100 << "%        " << std::endl)
   WLOG_END("Progress... Done")
   
