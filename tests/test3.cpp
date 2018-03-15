@@ -48,7 +48,7 @@ int test1()
   opt.resolution = wlog::resolutions::month;
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
-  TEST( ss.str() == "дек" || ss.str() == "Дек");
+  TEST( ss.str() == "дек" || ss.str() == "Дек" || ss.str() == "дек.");
   
   ss.str(""); ss.clear();
   opt.locale="ru_RU.UTF-8";
