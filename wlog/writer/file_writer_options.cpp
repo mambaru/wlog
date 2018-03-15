@@ -4,8 +4,8 @@ namespace wlog{
 
 void file_writer_options::upgrade(const file_writer_options& other)
 {
-  if ( this->path.empty() ) this->path = other.path;
   if ( this->sync==-1 ) this->sync = other.sync;
+  if ( this->path.empty() ) this->path = other.path;
   if ( this->startup_rotate==-1 ) this->startup_rotate = other.startup_rotate;
   if ( this->size_limit==-1 )     this->size_limit = other.size_limit;
   if ( this->time_limit==-1 )     this->time_limit = other.time_limit;
