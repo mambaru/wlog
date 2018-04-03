@@ -1,6 +1,7 @@
 all: 
-	@echo "make shared && sudo make install"
-	@echo "make static && sudo make install"
+	@echo "Usage:"
+	@echo "make shared"
+	@echo "make static"
 install:
 	cd build && make install
 static: 
