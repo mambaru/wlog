@@ -13,6 +13,7 @@ get_property(cur_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIR
 include(ConfigureLibrary)
 CONFIGURE_LIBRARY( fas/aop.hpp "${cur_dirs} \
                                 ${CMAKE_CURRENT_SOURCE_DIR}/../faslib \
+                                ${CMAKE_CURRENT_SOURCE_DIR}/../../../faslib \
                                 ${CMAKE_SOURCE_DIR}/../faslib \
                                 ${PROJECT_BINARY_DIR}/faslib \
                                 /usr/include/faslib\
@@ -20,6 +21,7 @@ CONFIGURE_LIBRARY( fas/aop.hpp "${cur_dirs} \
                   faslib "" )
 CONFIGURE_LIBRARY( wjson/json.hpp "${cur_dirs} \
                                 ${CMAKE_CURRENT_SOURCE_DIR}/../wjson \
+                                ${CMAKE_CURRENT_SOURCE_DIR}/../../../wjson \
                                 ${CMAKE_SOURCE_DIR}/../wjson \
                                 ${PROJECT_BINARY_DIR}/wjson \
                                 /usr/include/wjson\
