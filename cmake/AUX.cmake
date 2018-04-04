@@ -13,12 +13,16 @@ get_property(cur_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIR
 include(ConfigureLibrary)
 CONFIGURE_LIBRARY( fas/aop.hpp "${cur_dirs} \
                                 ${CMAKE_CURRENT_SOURCE_DIR}/../faslib \
+                                ${CMAKE_CURRENT_SOURCE_DIR}/../../../faslib \
+                                ${CMAKE_SOURCE_DIR}/../faslib \
                                 ${PROJECT_BINARY_DIR}/faslib \
                                 /usr/include/faslib\
                                 /usr/local/include/faslib" 
                   faslib "" )
 CONFIGURE_LIBRARY( wjson/json.hpp "${cur_dirs} \
                                 ${CMAKE_CURRENT_SOURCE_DIR}/../wjson \
+                                ${CMAKE_CURRENT_SOURCE_DIR}/../../../wjson \
+                                ${CMAKE_SOURCE_DIR}/../wjson \
                                 ${PROJECT_BINARY_DIR}/wjson \
                                 /usr/include/wjson\
                                 /usr/local/include/wjson" 
@@ -38,7 +42,7 @@ CONFIGURE_LIBRARY( wjson/json.hpp "${cur_dirs} \
 if ( ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") 
       OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") )
       
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Werror -pedantic -fno-rtti")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -Werror -pedantic")
   set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG ")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO  "-O2 -g -DNDEBUG")
   set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
