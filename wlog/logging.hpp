@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <wlog/global_log.hpp>
+#include <wlog/global/global_log.hpp>
 
 namespace wlog{
   

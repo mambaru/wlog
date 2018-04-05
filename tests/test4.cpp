@@ -63,7 +63,7 @@ int main()
   setenv("TZ", "MSK-3", 1);
   tzset();
   tp = wlog::time_point::clock::from_time_t(test_time);
-  tp += std::chrono::nanoseconds(123456789);
+  tp += std::chrono::microseconds(123456);
 
   
   if ( int res = test1() )

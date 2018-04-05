@@ -14,8 +14,11 @@ base-build:
   stage: build
   script:
     - ./.ci/build-and-test.sh g++ 11 Release
-  except:
-    - /^draft.*$/
+  only:
+    - devel
+    - master
+    - tags
+    - /^build.*$/
 
 full-build:
   stage: build
@@ -27,6 +30,9 @@ full-build:
     - ./.ci/build-and-test.sh g++ 14 Debug
     - ./.ci/build-and-test.sh clang++ 11 Debug
     - ./.ci/build-and-test.sh clang++ 14 Debug
+    - ./.ci/build-and-test.sh g++ 11 Release -DWLOG_DISABLE_JSON=ON
+    - ./.ci/build-and-test.sh clang++ 11 Release -DWLOG_DISABLE_JSON=ON
+    - ./.ci/build-and-test.sh clang++ 14 Release -DWLOG_DISABLE_JSON=ON
   only:
     - master
     - tags

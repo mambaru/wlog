@@ -1,4 +1,4 @@
-#include <wlog/global_log.hpp>
+//#include <wlog/global_log.hpp>
 #include <wlog/init.hpp>
 #include <wlog/logging.hpp>
 #include "test.hpp"

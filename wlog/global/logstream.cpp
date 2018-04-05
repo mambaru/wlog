@@ -6,8 +6,9 @@
 
 #include "logstream.hpp"
 #include <iostream>
-#include <mutex>
 #include <cassert>
+#include <sstream>
+
 namespace wlog {
 
 class logstream::impl
@@ -27,22 +28,6 @@ private:
   std::stringstream _ss;
 };
 
-logstream::impl::~impl()
-{
-  if ( writer_ != nullptr )
-  {
-    writer_(_tp, _name, _ident, _ss.str() );
-  }
-/// TODO: перенести в wfc::wfc до инициализации log
-#ifndef WLOG_ENABLE_CLOG
-  else
-  {
-    std::clog << _name << " " << _ident << " " << _ss.str();
-  }
-#endif
-  _mutex.unlock();
-}
-
 logstream::impl::impl(
   mutex_type& m,
   const std::string& name,
@@ -53,7 +38,24 @@ logstream::impl::impl(
   , _name( name )
   , _ident( ident )
   , writer_(writer)
-{}
+{
+  _mutex.lock();
+}
+
+logstream::impl::~impl()
+{
+  if ( writer_ != nullptr )
+  {
+    writer_(_tp, _name, _ident, _ss.str() );
+  }
+#ifndef WLOG_ENABLE_CLOG
+  else
+  {
+    std::clog << _name << " " << _ident << " " << _ss.str();
+  }
+#endif
+  _mutex.unlock();
+}
 
 std::string logstream::impl::str() const
 {
@@ -94,31 +96,6 @@ std::ostream& logstream::log()
   return _impl->log();
 }
 
-
-/// ///////////////////////////
-
-stdstream::~stdstream()
-{
-  if ( _out.good() )
-  {
-    _out << _ss.str();
-    _out.flush();
-  }
-  _mutex.unlock();
-}
-
-stdstream::stdstream(stdstream&& other)
-  : _mutex(other._mutex)
-  , _out(other._out)
-  , _ss()
-{}
-
-stdstream::stdstream(mutex_type& m, std::ostream& out) 
-  : _mutex(m)
-  , _out(out)
-{}
-
-std::ostream& stdstream::log() { return _ss;}
 
 
 }

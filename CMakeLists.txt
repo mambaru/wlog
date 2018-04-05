@@ -6,10 +6,11 @@ include(AUX)
 
 set(
   source_list
-  wlog/logstream.cpp
-  wlog/global_log.cpp
   wlog/init.cpp
 
+  wlog/global/logstream.cpp
+  wlog/global/stdstream.cpp
+  wlog/global/global_log.cpp
   wlog/formatter/formatter.cpp
   wlog/formatter/formatter_options.cpp
   wlog/formatter/formatter_handlers.cpp
