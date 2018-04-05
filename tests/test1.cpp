@@ -1,4 +1,4 @@
-#include <wlog/logstream.hpp>
+//#include <wlog/logstream.hpp>
 #include <wlog/logging.hpp>
 #include "test.hpp"
 

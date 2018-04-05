@@ -7,7 +7,8 @@
 #pragma once
 
 #include <string>
-#include <wlog/logstream.hpp>
+#include <wlog/global/logstream.hpp>
+#include <wlog/global/stdstream.hpp>
 
 namespace wlog{
 

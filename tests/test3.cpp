@@ -121,7 +121,7 @@ int test3()
   opt.resolution = wlog::resolutions::nanoseconds;
   wlog::formatter::fraction(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
-  TEST( ss.str() == ".123456789" );
+  TEST( ss.str() == ".123456000" );
   
   return 0;
 }
@@ -196,7 +196,7 @@ int main()
   setenv("TZ", "MSK-3", 1);
   tzset();
   tp = wlog::time_point::clock::from_time_t(test_time);
-  tp += std::chrono::nanoseconds(123456789);
+  tp += std::chrono::microseconds(123456);
 
   if ( int res = test1() )
     return res;

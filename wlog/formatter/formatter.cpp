@@ -81,8 +81,8 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   const char* old_locale=0; 
   if ( !opt.locale.empty() )
   {
-    old_locale = std::setlocale(LC_TIME, nullptr);
-    std::setlocale(LC_TIME, opt.locale.c_str() );
+    old_locale = ::setlocale(LC_TIME, nullptr);
+    ::setlocale(LC_TIME, opt.locale.c_str() );
   }
 
   if ( bool(opt.colorized & colorized_flags::date) )
@@ -167,7 +167,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
     
   if ( !opt.locale.empty() )
   {
-    std::setlocale(LC_TIME, old_locale );
+    ::setlocale(LC_TIME, old_locale );
   }
 
   return flag;
@@ -182,8 +182,8 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
   const char* old_locale=0; 
   if ( !opt.locale.empty() )
   {
-    old_locale = std::setlocale(LC_TIME, nullptr);
-    std::setlocale(LC_TIME, opt.locale.c_str() );
+    old_locale = ::setlocale(LC_TIME, nullptr);
+    ::setlocale(LC_TIME, opt.locale.c_str() );
   }
   
   if ( bool(opt.colorized & colorized_flags::time) )
@@ -243,7 +243,7 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
     formatter::reset_color(os);
 
   if ( !opt.locale.empty() )
-    std::setlocale(LC_TIME, old_locale );
+    ::setlocale(LC_TIME, old_locale );
   
   return flag;
 }
