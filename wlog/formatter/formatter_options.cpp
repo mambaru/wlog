@@ -39,7 +39,7 @@ void formatter_options::upgrade(const formatter_options& other)
 void formatter_options::finalize()
 {
   if ( this->name_width == -1 )
-    this->name_width = 6;
+    this->name_width = 8;
 
   if ( this->ident_width == -1 )
     this->ident_width = 9;
