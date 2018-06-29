@@ -2,7 +2,14 @@ cmake_minimum_required(VERSION 2.8)
 project(wlog)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(AUX)
+include(mambaru)
+
+if (NOT WLOG_DISABLE_JSON AND NOT BUID_TESTING)
+  get_faslib()
+  get_mambaru(wjson WJSON_DIR "")
+  add_definitions(-DWLOG_DISABLE_JSON)
+endif()
+
 
 set(
   source_list
