@@ -4,10 +4,14 @@ project(wlog)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(mambaru)
 
-if (NOT WLOG_DISABLE_JSON AND NOT BUID_TESTING)
+if (NOT WLOG_DISABLE_JSON OR BUID_TESTING)
   get_faslib()
-  get_mambaru(wjson WJSON_DIR "")
+endif()
+
+if ( WLOG_DISABLE_JSON )
   add_definitions(-DWLOG_DISABLE_JSON)
+else()
+  get_mambaru(wjson WJSON_DIR "")
 endif()
 
 
