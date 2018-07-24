@@ -9,5 +9,4 @@ inline bool test( bool expr, const std::string& file, int line)
   return expr;
 }
 
-
 #define TEST( X ) if ( !test( X, __FILE__, __LINE__ ) ) return __LINE__;
