@@ -16,7 +16,6 @@ base-build:
     - ./.ci/build-and-test.sh g++ 11 Release
   only:
     - devel
-    - master
     - tags
     - /^build.*$/
 
@@ -34,7 +33,6 @@ full-build:
     - ./.ci/build-and-test.sh clang++ 11 Release -DWLOG_DISABLE_JSON=ON
     - ./.ci/build-and-test.sh clang++ 14 Release -DWLOG_DISABLE_JSON=ON
   only:
-    - master
     - tags
     - /^build.*$/
   
@@ -44,7 +42,6 @@ cppcheck:
     - ./.ci/cppcheck.sh --std=c++11
     - ./.ci/cppcheck.sh --std=c++14
   only:
-    - master
     - tags
     - /^check.*$/
 
