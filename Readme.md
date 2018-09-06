@@ -2,6 +2,10 @@
 
 ![wlog](https://i.imgur.com/xdC2tVt.png)
 
+Документация [doxygen](https://mambaru.github.io/wlog/index.html).
+Репозитарий на [github.com](https://github.com/mambaru/wlog).
+
+
 Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляется с помощью набора макросов, например:
 ```cpp
 #define WLOG_ENABLE_DEBUG_LOG // Don't disable DEBUG and TRACE in Release 
