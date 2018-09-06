@@ -36,6 +36,10 @@ int test2()
   if ( !test( message=="", __FILE__, __LINE__ ) )
     return __LINE__;
 
+  wlog::global_cout().log() << "global_cout";
+  wlog::global_clog().log() << "global_clog";
+  wlog::global_cerr().log() << "global_cerr";
+
   std::clog << std::endl;
   return 0;
 }
