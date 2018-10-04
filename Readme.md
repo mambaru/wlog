@@ -658,13 +658,18 @@ Wed 27 Dec 2017 06:04:37 PM MSK.608 WLOG ERROR Тестовое ERROR сообщ
   "customize": [ 
     {
       /* Для всех сообщений MYLOG, включая DEBUG и TRACE*/
-      "names":["MYLOG"],
+      "names":["MYLOG1", "MYLOG2"],
       /* но исключая PROGRESS */
       "deny": ["PROGRESS"],
-      /* пишем в /path/to/log/file-MYLOG.log*/
+      /* пишем в /path/to/log/file-MYLOG1.log и /path/to/log/file-MYLOG1.log */
       "path":"$"
     },
     {
+      /* Для всех сообщений MYLOG, включая DEBUG и TRACE*/
+      "names":["MYLOG3", "MYLOG4"],
+      /* пишем MYLOG3 и MYLOG4 в /path/to/log/file-MYLOG34.log */
+      "path":"$MYLOG34"
+    },    {
       // все сообщения "PROGRESS" выводим только в stdout
       "names":["PROGRESS"],
       "path":"#"
