@@ -13,6 +13,7 @@ namespace wlog{
   
 struct custom_logger_options: basic_logger_options
 {
+  // Порядок имеет значение для $: сначала сообщения потом логи
   std::vector<std::string> names;
   void upgrade(const basic_logger_options& other);
   void finalize();

@@ -5,7 +5,6 @@
 Документация [doxygen](https://mambaru.github.io/wlog/index.html).
 Репозитарий на [github.com](https://github.com/mambaru/wlog).
 
-
 Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляется с помощью набора макросов, например:
 ```cpp
 #define WLOG_ENABLE_DEBUG_LOG // Don't disable DEBUG and TRACE in Release 
@@ -662,13 +661,18 @@ Wed 27 Dec 2017 06:04:37 PM MSK.608 WLOG ERROR Тестовое ERROR сообщ
   "customize": [ 
     {
       /* Для всех сообщений MYLOG, включая DEBUG и TRACE*/
-      "names":["MYLOG"],
+      "names":["MYLOG1", "MYLOG2"],
       /* но исключая PROGRESS */
       "deny": ["PROGRESS"],
-      /* пишем в /path/to/log/file-MYLOG.log*/
+      /* пишем в /path/to/log/file-MYLOG1.log и /path/to/log/file-MYLOG1.log */
       "path":"$"
     },
     {
+      /* Для всех сообщений MYLOG, включая DEBUG и TRACE*/
+      "names":["MYLOG3", "MYLOG4"],
+      /* пишем MYLOG3 и MYLOG4 в /path/to/log/file-MYLOG34.log */
+      "path":"$MYLOG34"
+    },    {
       // все сообщения "PROGRESS" выводим только в stdout
       "names":["PROGRESS"],
       "path":"#"

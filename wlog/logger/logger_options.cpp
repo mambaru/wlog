@@ -1,11 +1,28 @@
 #include "logger_options.hpp"
 #include <wlog/aux/aux.hpp>
-
+#include <iostream>
 namespace wlog{
 
 void logger_options::upgrade(const logger_options& other)
 {
   basic_logger_options::upgrade( static_cast<const basic_logger_options&>(other) );
+  customize_list cur = std::move(this->customize);
+  for (custom_logger_options clo:cur)
+  {
+    if ( clo.path=="$" && clo.names.size() > 1 )
+    {
+      for (auto name: clo.names)
+      {
+        this->customize.push_back(clo);        
+        this->customize.back().names = {name};
+      }
+    }
+    else
+    {
+      this->customize.push_back(std::move(clo));
+    }
+  }
+  
   for (auto& op : this->customize)
     op.upgrade( static_cast< const basic_logger_options&>(other) );
 }

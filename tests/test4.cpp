@@ -68,9 +68,5 @@ int main()
   
   if ( int res = test1() )
     return res;
-  /*if ( int res = test2() )
-    return res;
-  if ( int res = test3() )
-    return res;*/
   return 0;  
 }
