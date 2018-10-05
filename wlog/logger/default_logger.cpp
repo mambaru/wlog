@@ -158,13 +158,15 @@ bool default_logger::impl::write(
     if ( this->allow_(name, ident, cntx.allow, cntx.deny) )
       handlers = &cntx;
   }
-
-  itr = _customize.find(name);
-  if ( itr != _customize.end() )
+  else
   {
-    const context& cntx = itr->second;
-    if ( this->allow_(name, ident, cntx.allow, cntx.deny) )
-      handlers = &cntx;
+    itr = _customize.find(name);
+    if ( itr != _customize.end() )
+    {
+      const context& cntx = itr->second;
+      if ( this->allow_(name, ident, cntx.allow, cntx.deny) )
+        handlers = &cntx;
+    }
   }
   
   if ( handlers == nullptr )
