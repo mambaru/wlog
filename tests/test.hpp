@@ -1,9 +1,10 @@
 #pragma once
 
 #include <iostream>
-
+#include <wlog/init.hpp>
 inline bool test( bool expr, const std::string& file, int line)
 {
+  wlog::disable();
   if ( !expr )
     std::cerr << "ERROR in " << file << ":" << line << std::endl;
   return expr;
