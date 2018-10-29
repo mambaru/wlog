@@ -1,4 +1,5 @@
-//#include <wlog/global_log.hpp>
+
+
 #include <wlog/init.hpp>
 #include <wlog/logging.hpp>
 #include "test.hpp"
@@ -31,16 +32,16 @@ int test2()
   std::string message;
   wlog::init();
   
-  wlog::global_log("test", "message").log() << "hello " << 1 << 2;
+  wlog::global_log("test", "message").log() << "hello " << 1 << 2 << std::endl;
 
   if ( !test( message=="", __FILE__, __LINE__ ) )
     return __LINE__;
 
-  wlog::global_cout().log() << "global_cout";
-  wlog::global_clog().log() << "global_clog";
-  wlog::global_cerr().log() << "global_cerr";
+  wlog::global_cout().log() << "global_cout"<< std::endl;
+  wlog::global_clog().log() << "global_clog"<< std::endl;
+  wlog::global_cerr().log() << "global_cerr"<< std::endl;
 
-  std::clog << std::endl;
+  //std::clog << std::endl;
   return 0;
 }
 
@@ -76,7 +77,11 @@ int test3()
   WLOG_PROGRESS(9)
   checkmsg="WLOGPROGRESS9\r";
   if ( !test( message==checkmsg, __FILE__, __LINE__ ) )
+  {
+    std::cout << message << std::endl;
+    std::cout << checkmsg << std::endl;
     return __LINE__;
+  }
   
   return 0;
 }
@@ -89,5 +94,6 @@ int main()
     return res;
   if ( int res = test3() )
     return res;
+  wlog::disable();
   return 0;  
 }
