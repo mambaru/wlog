@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-
+#include <wlog/init.hpp>
 inline bool test( bool expr, const std::string& file, int line)
 {
   if ( !expr )

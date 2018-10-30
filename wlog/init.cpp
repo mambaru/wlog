@@ -60,6 +60,11 @@ void init(const std::string& path, resolutions resolution, colorized_flags color
   global_writer = std::bind(&default_logger::operator(), plog, _1, _2, _3, _4);
 }
 
+void disable()
+{
+  using namespace std::placeholders;
+  global_writer = std::bind([](){});
+}
 
 bool status()
 {
