@@ -3,7 +3,7 @@ project(wlog)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(mambaru)
-
+include_directories(.)
 set(
   source_list
   wlog/init.cpp
