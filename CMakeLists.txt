@@ -8,6 +8,7 @@ if ( STANDALONE )
   getlibs(faslib wjson)
 endif()
 
+include_directories(.)
 set(
   source_list
   wlog/init.cpp
@@ -47,7 +48,6 @@ add_library(wlog ${source_list})
 
 if ( BUILD_TESTING )
   enable_testing()
-  include_directories(.)
   add_subdirectory(tests)
   add_subdirectory(examples)
 endif()
