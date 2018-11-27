@@ -60,10 +60,15 @@ void init(const std::string& path, resolutions resolution, colorized_flags color
   global_writer = std::bind(&default_logger::operator(), plog, _1, _2, _3, _4);
 }
 
+namespace {
+  void logger_stub(const time_point&, const std::string&, const std::string&, const std::string&);
+  void logger_stub(const time_point&, const std::string&, const std::string&, const std::string&){}
+}
+
 void disable()
 {
   using namespace std::placeholders;
-  global_writer = std::bind([](){});
+  global_writer = logger_stub;
 }
 
 bool status()
