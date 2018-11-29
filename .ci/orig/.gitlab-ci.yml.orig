@@ -10,6 +10,8 @@ variables:
 # wip-devel
 
 before_script:
+  - git checkout ${CI_COMMIT_REF_NAME}
+  - git pull ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}
   - git submodule deinit --force .
   - git submodule sync
   - git submodule update --init
@@ -114,10 +116,10 @@ cppcheck:
 devel-wip:
   stage: merge
   script:
-    - HOST=${CI_PROJECT_URL}  
-    - CI_PROJECT_ID=${CI_PROJECT_ID} 
-    - GITLAB_USER_ID=${GITLAB_USER_ID} 
-    - PRIVATE_TOKEN=${PRIVATE_TOKEN} 
+    - export HOST=${CI_PROJECT_URL}  
+    - export CI_PROJECT_ID=${CI_PROJECT_ID} 
+    - export GITLAB_USER_ID=${GITLAB_USER_ID} 
+    - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
     - ./.ci/automr.sh devel false
   only:
     - wip-devel
@@ -127,10 +129,10 @@ devel-wip:
 devel-any:
   stage: merge
   script:
-    - HOST=${CI_PROJECT_URL}  
-    - CI_PROJECT_ID=${CI_PROJECT_ID} 
-    - GITLAB_USER_ID=${GITLAB_USER_ID} 
-    - PRIVATE_TOKEN=${PRIVATE_TOKEN} 
+    - export HOST=${CI_PROJECT_URL}  
+    - export CI_PROJECT_ID=${CI_PROJECT_ID} 
+    - export GITLAB_USER_ID=${GITLAB_USER_ID} 
+    - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
     - ./.ci/automr.sh devel true
   only:
     - /^devel-.*$/
@@ -138,6 +140,7 @@ devel-any:
 pre-release:
   stage: merge
   script:
+    - echo git push ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}:pre-release
     - git push ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}:pre-release
   only:
     - devel
@@ -145,10 +148,10 @@ pre-release:
 master-release:
   stage: merge
   script:
-    - HOST=${CI_PROJECT_URL} 
-    - CI_PROJECT_ID=${CI_PROJECT_ID} 
-    - GITLAB_USER_ID=${GITLAB_USER_ID} 
-    - PRIVATE_TOKEN=${PRIVATE_TOKEN} 
+    - export HOST=${CI_PROJECT_URL} 
+    - export CI_PROJECT_ID=${CI_PROJECT_ID} 
+    - export GITLAB_USER_ID=${GITLAB_USER_ID} 
+    - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
     - ./.ci/automr.sh master false
   only:
     - pre-release
@@ -156,10 +159,10 @@ master-release:
 master-hotfix:
   stage: merge
   script:
-    - HOST=${CI_PROJECT_URL}  
-    - CI_PROJECT_ID=${CI_PROJECT_ID} 
-    - GITLAB_USER_ID=${GITLAB_USER_ID} 
-    - PRIVATE_TOKEN=${PRIVATE_TOKEN} 
+    - export HOST=${CI_PROJECT_URL}  
+    - export CI_PROJECT_ID=${CI_PROJECT_ID} 
+    - export GITLAB_USER_ID=${GITLAB_USER_ID} 
+    - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
     - ./.ci/automr.sh master true
   only:
     - /^hotfix-.*$/
