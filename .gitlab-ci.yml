@@ -124,12 +124,14 @@ devel-wip:
     - export CI_PROJECT_ID=${CI_PROJECT_ID} 
     - export GITLAB_USER_ID=${GITLAB_USER_ID} 
     - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
-    - ./.ci/automr.sh devel false
+    - if [[ $DEVEL_DENY == "false" ]]; then
+    -   ./.ci/automr.sh devel false
+    - else
+    -   echo "DEVEL_DENY==$DEVEL_DENY Nothing to do"
+    - fi
   only:
     - wip-devel
     - night-build
-    variables:
-      - $DEVEL_DENY == yes
 
 devel-any:
   stage: merge
