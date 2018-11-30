@@ -28,6 +28,7 @@ stages:
 update-submodules:
   stage: pre-build
   script:
+    - git pull origin devel
     - git submodule foreach git pull origin master
     - git add .
     - if git commit -am "night build all submodules update autocommit"; then
@@ -126,6 +127,7 @@ devel-wip:
     - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
     - if [[ $DEVEL_DENY == "false" ]]; then
     -   ./.ci/automr.sh devel false
+    -   echo "Submodules Update merge request!"
     - else
     -   echo "DEVEL_DENY==$DEVEL_DENY Nothing to do"
     - fi
