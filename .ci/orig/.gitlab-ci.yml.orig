@@ -18,24 +18,22 @@ before_script:
   - git submodule update --init
 
 stages:
-  - pre-build
   - build
   - check
   - merge
   - publish
   - clean
   
-update-submodules:
-  stage: pre-build
+night-build:
+  stage: build
   script:
     - git pull origin devel
+    - git pull origin wip-devel
     - git submodule foreach git pull origin master
     - git add .
     - if git commit -am "night build all submodules update autocommit"; then
     -   echo "Submodules Update Succeed!!"
-    - else
-    -   echo "Nothing to do"
-    -   DEVEL_DENY="true"
+    -   git push ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}:wip-devel
     - fi
   only:
     - night-build
@@ -97,7 +95,6 @@ build-clang++14:
     - tags
     - /^build.*$/
     - pre-release
-    - night-build
 
 #
 # ###########################################
@@ -112,7 +109,6 @@ cppcheck:
     - tags
     - /^check.*$/
     - pre-release
-    - night-build
     
 #
 # ###########################################
@@ -125,15 +121,9 @@ devel-wip:
     - export CI_PROJECT_ID=${CI_PROJECT_ID} 
     - export GITLAB_USER_ID=${GITLAB_USER_ID} 
     - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
-    - if [[ $DEVEL_DENY == "false" ]]; then
-    -   ./.ci/automr.sh devel false
-    -   echo "Submodules Update merge request!"
-    - else
-    -   echo "DEVEL_DENY==$DEVEL_DENY Nothing to do"
-    - fi
+    - ./.ci/automr.sh devel false
   only:
     - wip-devel
-    - night-build
 
 devel-any:
   stage: merge
