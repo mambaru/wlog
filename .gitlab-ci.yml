@@ -52,7 +52,6 @@ main-build:
     - /^devel-.*$/
     - /^release-.*$/
     - /^hotfix-.*$/
-    - night-build
 
 build-g++11:
   stage: build
@@ -62,7 +61,6 @@ build-g++11:
     - tags
     - /^build.*$/
     - pre-release
-    - night-build
 
 build-g++14:
   stage: build
@@ -73,7 +71,6 @@ build-g++14:
     - tags
     - /^build.*$/
     - pre-release
-    - night-build
 
 build-clang++11:
   stage: build
@@ -84,7 +81,6 @@ build-clang++11:
     - tags
     - /^build.*$/
     - pre-release
-    - night-build
 
 build-clang++14:
   stage: build
