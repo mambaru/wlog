@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 project(wlog)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(ci)
+
 include_directories(.)
 set(
   source_list
@@ -33,9 +36,7 @@ set(
   wlog/aux/strftime.cpp
 )
 
-if (NOT WLOG_DISABLE_JSON OR BUILD_TESTING)
-  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-  include(ci)
+if (NOT WLOG_DISABLE_JSON)
   rootlibs(faslib wjson)
   list(APPEND source_list wlog/load.cpp )
 endif()
@@ -43,6 +44,9 @@ endif()
 add_library(wlog ${source_list})
 
 if ( BUILD_TESTING )
+  if (WLOG_DISABLE_JSON)
+    rootlibs(faslib)
+  endif()
   enable_testing()
   add_subdirectory(tests)
   add_subdirectory(examples)
