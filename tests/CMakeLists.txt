@@ -1,3 +1,5 @@
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 add_executable(test1 test1.cpp)

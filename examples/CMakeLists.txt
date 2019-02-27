@@ -1,3 +1,5 @@
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
+
 add_executable(example0 example0.cpp)
 target_link_libraries(example0 wlog)
 
