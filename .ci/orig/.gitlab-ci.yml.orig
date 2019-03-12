@@ -65,7 +65,7 @@ basic-build:
 wip-build:
   stage: build
   script:
-    # .*\.\.\:\s\d+\.\d+%.*
+    # Регулярка для настроек: .*\.\.\:\s\d+\.\d+%.*
     - ./.ci/wip-build-and-test.sh -DCODE_COVERAGE=$COVERAGE
     - lcov --summary build/${CI_PROJECT_NAME}-coverage.info
   only:
