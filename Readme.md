@@ -1,3 +1,6 @@
+[![pipeline status](http://github.lan/cpp/wlog/badges/wip-devel/pipeline.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
+[![coverage report](http://gitlab7.lan/cpp/wlog/badges/wip-devel/coverage.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
+
 Библиотека логирования и WFC-фреймворка, с большими возможностями кастомизации с помощью опций, обработчиков и конфигурационного файла в формате JSON.
 
 ![wlog](https://i.imgur.com/xdC2tVt.png)
