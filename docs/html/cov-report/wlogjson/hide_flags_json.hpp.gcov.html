@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wlog-coverage.info - wlogjson/hide_flags_json.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">wlogjson</a> - hide_flags_json.hpp<span style="font-size: 80%;"> (source / <a href="hide_flags_json.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wlog-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">6.7 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-03-12 17:08:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryLo">6.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : //</a>
+<span class="lineNum">       2 </span>            : // Author: Vladimir Migashko &lt;migashko@gmail.com&gt;, (C) 2017
+<span class="lineNum">       3 </span>            : //
+<span class="lineNum">       4 </span>            : // Copyright: See COPYING file that comes with this distribution
+<span class="lineNum">       5 </span>            : //
+<span class="lineNum">       6 </span>            : #pragma once
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;wlog/formatter/hide_flags.hpp&gt;
+<span class="lineNum">       9 </span>            : #include &lt;wjson/json.hpp&gt;
+<span class="lineNum">      10 </span>            : #include &lt;wjson/name.hpp&gt;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            : namespace wlog{
+<span class="lineNum">      13 </span>            :   
+<a name="14"><span class="lineNum">      14 </span>            : struct hide_flags_json</a>
+<a name="15"><span class="lineNum">      15 </span>            : {</a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">         16 :   JSON_NAME(none)</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineNoCov">          0 :   JSON_NAME(date)</span></a>
+<a name="18"><span class="lineNum">      18 </span><span class="lineNoCov">          0 :   JSON_NAME(time)</span></a>
+<a name="19"><span class="lineNum">      19 </span><span class="lineNoCov">          0 :   JSON_NAME(year)</span></a>
+<a name="20"><span class="lineNum">      20 </span><span class="lineNoCov">          0 :   JSON_NAME(month)</span></a>
+<a name="21"><span class="lineNum">      21 </span><span class="lineNoCov">          0 :   JSON_NAME(weekday)</span></a>
+<a name="22"><span class="lineNum">      22 </span><span class="lineNoCov">          0 :   JSON_NAME(days)</span></a>
+<a name="23"><span class="lineNum">      23 </span><span class="lineNoCov">          0 :   JSON_NAME(hours)</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineNoCov">          0 :   JSON_NAME(minutes)</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineNoCov">          0 :   JSON_NAME(seconds)</span></a>
+<a name="26"><span class="lineNum">      26 </span><span class="lineNoCov">          0 :   JSON_NAME(fraction)</span></a>
+<a name="27"><span class="lineNum">      27 </span><span class="lineNoCov">          0 :   JSON_NAME(name)</span></a>
+<a name="28"><span class="lineNum">      28 </span><span class="lineNoCov">          0 :   JSON_NAME(ident)</span></a>
+<span class="lineNum">      29 </span><span class="lineNoCov">          0 :   JSON_NAME(message)</span>
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :   JSON_NAME(inherited)</span>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            :   typedef wjson::flags&lt;
+<span class="lineNum">      33 </span>            :     hide_flags,
+<span class="lineNum">      34 </span>            :     wjson::member_list&lt;
+<span class="lineNum">      35 </span>            :       wjson::enum_value&lt;n_none,    hide_flags, hide_flags::none&gt;,
+<span class="lineNum">      36 </span>            :       wjson::enum_value&lt;n_date,    hide_flags, hide_flags::date&gt;,
+<span class="lineNum">      37 </span>            :       wjson::enum_value&lt;n_time,    hide_flags, hide_flags::time&gt;,
+<span class="lineNum">      38 </span>            :       wjson::enum_value&lt;n_year,    hide_flags, hide_flags::year&gt;,
+<span class="lineNum">      39 </span>            :       wjson::enum_value&lt;n_month,   hide_flags, hide_flags::month&gt;,
+<span class="lineNum">      40 </span>            :       wjson::enum_value&lt;n_weekday, hide_flags, hide_flags::weekday&gt;,
+<span class="lineNum">      41 </span>            :       wjson::enum_value&lt;n_days,    hide_flags, hide_flags::days&gt;,
+<span class="lineNum">      42 </span>            :       wjson::enum_value&lt;n_hours,   hide_flags, hide_flags::hours&gt;,
+<span class="lineNum">      43 </span>            :       wjson::enum_value&lt;n_minutes, hide_flags, hide_flags::minutes&gt;,
+<span class="lineNum">      44 </span>            :       wjson::enum_value&lt;n_seconds, hide_flags, hide_flags::seconds&gt;,
+<span class="lineNum">      45 </span>            :       wjson::enum_value&lt;n_fraction,hide_flags, hide_flags::fraction&gt;,
+<span class="lineNum">      46 </span>            :       wjson::enum_value&lt;n_name,    hide_flags, hide_flags::name&gt;,
+<span class="lineNum">      47 </span>            :       wjson::enum_value&lt;n_ident,   hide_flags, hide_flags::ident&gt;,
+<span class="lineNum">      48 </span>            :       wjson::enum_value&lt;n_message, hide_flags, hide_flags::message&gt;,
+<span class="lineNum">      49 </span>            :       wjson::enum_value&lt;n_inherited, hide_flags, hide_flags::inherited&gt;
+<span class="lineNum">      50 </span>            :     &gt;,
+<span class="lineNum">      51 </span>            :     '|'
+<span class="lineNum">      52 </span>            :   &gt; type;
+<span class="lineNum">      53 </span>            :   typedef type::serializer serializer;
+<span class="lineNum">      54 </span>            :   typedef type::target target;
+<span class="lineNum">      55 </span>            :   typedef type::member_list member_list;
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : };
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

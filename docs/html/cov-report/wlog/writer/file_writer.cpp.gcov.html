@@ -1,0 +1,308 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wlog-coverage.info - wlog/writer/file_writer.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">wlog/writer</a> - file_writer.cpp<span style="font-size: 80%;"> (source / <a href="file_writer.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wlog-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">70</td>
+            <td class="headerCovTableEntry">114</td>
+            <td class="headerCovTableEntryLo">61.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-03-12 17:08:26</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntryMed">83.3 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : //</a>
+<span class="lineNum">       2 </span>            : // Author: Vladimir Migashko &lt;migashko@gmail.com&gt;, (C) 2013-2015, 2017
+<span class="lineNum">       3 </span>            : //
+<span class="lineNum">       4 </span>            : // Copyright: See COPYING file that comes with this distribution
+<span class="lineNum">       5 </span>            : //
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            : #include &quot;file_writer.hpp&quot;
+<span class="lineNum">       8 </span>            : #include &quot;../aux/strftime.hpp&quot;
+<span class="lineNum">       9 </span>            : #include &quot;../aux/aux.hpp&quot;
+<span class="lineNum">      10 </span>            : #include &lt;sys/stat.h&gt;
+<span class="lineNum">      11 </span>            : #include &lt;string&gt;
+<span class="lineNum">      12 </span>            : #include &lt;memory&gt;
+<span class="lineNum">      13 </span>            : #include &lt;iostream&gt;
+<span class="lineNum">      14 </span>            : #include &lt;sstream&gt;
+<span class="lineNum">      15 </span>            : #include &lt;fstream&gt;
+<span class="lineNum">      16 </span>            : #include &lt;cstdio&gt;
+<span class="lineNum">      17 </span>            : 
+<a name="18"><span class="lineNum">      18 </span>            : namespace wlog{</a>
+<span class="lineNum">      19 </span>            :   
+<span class="lineNum">      20 </span><span class="lineCov">          8 : file_writer::~file_writer()</span>
+<span class="lineNum">      21 </span>            : {
+<span class="lineNum">      22 </span><span class="lineCov">          4 :   _flog.close();</span>
+<span class="lineNum">      23 </span><span class="lineCov">          4 : }</span>
+<a name="24"><span class="lineNum">      24 </span>            :   </a>
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span><span class="lineCov">          4 : file_writer::file_writer(const formatter_fun&amp; formatter, const options&amp; opt, const handlers&amp; hdlr)</span>
+<span class="lineNum">      27 </span>            :   : _contex(formatter, opt )
+<span class="lineNum">      28 </span><span class="lineCov">          4 :   , _handlers(hdlr)</span>
+<span class="lineNum">      29 </span>            : {
+<span class="lineNum">      30 </span><span class="lineCov">          4 :   _contex.options.finalize();</span>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span><span class="lineCov">          4 :   if ( _handlers.footer == nullptr ) </span>
+<span class="lineNum">      33 </span><span class="lineCov">          4 :     _handlers.footer = &amp;file_writer::write_footer;</span>
+<span class="lineNum">      34 </span><span class="lineCov">          4 :   if ( _handlers.header == nullptr ) </span>
+<span class="lineNum">      35 </span><span class="lineCov">          4 :     _handlers.header = &amp;file_writer::write_header;</span>
+<span class="lineNum">      36 </span><span class="lineCov">          4 :   if ( _handlers.main_logname == nullptr ) </span>
+<span class="lineNum">      37 </span><span class="lineCov">          4 :     _handlers.main_logname = &amp;file_writer::main_logname;</span>
+<span class="lineNum">      38 </span><span class="lineCov">          4 :   if ( _handlers.rotate_logname == nullptr ) </span>
+<span class="lineNum">      39 </span><span class="lineCov">          4 :     _handlers.rotate_logname = &amp;file_writer::rotate_logname;</span>
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span><span class="lineCov">          4 :   if ( _contex.options.rotation_footer == 0 ) </span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :     _handlers.footer = nullptr;</span>
+<span class="lineNum">      43 </span><span class="lineCov">          4 :   if (_contex.options.rotation_header == 0 ) </span>
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 :     _handlers.header = nullptr;</span>
+<span class="lineNum">      45 </span>            :   
+<span class="lineNum">      46 </span><span class="lineCov">          4 :   time_t file_time = 0;</span>
+<span class="lineNum">      47 </span><span class="lineCov">          4 :   std::string path = _handlers.main_logname(_contex);</span>
+<span class="lineNum">      48 </span>            :   struct stat t_stat;
+<span class="lineNum">      49 </span><span class="lineCov">          4 :   if ( 0 == stat(path.c_str(), &amp;t_stat) )</span>
+<span class="lineNum">      50 </span>            :   {
+<span class="lineNum">      51 </span><span class="lineCov">          4 :     file_time  = t_stat.st_ctime;</span>
+<span class="lineNum">      52 </span>            :   }
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span><span class="lineCov">          4 :   if ( _contex.options.time_limit &gt; 0 )</span>
+<span class="lineNum">      55 </span>            :   {
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     _contex.rotate_time = ( file_time ==0 ? time(0) : file_time) + _contex.options.time_limit;</span>
+<span class="lineNum">      57 </span>            :   }
+<span class="lineNum">      58 </span>            :   
+<span class="lineNum">      59 </span><span class="lineCov">          4 :   if ( _contex.options.startup_rotate &gt; 0 &amp;&amp; _contex.options.rotation == 0  )</span>
+<span class="lineNum">      60 </span>            :   {
+<span class="lineNum">      61 </span><span class="lineCov">          2 :     _flog.open( path );</span>
+<span class="lineNum">      62 </span>            :   }
+<span class="lineNum">      63 </span>            :   else
+<span class="lineNum">      64 </span><span class="lineCov">          2 :     _flog.open( path, std::ios_base::app );</span>
+<span class="lineNum">      65 </span>            :   
+<span class="lineNum">      66 </span><span class="lineCov">          4 :   _contex.path_list.push_back(path);</span>
+<span class="lineNum">      67 </span>            :   
+<span class="lineNum">      68 </span><span class="lineCov">          4 :   if ( !this-&gt;rotate_if_(_flog)  )</span>
+<span class="lineNum">      69 </span>            :   {
+<span class="lineNum">      70 </span><span class="lineCov">          4 :     if ( file_time!=0 &amp;&amp; _contex.options.startup_rotate &gt; 0 )</span>
+<span class="lineNum">      71 </span><span class="lineCov">          4 :       this-&gt;rotate_(_flog);</span>
+<span class="lineNum">      72 </span>            :   }
+<span class="lineNum">      73 </span>            :   
+<span class="lineNum">      74 </span><span class="lineCov">          4 :   if ( _contex.options.sync != 0)</span>
+<span class="lineNum">      75 </span><span class="lineCov">          4 :     _flog.close();</span>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          4 : }</span></a>
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span><span class="lineCov">          4 : void file_writer::operator()(</span>
+<span class="lineNum">      79 </span>            :   const time_point&amp; tp,
+<span class="lineNum">      80 </span>            :   const std::string&amp; name, 
+<span class="lineNum">      81 </span>            :   const std::string&amp; ident,
+<span class="lineNum">      82 </span>            :   const std::string&amp; str
+<span class="lineNum">      83 </span>            : )
+<span class="lineNum">      84 </span>            : {
+<span class="lineNum">      85 </span><span class="lineCov">          4 :   if ( _contex.options.sync != 0 )</span>
+<span class="lineNum">      86 </span><span class="lineCov">          4 :     _flog.open( _contex.path_list.back(), std::ios_base::app );</span>
+<span class="lineNum">      87 </span>            :   
+<span class="lineNum">      88 </span><span class="lineCov">          4 :   this-&gt;write_(_flog, tp, name, ident, str);</span>
+<span class="lineNum">      89 </span>            :   
+<span class="lineNum">      90 </span><span class="lineCov">          4 :   if ( _contex.options.sync != 0 )</span>
+<span class="lineNum">      91 </span>            :   {
+<span class="lineNum">      92 </span><span class="lineCov">          4 :     _flog.flush();</span>
+<span class="lineNum">      93 </span><span class="lineCov">          4 :     _flog.close();</span>
+<span class="lineNum">      94 </span>            :   }
+<a name="95"><span class="lineNum">      95 </span><span class="lineCov">          4 : }</span></a>
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineCov">          4 : void file_writer::rotate_( std::ofstream&amp; oflog)</span>
+<span class="lineNum">      98 </span>            : {
+<span class="lineNum">      99 </span><span class="lineCov">          4 :   oflog.close();</span>
+<span class="lineNum">     100 </span>            :   
+<span class="lineNum">     101 </span><span class="lineCov">          4 :   std::string old_name;</span>
+<span class="lineNum">     102 </span><span class="lineCov">          4 :   if ( _contex.options.rotation &gt; 0 )</span>
+<span class="lineNum">     103 </span>            :   {
+<span class="lineNum">     104 </span><span class="lineCov">          2 :     if ( _contex.path_list.size() &gt; size_t(_contex.options.rotation)  )</span>
+<span class="lineNum">     105 </span>            :     {
+<span class="lineNum">     106 </span><span class="lineNoCov">          0 :       std::string del_file = _contex.path_list.front();</span>
+<span class="lineNum">     107 </span><span class="lineNoCov">          0 :       _contex.path_list.pop_front();</span>
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 :       if ( 0!=std::remove( del_file.c_str() ) )</span>
+<span class="lineNum">     109 </span>            :       {
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :         perror( (std::string(&quot;Error remove old log file (&quot;) + del_file +&quot;)&quot;).c_str() );</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :         return;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :       }</span>
+<span class="lineNum">     113 </span>            :     }
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineCov">          2 :     std::string cur_name = _contex.path_list.back();</span>
+<span class="lineNum">     116 </span><span class="lineCov">          2 :     _contex.path_list.pop_back();</span>
+<span class="lineNum">     117 </span>            :     //old_name = _contex.options.path + &quot;.old-&quot; + std::to_string(_contex.rotation_counter);
+<span class="lineNum">     118 </span><span class="lineCov">          2 :     old_name = _handlers.rotate_logname(_contex);</span>
+<span class="lineNum">     119 </span><span class="lineCov">          2 :     _contex.path_list.push_back(old_name);</span>
+<span class="lineNum">     120 </span><span class="lineCov">          2 :     if ( 0 != std::rename( cur_name.c_str(), old_name.c_str() ) )</span>
+<span class="lineNum">     121 </span>            :     {
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :       perror( &quot;Error renaming current log file&quot; );</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :       return;</span>
+<span class="lineNum">     124 </span>            :     }
+<span class="lineNum">     125 </span><span class="lineCov">          2 :     ++_contex.rotation_counter;</span>
+<span class="lineNum">     126 </span>            :   }
+<span class="lineNum">     127 </span>            :   
+<span class="lineNum">     128 </span><span class="lineCov">          8 :   std::string path = _handlers.main_logname(_contex);</span>
+<span class="lineNum">     129 </span><span class="lineCov">          4 :   _contex.path_list.push_back(path);</span>
+<span class="lineNum">     130 </span><span class="lineCov">          8 :   oflog.open(path);</span>
+<span class="lineNum">     131 </span>            :   
+<span class="lineNum">     132 </span>            : /*  
+<span class="lineNum">     133 </span>            :   if ( _contex.options.rotation &gt; 0 )
+<span class="lineNum">     134 </span>            :   {
+<span class="lineNum">     135 </span>            :     oflog &lt;&lt; &quot;Previous log: &quot; &lt;&lt; old_name &lt;&lt; std::endl;
+<span class="lineNum">     136 </span>            :     ++_contex.rotation_counter;
+<span class="lineNum">     137 </span>            :   }
+<span class="lineNum">     138 </span>            : */
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            :   //oflog.open(_opt.path);
+<a name="141"><span class="lineNum">     141 </span>            : }</a>
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span><span class="lineCov">          8 : bool file_writer::rotate_if_( std::ofstream&amp; oflog)</span>
+<span class="lineNum">     144 </span>            : {
+<span class="lineNum">     145 </span><span class="lineCov">          8 :   bool rotated = false;</span>
+<span class="lineNum">     146 </span><span class="lineCov">          8 :   if ( _contex.options.size_limit &gt; 0 || _contex.options.time_limit &gt; 0 )</span>
+<span class="lineNum">     147 </span>            :   {
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     time_t now = time(0);</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     size_t size = 0;</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     std::ofstream::pos_type pos = oflog.tellp();</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     if ( pos &gt;= 0 )</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :       size = size_t(pos);</span>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     bool by_size = _contex.options.size_limit &gt; 0 &amp;&amp; size &gt; size_t(_contex.options.size_limit);</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     bool by_time = _contex.options.time_limit &gt; 0 &amp;&amp; now &gt; _contex.rotate_time;</span>
+<span class="lineNum">     156 </span>            :     
+<span class="lineNum">     157 </span><span class="lineNoCov">          0 :     if ( by_size || by_time )</span>
+<span class="lineNum">     158 </span>            :     {
+<span class="lineNum">     159 </span><span class="lineNoCov">          0 :       _contex.summary_size += size;</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :       if (_handlers.footer!=nullptr) _handlers.footer(oflog, _contex);</span>
+<span class="lineNum">     161 </span><span class="lineNoCov">          0 :       this-&gt;rotate_(oflog);</span>
+<span class="lineNum">     162 </span><span class="lineNoCov">          0 :       rotated = true;</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :       _contex.rotate_time = now + _contex.options.time_limit;</span>
+<span class="lineNum">     164 </span><span class="lineNoCov">          0 :       if (_handlers.header!=nullptr)  _handlers.header(oflog, _contex);</span>
+<span class="lineNum">     165 </span>            :     }
+<span class="lineNum">     166 </span>            :   }
+<span class="lineNum">     167 </span><span class="lineCov">          8 :   return rotated;</span>
+<a name="168"><span class="lineNum">     168 </span>            : }</a>
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span><span class="lineCov">          4 : void file_writer::write_(  </span>
+<span class="lineNum">     171 </span>            :   std::ofstream&amp; oflog,
+<span class="lineNum">     172 </span>            :   const time_point&amp; tp,
+<span class="lineNum">     173 </span>            :   const std::string&amp; name, 
+<span class="lineNum">     174 </span>            :   const std::string&amp; ident,
+<span class="lineNum">     175 </span>            :   const std::string&amp; str
+<span class="lineNum">     176 </span>            : )
+<span class="lineNum">     177 </span>            : {
+<span class="lineNum">     178 </span><span class="lineCov">          8 :   if ( !oflog ) return;</span>
+<span class="lineNum">     179 </span>            :   
+<span class="lineNum">     180 </span><span class="lineCov">          4 :   this-&gt;rotate_if_(oflog);</span>
+<span class="lineNum">     181 </span>            :   
+<span class="lineNum">     182 </span><span class="lineCov">          4 :   if ( _contex.formatter != nullptr )</span>
+<span class="lineNum">     183 </span>            :   {
+<span class="lineNum">     184 </span><span class="lineCov">          4 :     std::stringstream ss;</span>
+<span class="lineNum">     185 </span><span class="lineCov">          4 :     _contex.formatter(ss, tp, name, ident, str);</span>
+<span class="lineNum">     186 </span><span class="lineCov">          4 :     oflog &lt;&lt; ss.str();</span>
+<span class="lineNum">     187 </span>            :   }
+<span class="lineNum">     188 </span>            :   else
+<span class="lineNum">     189 </span><span class="lineNoCov">          0 :     oflog &lt;&lt; name &lt;&lt; &quot; &quot; &lt;&lt; ident &lt;&lt; &quot; &quot; &lt;&lt; str;</span>
+<a name="190"><span class="lineNum">     190 </span>            : }</a>
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 : void file_writer::write_header(std::ostream&amp; os, const context_type&amp; contex)</span>
+<span class="lineNum">     193 </span>            : {
+<span class="lineNum">     194 </span><span class="lineNoCov">          0 :   if ( contex.path_list.empty() )</span>
+<span class="lineNum">     195 </span><span class="lineNoCov">          0 :     return;</span>
+<span class="lineNum">     196 </span>            : 
+<span class="lineNum">     197 </span><span class="lineNoCov">          0 :   time_t ts = time_point::clock::to_time_t(contex.start_time);</span>
+<span class="lineNum">     198 </span>            :   struct tm t1;
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :   localtime_r(&amp;ts, &amp;t1);</span>
+<span class="lineNum">     200 </span><span class="lineNoCov">          0 :   char buf[100]={0};</span>
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :   ::wlog::strftime(buf, 100, &quot;%c&quot;, &amp;t1);</span>
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :   os &lt;&lt; &quot;! ---------------- rotated ----------------&quot; &lt;&lt; std::endl</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :      &lt;&lt; &quot;! Start time: &quot;    &lt;&lt; buf  &lt;&lt; std::endl</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :      &lt;&lt; &quot;! Summary size: &quot;  &lt;&lt; contex.summary_size &lt;&lt; std::endl</span>
+<span class="lineNum">     206 </span><span class="lineNoCov">          0 :      &lt;&lt; &quot;! Total Rotated: &quot; &lt;&lt; contex.rotation_counter &lt;&lt; std::endl</span>
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :      &lt;&lt; &quot;! Previous log: &quot;  &lt;&lt; contex.path_list.back()  &lt;&lt; std::endl</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :      &lt;&lt; &quot;! -----------------------------------------&quot; &lt;&lt; std::endl;</span>
+<span class="lineNum">     209 </span>            :      
+<a name="210"><span class="lineNum">     210 </span>            : }</a>
+<span class="lineNum">     211 </span>            :   
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 : void file_writer::write_footer(std::ostream&amp; os, const context_type&amp; context)</span>
+<span class="lineNum">     213 </span>            : {
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :   file_writer::write_header(os, context);</span>
+<a name="215"><span class="lineNum">     215 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span><span class="lineCov">          8 : std::string file_writer::main_logname(const context_type&amp; contex)</span>
+<span class="lineNum">     218 </span>            : {
+<span class="lineNum">     219 </span><span class="lineCov">          8 :   return contex.options.path;</span>
+<a name="220"><span class="lineNum">     220 </span>            : }</a>
+<span class="lineNum">     221 </span>            : 
+<span class="lineNum">     222 </span><span class="lineCov">          2 : std::string file_writer::rotate_logname(const context_type&amp; contex)</span>
+<span class="lineNum">     223 </span>            : {
+<span class="lineNum">     224 </span><span class="lineCov">          2 :   if ( contex.options.unixtime_suffix == 0 )</span>
+<span class="lineNum">     225 </span><span class="lineCov">          2 :     return  contex.options.path + &quot;.old-&quot; + std::to_string(contex.rotation_counter);</span>
+<span class="lineNum">     226 </span>            :   
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :   time_t now = time(0);</span>
+<span class="lineNum">     228 </span><span class="lineNoCov">          0 :   return expanse_path(contex.options.path, std::to_string(now));</span>
+<span class="lineNum">     229 </span>            :   
+<a name="230"><span class="lineNum">     230 </span>            : }</a>
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span><span class="lineCov">         30 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
