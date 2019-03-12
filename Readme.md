@@ -1,9 +1,13 @@
+[![pipeline status](http://github.lan/cpp/wlog/badges/wip-devel/pipeline.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
+[![coverage report](http://gitlab7.lan/cpp/wlog/badges/wip-devel/coverage.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
+
 Библиотека логирования и WFC-фреймворка, с большими возможностями кастомизации с помощью опций, обработчиков и конфигурационного файла в формате JSON.
 
 ![wlog](https://i.imgur.com/xdC2tVt.png)
 
-Документация [doxygen](https://mambaru.github.io/wlog/index.html).
-Репозитарий на [github.com](https://github.com/mambaru/wlog).
+* Документация [doxygen](https://mambaru.github.io/wlog/index.html).
+* Репозитарий на [github.com](https://github.com/mambaru/wlog).
+* Отчет [coverage](https://mambaru.github.io/wjson/cov-report/index.html)
 
 Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляется с помощью набора макросов, например:
 ```cpp

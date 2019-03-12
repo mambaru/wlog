@@ -10,6 +10,11 @@ variables:
 # wip-devel
 
 before_script:
+  - git checkout ${CI_COMMIT_REF_NAME}
+  - git pull ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}
+  - git submodule deinit --force .
+  - git submodule sync
+  - git submodule update --init
   - export LC_ALL='ru_RU.UTF-8'
   - export LANG='ru_RU.UTF-8'
   - export RELEASE_BRANCH="$(python3 ./.ci/wamba-ci.py get release release-0.8)"
@@ -20,11 +25,6 @@ before_script:
   - export COVERAGE="$(python3 ./.ci/wamba-ci.py option coverage ON)"
   - export DEPLOY_PREF="${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}-${DEPLOY_COMPILER}${DEPLOY_STANDARD}"
   - echo "RELEASE_BRANCH=${RELEASE_BRANCH}"
-  - git checkout ${CI_COMMIT_REF_NAME}
-  - git pull ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}
-  - git submodule deinit --force .
-  - git submodule sync
-  - git submodule update --init
 
 after_script:
   - rm -f /tmp/migrate-${CI_JOB_ID}.sh
@@ -43,6 +43,9 @@ night-build:
   script:
     - git pull origin devel
     - git pull origin wip-devel
+    - rm -f upgrade.sh
+    - wget http://github.lan/cpp/cmake-ci/raw/master/upgrade.sh
+    - bash upgrade.sh "auto" "master" "Night build&#58; "
     - rm -f update.sh
     - wget http://github.lan/cpp/cmake-ci/raw/master/update.sh
     - bash update.sh "Night build&#58; "
@@ -62,14 +65,17 @@ basic-build:
 wip-build:
   stage: build
   script:
-    - ./.ci/wip-build-and-test.sh
+    # Регулярка для настроек: .*\.\.\:\s\d+\.\d+%.*
+    - ./.ci/wip-build-and-test.sh -DCODE_COVERAGE=$COVERAGE
+    - ./.ci/coverage-report.sh --
+    - lcov --summary build/${CI_PROJECT_NAME}-coverage.info
   only:
     - wip-devel
 
 main-build:
   stage: build
   script:
-    - ./.ci/build-and-test.sh g++ 11 Release -DPARANOID_WARNING=$PARANOID -DCODE_COVERAGE=$COVERAGE
+    - ./.ci/build-and-test.sh g++ 11 Release -DPARANOID_WARNING=$PARANOID
   only:
     - devel
     - pre-release
@@ -78,7 +84,7 @@ main-build:
 build-g++11:
   stage: build
   script:
-    - ./.ci/build-and-test.sh g++ 11 Debug  -DPARANOID_WARNING=$PARANOID
+    - ./.ci/build-and-test.sh g++ 11 Debug -DPARANOID_WARNING=$PARANOID
   only:
     - /^build.*$/
     - pre-release
@@ -153,7 +159,7 @@ devel-wip:
     - export CI_PROJECT_ID=${CI_PROJECT_ID} 
     - export GITLAB_USER_ID=${GITLAB_USER_ID} 
     - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
-    - ./.ci/automr.sh devel false
+    - ./.ci/wip-automr.sh devel false
   only:
     - wip-devel
 
@@ -194,7 +200,7 @@ master-hotfix:
     - export CI_PROJECT_ID=${CI_PROJECT_ID} 
     - export GITLAB_USER_ID=${GITLAB_USER_ID} 
     - export PRIVATE_TOKEN=${PRIVATE_TOKEN} 
-    - ./.ci/automr.sh master true
+    - ./.ci/wip-automr.sh master true
   only:
     - /^hotfix-.*$/
 
@@ -298,12 +304,13 @@ delete-branches:
   only:
     - /^build.*$/
     - /^check.*$/
+    
 push-to-github:
   stage: publish
   only:
     - master
-    
   script:
+    - make coverage
     - git tag -f ${RELEASE_TAG}
     - git push -f --tags ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}
     - if [[ "$(python3 ./.ci/wamba-ci.py option public OFF)" == "ON" ]]; then
