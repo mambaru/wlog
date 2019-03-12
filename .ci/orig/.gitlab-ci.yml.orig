@@ -67,6 +67,7 @@ wip-build:
   script:
     # Регулярка для настроек: .*\.\.\:\s\d+\.\d+%.*
     - ./.ci/wip-build-and-test.sh -DCODE_COVERAGE=$COVERAGE
+    - ./.ci/coverage-report.sh --
     - lcov --summary build/${CI_PROJECT_NAME}-coverage.info
   only:
     - wip-devel
