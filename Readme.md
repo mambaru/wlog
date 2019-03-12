@@ -4,6 +4,7 @@
 
 Документация [doxygen](https://mambaru.github.io/wlog/index.html).
 Репозитарий на [github.com](https://github.com/mambaru/wlog).
+Отчет [coverage](https://mambaru.github.io/wjson/cov-report/index.html)
 
 Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляется с помощью набора макросов, например:
 ```cpp
