@@ -1,3 +1,4 @@
+[![Coverage Status](https://coveralls.io/repos/github/mambaru/wlog/badge.svg?branch=master)](https://coveralls.io/github/mambaru/wlog?branch=master)
 [![pipeline status](http://github.lan/cpp/wlog/badges/wip-devel/pipeline.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
 [![coverage report](http://gitlab7.lan/cpp/wlog/badges/wip-devel/coverage.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
 
@@ -7,7 +8,7 @@
 
 * Документация [doxygen](https://mambaru.github.io/wlog/index.html).
 * Репозитарий на [github.com](https://github.com/mambaru/wlog).
-* Отчет [coverage](https://mambaru.github.io/wjson/cov-report/index.html)
+* Отчет [coverage](https://mambaru.github.io/wlog/cov-report/index.html)
 
 Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляется с помощью набора макросов, например:
 ```cpp
