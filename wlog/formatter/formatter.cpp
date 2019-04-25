@@ -78,7 +78,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
   struct tm t1;
   localtime_r(&ts, &t1);
   
-  const char* old_locale=0; 
+  const char* old_locale=nullptr; 
   if ( !opt.locale.empty() )
   {
     old_locale = ::setlocale(LC_TIME, nullptr);
@@ -179,7 +179,7 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
   if ( !!(opt.hide & hide_flags::time) )
     return false;
 
-  const char* old_locale=0; 
+  const char* old_locale=nullptr; 
   if ( !opt.locale.empty() )
   {
     old_locale = ::setlocale(LC_TIME, nullptr);
@@ -225,7 +225,7 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
       else if ( fmin && fsec) pos += ::wlog::strftime(buf + pos, 100-pos, "%Mm %Ss", &t1);
       else if ( fhour ) pos += ::wlog::strftime(buf + pos, 100-pos, "%Hh", &t1);
       else if ( fmin ) pos += ::wlog::strftime(buf + pos, 100-pos, "%Mm", &t1);
-      else if ( fsec ) pos += size_t(snprintf(buf + pos, 100-pos, "%lu", std::time(0) ));
+      else if ( fsec ) pos += size_t(snprintf(buf + pos, 100-pos, "%ld", std::time(nullptr) ));
     }
 
     flag = pos != 0;
