@@ -1,4 +1,4 @@
-#define WLOG_ENABLE_DEBUG_LOG ON
+#define WLOG_ENABLE_DEBUG_LOG OFF
 #include <wlog/logging.hpp>
 #include <wlog/init.hpp>
 #include <wlog/logger/logger_options.hpp>

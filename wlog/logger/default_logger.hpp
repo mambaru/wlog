@@ -17,7 +17,7 @@
 
 namespace wlog{
 
-class default_logger
+class default_logger final
 {
 public:
   typedef logger_options options;

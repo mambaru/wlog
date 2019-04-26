@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
   }
   if ( -1 == system("setterm -cursor on") )
     abort();
-  WLOG_PROGRESS( LOG_LINES << " " << 100 << "%        " << std::endl)
+  EXAMPLE_PROGRESS( LOG_LINES << " " << 100 << "%        " << std::endl)
   WLOG_END("Progress... Done")
   
   return 0;

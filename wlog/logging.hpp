@@ -32,6 +32,8 @@ inline void only_for_log( Args&& ... ){}
 #define WLOG_LOG_PROGRESS( name, X )      WLOGR(name, "PROGRESS",   X )
 
 #ifdef NDEBUG 
+# ifdef WLOG_DISABLE_DEBUG_LOG  // wrn fix
+# endif
 # ifdef WLOG_ENABLE_DEBUG_LOG          // включить в Release режиме
 #   define WLOG_LOG_DEBUG( name, X )      WLOG(name, "DEBUG",   X )
 #   define WLOG_LOG_TRACE( name, X )      WLOG(name, "TRACE",   X )
@@ -40,7 +42,9 @@ inline void only_for_log( Args&& ... ){}
 #   define WLOG_LOG_TRACE( name, X )         
 # endif
 #else
-# ifdef WLOG_DISABLE_DEBUG_LOG         // отключить в Debug режиме
+# ifdef WLOG_ENABLE_DEBUG_LOG  // wrn fix
+# endif
+# ifdef WLOG_DISABLE_DEBUG_LOG // отключить в Debug режиме
 #   define WLOG_LOG_DEBUG( name, X )
 #   define WLOG_LOG_TRACE( name, X )         
 # else

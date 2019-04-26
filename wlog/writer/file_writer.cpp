@@ -53,7 +53,7 @@ file_writer::file_writer(const formatter_fun& formatter, const options& opt, con
 
   if ( _contex.options.time_limit > 0 )
   {
-    _contex.rotate_time = ( file_time ==0 ? time(0) : file_time) + _contex.options.time_limit;
+    _contex.rotate_time = ( file_time ==0 ? time(nullptr) : file_time) + _contex.options.time_limit;
   }
   
   if ( _contex.options.startup_rotate > 0 && _contex.options.rotation == 0  )
@@ -145,7 +145,7 @@ bool file_writer::rotate_if_( std::ofstream& oflog)
   bool rotated = false;
   if ( _contex.options.size_limit > 0 || _contex.options.time_limit > 0 )
   {
-    time_t now = time(0);
+    time_t now = time(nullptr);
     size_t size = 0;
     std::ofstream::pos_type pos = oflog.tellp();
     if ( pos >= 0 )
@@ -224,7 +224,7 @@ std::string file_writer::rotate_logname(const context_type& contex)
   if ( contex.options.unixtime_suffix == 0 )
     return  contex.options.path + ".old-" + std::to_string(contex.rotation_counter);
   
-  time_t now = time(0);
+  time_t now = time(nullptr);
   return expanse_path(contex.options.path, std::to_string(now));
   
 }
