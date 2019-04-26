@@ -40,7 +40,7 @@ inline void only_for_log( Args&& ... ){}
 #   define WLOG_LOG_TRACE( name, X )         
 # endif
 #else
-# ifdef WLOG_DISABLE_DEBUG_LOG         // отключить в Debug режиме
+# ifdef WLOG_DISABLE_DEBUG_LOG || WLOG_ENABLE_DEBUG_LOG // отключить в Debug режиме
 #   define WLOG_LOG_DEBUG( name, X )
 #   define WLOG_LOG_TRACE( name, X )         
 # else
