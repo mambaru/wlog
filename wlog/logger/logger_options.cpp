@@ -54,12 +54,7 @@ custom_logger_options* logger_options::get_customize(const std::string& name)
   for ( custom_logger_options& c : this->customize )
   {
     if ( std::find( std::begin(c.names), std::end(c.names), name) != std::end(c.names) )
-      return &c
-    /*for ( const auto& n : c.names)
-    {
-      if ( n == name)
-        return &c;
-    }*/
+      return &c;
   }
   return nullptr;
 }
