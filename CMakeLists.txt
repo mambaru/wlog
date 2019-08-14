@@ -4,6 +4,8 @@ project(wlog)
 include(cmake/ci.cmake)
 
 include_directories(.)
+include_directories(AFTER SYSTEM /usr/include/c++/9)
+
 set(
   source_list
   wlog/init.cpp
@@ -14,14 +16,14 @@ set(
   wlog/formatter/formatter.cpp
   wlog/formatter/formatter_options.cpp
   wlog/formatter/formatter_handlers.cpp
-  
+
   wlog/writer/file_writer.cpp
   wlog/writer/file_writer_options.cpp
   wlog/writer/stdout_writer.cpp
   wlog/writer/stdout_writer_options.cpp
   wlog/writer/syslog_writer.cpp
   wlog/writer/syslog_writer_options.cpp
-  
+
   wlog/logger/default_logger.cpp
   wlog/logger/file_logger_options.cpp
   wlog/logger/stdout_logger_options.cpp

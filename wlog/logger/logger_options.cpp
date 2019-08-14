@@ -1,6 +1,6 @@
 #include "logger_options.hpp"
 #include <wlog/aux/aux.hpp>
-#include <iostream>
+#include <algorithm>
 namespace wlog{
 
 void logger_options::upgrade(const logger_options& other)
@@ -13,7 +13,7 @@ void logger_options::upgrade(const logger_options& other)
     {
       for (auto name: clo.names)
       {
-        this->customize.push_back(clo);        
+        this->customize.push_back(clo);
         this->customize.back().names = {name};
       }
     }
@@ -22,11 +22,11 @@ void logger_options::upgrade(const logger_options& other)
       this->customize.push_back(std::move(clo));
     }
   }
-  
+
   for (auto& op : this->customize)
     op.upgrade( static_cast< const basic_logger_options&>(other) );
 }
-  
+
 void logger_options::finalize()
 {
   this->upgrade(*this);
@@ -53,11 +53,13 @@ custom_logger_options* logger_options::get_customize(const std::string& name)
 {
   for ( custom_logger_options& c : this->customize )
   {
-    for ( const auto& n : c.names)
+    if ( std::find( std::begin(c.names), std::end(c.names), name) != std::end(c.names) )
+      return &c
+    /*for ( const auto& n : c.names)
     {
       if ( n == name)
         return &c;
-    }
+    }*/
   }
   return nullptr;
 }
