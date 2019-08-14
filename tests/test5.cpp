@@ -1,7 +1,7 @@
 #include <wlog/init.hpp>
 #include <wlog/load.hpp>
 #include <iostream>
- 
+
 int main(int argc, char* argv[])
 {
   std::string jsonsrc;
@@ -11,6 +11,7 @@ int main(int argc, char* argv[])
     wlog::custom_logger_options custom;
     custom.names.push_back("FATAL");
     custom.names.push_back("ERROR");
+    custom.path="$";
     options.customize.push_back(custom);
     options.finalize();
     jsonsrc = wlog::dump(options);
@@ -21,9 +22,23 @@ int main(int argc, char* argv[])
   {
     jsonsrc = argv[1];
   }
-  
+
   if ( !wlog::load(jsonsrc, &options, nullptr) )
     return 1;
-  
-  return 0;  
+
+  if ( options.get_customize("UNKNOWN") != nullptr )
+    return 2;
+
+  if ( auto pcustom = options.get_customize("FATAL") )
+  {
+    if ( pcustom->names.size() != 1 )
+      return 4;
+
+    if ( pcustom->names[0]!="FATAL" )
+      return 5;
+  }
+  else
+    return 3;
+
+  return 0;
 }

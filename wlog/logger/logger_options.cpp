@@ -51,11 +51,17 @@ void logger_options::finalize()
 
 custom_logger_options* logger_options::get_customize(const std::string& name)
 {
-  for ( custom_logger_options& c : this->customize )
-  {
-    if ( std::find( std::begin(c.names), std::end(c.names), name) != std::end(c.names) )
-      return &c;
-  }
+  customize_list::iterator itr = std::find_if(
+    std::begin(this->customize),
+    std::end(this->customize),
+    [&name](custom_logger_options& c) -> bool {
+      return std::find( std::begin(c.names), std::end(c.names), name) != std::end(c.names);
+    }
+  );
+
+  if ( itr != std::end(this->customize) )
+    return &(*itr);
+
   return nullptr;
 }
 
