@@ -1,6 +1,4 @@
 [![Coverage Status](https://coveralls.io/repos/github/mambaru/wlog/badge.svg?branch=master)](https://coveralls.io/github/mambaru/wlog?branch=master)
-[![pipeline status](http://github.lan/cpp/wlog/badges/wip-devel/pipeline.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
-[![coverage report](http://gitlab7.lan/cpp/wlog/badges/wip-devel/coverage.svg)](http://gitlab7.lan/cpp/wlog/commits/wip-devel)
 
 Библиотека логирования и WFC-фреймворка, с большими возможностями кастомизации с помощью опций, обработчиков и конфигурационного файла в формате JSON.
 
