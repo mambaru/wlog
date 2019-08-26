@@ -35,17 +35,17 @@ bool load(const std::string& src, logger_options* opt, std::string* err)
   }
   else
     jsonstr.assign( beg, src.end());
- 
+
   logger_options_json::serializer()(*opt, jsonstr.begin(), jsonstr.end(), &er);
-  
+
   if ( !er )
     return true;
-  
+
   if ( err==nullptr )
     return false;
-  
+
   *err = wjson::strerror::message_trace(er, jsonstr.begin(), jsonstr.end());
-  
+
   return false;
 }
 
