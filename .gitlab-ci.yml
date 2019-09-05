@@ -61,6 +61,8 @@ night-build:
     - count=$(git rev-list --count HEAD ^origin/devel)
     - if (( $count!=0 )); then
     -   git push ${PROJECT_SSH} ${CI_COMMIT_REF_NAME}:devel-night
+    - else
+    -   echo "Нет изменений для автоматического слияния."
     - fi
   only:
     - schedules
