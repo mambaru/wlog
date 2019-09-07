@@ -4,7 +4,6 @@ project(wlog)
 include(cmake/ci.cmake)
 
 include_directories(.)
-include_directories(AFTER SYSTEM /usr/include/c++/9)
 
 set(
   source_list
