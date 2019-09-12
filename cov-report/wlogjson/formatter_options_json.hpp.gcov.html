@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - wlog-coverage.info - wlogjson/formatter_options_json.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">wlogjson</a> - formatter_options_json.hpp<span style="font-size: 80%;"> (source / <a href="formatter_options_json.hpp.func.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">wlog-coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2019-09-12</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : //</a>
+<span class="lineNum">       2 </span>            : // Author: Vladimir Migashko &lt;migashko@gmail.com&gt;, (C) 2013-2015, 2017
+<span class="lineNum">       3 </span>            : //
+<span class="lineNum">       4 </span>            : // Copyright: See COPYING file that comes with this distribution
+<span class="lineNum">       5 </span>            : //
+<span class="lineNum">       6 </span>            : #pragma once
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : #include &lt;wlog/formatter/formatter_options.hpp&gt;
+<span class="lineNum">       9 </span>            : #include &lt;wlogjson/resolutions_json.hpp&gt;
+<span class="lineNum">      10 </span>            : #include &lt;wlogjson/colorized_flags_json.hpp&gt;
+<span class="lineNum">      11 </span>            : #include &lt;wlogjson/hide_flags_json.hpp&gt;
+<span class="lineNum">      12 </span>            : #include &lt;wjson/json.hpp&gt;
+<span class="lineNum">      13 </span>            : #include &lt;wjson/name.hpp&gt;
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : namespace wlog{
+<span class="lineNum">      16 </span>            :   
+<a name="17"><span class="lineNum">      17 </span>            : struct formatter_options_json</a>
+<a name="18"><span class="lineNum">      18 </span>            : {</a>
+<span class="lineNum">      19 </span><span class="lineCov">         12 :   JSON_NAME(name_width)</span>
+<a name="20"><span class="lineNum">      20 </span><span class="lineCov">         12 :   JSON_NAME(ident_width)</span></a>
+<a name="21"><span class="lineNum">      21 </span>            : </a>
+<a name="22"><span class="lineNum">      22 </span><span class="lineCov">         12 :   JSON_NAME(colorized)</span></a>
+<a name="23"><span class="lineNum">      23 </span><span class="lineCov">         12 :   JSON_NAME(resolution)</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         12 :   JSON_NAME(hide)</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         12 :   JSON_NAME(locale)</span></a>
+<span class="lineNum">      26 </span><span class="lineCov">         12 :   JSON_NAME(datetime_format)</span>
+<span class="lineNum">      27 </span><span class="lineCov">         12 :   JSON_NAME(color_map)</span>
+<span class="lineNum">      28 </span>            : 
+<a name="29"><span class="lineNum">      29 </span>            :   struct full_color</a>
+<span class="lineNum">      30 </span>            :   {
+<span class="lineNum">      31 </span><span class="lineCov">          6 :     colorized_flags operator()(const formatter_options&amp; opt) const </span>
+<span class="lineNum">      32 </span>            :     {
+<span class="lineNum">      33 </span><span class="lineCov">          6 :       return opt.colorized == colorized_flags::all ? colorized_flags::all4json : opt.colorized; </span>
+<a name="34"><span class="lineNum">      34 </span>            :     }</a>
+<span class="lineNum">      35 </span>            :     
+<span class="lineNum">      36 </span><span class="lineCov">          6 :     void operator()(formatter_options&amp; opt, colorized_flags value) const </span>
+<span class="lineNum">      37 </span>            :     {
+<span class="lineNum">      38 </span><span class="lineCov">          6 :       opt.colorized = value == colorized_flags::all4json ? colorized_flags::all : value;</span>
+<span class="lineNum">      39 </span><span class="lineCov">          6 :     }</span>
+<span class="lineNum">      40 </span>            :   };
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :   typedef wjson::object&lt;
+<span class="lineNum">      43 </span>            :     formatter_options,
+<span class="lineNum">      44 </span>            :     wjson::member_list&lt;
+<span class="lineNum">      45 </span>            :       wjson::member&lt;n_name_width, formatter_options, int, &amp;formatter_options::name_width&gt;,
+<span class="lineNum">      46 </span>            :       wjson::member&lt;n_ident_width, formatter_options, int, &amp;formatter_options::ident_width&gt;,
+<span class="lineNum">      47 </span>            :       wjson::member&lt;n_resolution, formatter_options, resolutions, &amp;formatter_options::resolution, resolutions_json&gt;,
+<span class="lineNum">      48 </span>            :       wjson::member&lt;n_datetime_format, formatter_options, std::string, &amp;formatter_options::datetime_format&gt;,
+<span class="lineNum">      49 </span>            :       wjson::member&lt;n_hide, formatter_options, hide_flags, &amp;formatter_options::hide, hide_flags_json&gt;,
+<span class="lineNum">      50 </span>            :       wjson::member&lt;n_locale, formatter_options, std::string, &amp;formatter_options::locale&gt;,
+<span class="lineNum">      51 </span>            :       wjson::member_p&lt;n_colorized, formatter_options, colorized_flags, full_color, colorized_flags_json&gt;,
+<span class="lineNum">      52 </span>            :       wjson::member&lt;n_color_map, formatter_options, std::map&lt;std::string, std::string&gt;, &amp;formatter_options::color_map, 
+<span class="lineNum">      53 </span>            :                     wjson::dict_map&lt; wjson::value&lt;std::string&gt; &gt; &gt;
+<span class="lineNum">      54 </span>            :     &gt;,
+<span class="lineNum">      55 </span>            :     wjson::strict_mode
+<span class="lineNum">      56 </span>            :   &gt; type;
+<span class="lineNum">      57 </span>            :   typedef type::serializer serializer;
+<span class="lineNum">      58 </span>            :   typedef type::target target;
+<span class="lineNum">      59 </span>            :   typedef type::member_list member_list;
+<span class="lineNum">      60 </span>            : };
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.10</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
