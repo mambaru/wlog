@@ -1,6 +1,6 @@
 name: C++ CI
 
-on: 
+on:
   push:
     branches:
       - mambaru
@@ -24,7 +24,7 @@ jobs:
           git checkout master
         popd
         rsync -a external/cmake-ci/root-ci/ ./
-        date +"%F %X" >> ./.ci/build_history.txt
+        date +"%F %X" >> ./.github/build_history.txt
     - name: configure
       run: cd build && cmake .. -DBUILD_TESTING=ON -DPARANOID_WARNINGS=OFF
     - name: make
