@@ -27,7 +27,7 @@ jobs:
     - name: make
       run: cmake --build ./build
     - name: make check
-      run: cd build && ctest
+      run: cd build && ctest --output-on-failure
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v1
       with:
