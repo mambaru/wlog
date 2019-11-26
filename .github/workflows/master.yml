@@ -1,6 +1,6 @@
 name: C++ CI
 
-on: 
+on:
   push:
     branches:
       - master
@@ -13,6 +13,8 @@ jobs:
     - name: setup
       run: |
         sudo apt-get install -y valgrind
+        sudo locale-gen ru_RU
+        sudo locale-gen ru_RU.UTF-8
         mkdir -p build
     - name: configure
       run: cd build && cmake .. -DBUILD_TESTING=ON -DPARANOID_WARNINGS=OFF
