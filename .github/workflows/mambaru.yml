@@ -13,12 +13,12 @@ jobs:
     - name: setup
       run: |
         sudo apt-get install -y valgrind
+        sudo locale-gen ru_RU
+        sudo locale-gen ru_RU.UTF-8
+        sudo update-locale
         mkdir -p build
     - name: init
       run: |
-        rm -rf .github
-        rm -rf cmake
-        rm -rf external
         git submodule update --init external/cmake-ci
         pushd external/cmake-ci
           git checkout master
@@ -30,7 +30,7 @@ jobs:
     - name: make
       run: cmake --build ./build
     - name: make check
-      run: cd build && ctest
+      run: cd build && ctest --output-on-failure
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v1
       with:
