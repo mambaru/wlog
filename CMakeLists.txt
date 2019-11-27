@@ -42,7 +42,9 @@ endif()
 
 add_library(wlog ${source_list} )
 target_include_directories(wlog PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
-target_link_libraries(wlog PUBLIC faslib wjson)
+if (NOT WLOG_DISABLE_JSON)
+  target_link_libraries(wlog PUBLIC faslib wjson)
+endif()
 wci_targets(wlog)
 
 if ( BUILD_TESTING )

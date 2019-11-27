@@ -1,4 +1,3 @@
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${UNIT_TEST_BIN_OUTPUT_DIR})
 
 add_executable(test1 test1.cpp)
 wci_test(TARGET test1 COMMAND test1)
