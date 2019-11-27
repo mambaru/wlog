@@ -1,5 +1,5 @@
-[![Build Status](https://github.com/mambaru/wlog/workflows/C/C++%20CI/badge.svg?branch=master)](https://github.com/mambaru/wlog/tree/master)
-[![Build Status](https://github.com/mambaru/wlog/workflows/C/C++%20CI/badge.svg?branch=mambaru)](https://github.com/mambaru/wlog/tree/mambaru)
+[![Build Status](https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=master)](https://github.com/mambaru/wlog/tree/master)
+[![Build Status](https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=mambaru)](https://github.com/mambaru/wlog/tree/mambaru)
 [![Coverage Report](http://github.lan/cpp/wlog/badges/pre-release/coverage.svg)](http://github.lan/cpp/wlog/commits/pre-release)
 
 Библиотека логирования и WFC-фреймворка, с большими возможностями кастомизации с помощью опций, обработчиков и конфигурационного файла в формате JSON.
