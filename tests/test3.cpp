@@ -16,6 +16,7 @@ static const char* ru_date2 = "Чтв 07 Дек 2017 21:54:22";
 static const char* ru_date3 = "Чт. 07 дек. 2017 21:54:22";
 
 static const char* en_date = "Thu 07 Dec 2017 09:54:22 PM MSK";
+
 static wlog::time_point tp;
 
 int test1()
@@ -27,7 +28,7 @@ int test1()
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == "\033[32m2017-12-07\033[0m"  );
- 
+
   ss.str(""); ss.clear();
 
   opt.locale="en_US.UTF-8";
@@ -35,13 +36,13 @@ int test1()
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == en_date );
- 
+
   ss.str(""); ss.clear();
   opt.locale="ru_RU.UTF-8";
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == ru_date || ss.str() == ru_date2 || ss.str() == ru_date3);
-  
+
   ss.str(""); ss.clear();
   opt.locale="ru_RU.UTF-8";
   opt.hide = wlog::hide_flags::year;
@@ -49,7 +50,7 @@ int test1()
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == "дек" || ss.str() == "Дек" || ss.str() == "дек.");
-  
+
   ss.str(""); ss.clear();
   opt.locale="ru_RU.UTF-8";
   opt.hide = wlog::hide_flags::none;
@@ -57,7 +58,7 @@ int test1()
   wlog::formatter::date(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == "2017" );
-  
+
   return 0;
 }
 
@@ -69,7 +70,7 @@ int test2()
   wlog::formatter::time(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == "21:54:22"  );
-  
+
   ss.str(""); ss.clear();
   opt.locale="en_US.UTF-8";
   wlog::formatter::time(ss, tp, opt, hdr);
@@ -83,7 +84,7 @@ int test2()
   wlog::formatter::time(ss, tp, opt, hdr);
   std::cout << "[" << ss.str() << "]" << std::endl;
   TEST( ss.str() == "54m" );
-  
+
   return 0;
 }
 
@@ -98,13 +99,13 @@ int test3()
   wlog::formatter::fraction(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == ".1" );
-  
+
   ss.str(""); ss.clear();
   opt.resolution = wlog::resolutions::centiseconds;
   wlog::formatter::fraction(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == ".12" );
-  
+
   ss.str(""); ss.clear();
   opt.resolution = wlog::resolutions::milliseconds;
   wlog::formatter::fraction(ss, tp, opt, hdr);
@@ -122,7 +123,7 @@ int test3()
   wlog::formatter::fraction(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
   TEST( ss.str() == ".123456000" );
-  
+
   return 0;
 }
 
@@ -132,7 +133,7 @@ int test4()
   wlog::formatter_options opt;
   opt.resolution = wlog::resolutions::microseconds;
   opt.colorized = wlog::colorized_flags::none;
-  
+
   {
     std::stringstream ss;
     wlog::formatter fmt(opt, wlog::formatter_handlers() );
@@ -141,9 +142,9 @@ int test4()
     std::string str1="2017-12-07 21:54:22.123456 hello    world     !";
     std::string str2=ss.str();
     TEST( str1 == str2 );
-   
+
   }
-  
+
   opt.resolution = wlog::resolutions::seconds;
   {
     std::stringstream ss;
@@ -206,6 +207,6 @@ int main()
     return res;
   if ( int res = test4() )
     return res;
-  
-  return 0;  
+
+  return 0;
 }

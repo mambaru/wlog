@@ -43,7 +43,7 @@ struct file_writer_options_json
       wjson::member_p<n_sync, file_writer_options, bool, sync >,
       wjson::member_p<n_startup_rotate, file_writer_options, bool, startup_rotate>,
       wjson::member<n_size_limit, file_writer_options, long, &file_writer_options::size_limit>,
-      wjson::member<n_time_limit, file_writer_options, long, &file_writer_options::time_limit>,
+      wjson::member<n_time_limit, file_writer_options, long, &file_writer_options::time_limit, wjson::time_interval<long,1> >,
       wjson::member<n_rotation, file_writer_options, long, &file_writer_options::rotation>,
       wjson::member_p<n_rotation_header, file_writer_options, bool, rotation_header>,
       wjson::member_p<n_rotation_footer, file_writer_options, bool, rotation_footer>,

@@ -3,8 +3,6 @@ project(wlog)
 
 include(cmake/ci.cmake)
 
-include_directories(.)
-
 set(
   source_list
   wlog/init.cpp
@@ -37,15 +35,21 @@ set(
 )
 
 if (NOT WLOG_DISABLE_JSON)
-  rootlibs(faslib wjson)
+  wci_getlib(NAME faslib)
+  wci_getlib(NAME wjson)
   list(APPEND source_list wlog/load.cpp )
 endif()
 
-add_library(wlog ${source_list})
+add_library(wlog ${source_list} )
+target_include_directories(wlog PUBLIC ${wlog_SOURCE_DIR} )
+if (NOT WLOG_DISABLE_JSON)
+  target_link_libraries(wlog PUBLIC faslib wjson)
+endif()
+wci_targets(wlog)
 
 if ( BUILD_TESTING )
   if (WLOG_DISABLE_JSON)
-    rootlibs(faslib)
+    wci_getlib(NAME faslib)
   endif()
   enable_testing()
   add_subdirectory(tests)
@@ -56,8 +60,8 @@ endif()
 
 set(CPACK_PACKAGE_NAME "wlog")
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "8")
-set(CPACK_PACKAGE_VERSION_PATCH "2")
+set(CPACK_PACKAGE_VERSION_MINOR "9")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/Readme.md")
 set(CPACK_PACKAGE_CONTACT "migashko@gmail.com")
