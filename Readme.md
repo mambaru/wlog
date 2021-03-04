@@ -1,3 +1,8 @@
+[![pipeline status](https://gitlab.mamba.ru/cpp/wlog/badges/master/pipeline.svg)](https://gitlab.mamba.ru/cpp/wlog/commits/master)
+[![pipeline status](https://gitlab.mamba.ru/cpp/wlog/badges/pre-release/pipeline.svg)](https://gitlab.mamba.ru/cpp/wlog/commits/pre-release)
+[![pipeline status](https://gitlab.mamba.ru/cpp/wlog/badges/devel/pipeline.svg)](https://gitlab.mamba.ru/cpp/wlog/commits/devel)
+[![pipeline status](https://gitlab.mamba.ru/cpp/wlog/badges/wip-devel/pipeline.svg)](https://gitlab.mamba.ru/cpp/wlog/commits/wip-devel)
+[![Coverage Report](https://gitlab.mamba.ru/cpp/wlog/badges/pre-release/coverage.svg)](https://gitlab.mamba.ru/cpp/wlog/commits/pre-release)
 
 [![Build Status](https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=master)](https://github.com/mambaru/wlog/tree/master)
 [![Build Status](https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=mambaru)](https://github.com/mambaru/wlog/tree/mambaru)
