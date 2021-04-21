@@ -24,6 +24,7 @@ enum class colorized_flags: unsigned short
 };
 
 constexpr colorized_flags full_color = colorized_flags::all;
+constexpr colorized_flags get_full_color() { return full_color; }
 
 inline colorized_flags operator | ( colorized_flags left, colorized_flags right)
 {

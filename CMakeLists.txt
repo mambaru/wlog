@@ -40,6 +40,10 @@ if (NOT WLOG_DISABLE_JSON)
   list(APPEND source_list wlog/load.cpp )
 endif()
 
+if ( NOT MSVC )
+  set_source_files_properties(wlog/aux/strftime.cpp PROPERTIES COMPILE_FLAGS -fno-builtin-strftime)
+endif()
+
 add_library(wlog ${source_list} )
 target_include_directories(wlog PUBLIC ${wlog_SOURCE_DIR} )
 if (NOT WLOG_DISABLE_JSON)

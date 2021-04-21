@@ -10,7 +10,6 @@
 namespace wlog
 {
   
-size_t strftime(char *s, size_t max, const char *fmt,
-            const struct tm *tm);
+size_t strftime(char *s, size_t max, const char *fmt, const tm *tm);
 
 }

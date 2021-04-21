@@ -195,7 +195,7 @@ void file_writer::write_header(std::ostream& os, const context_type& contex)
     return;
 
   time_t ts = time_point::clock::to_time_t(contex.start_time);
-  struct tm t1;
+  tm t1;
   localtime_r(&ts, &t1);
   char buf[100]={0};
   ::wlog::strftime(buf, 100, "%c", &t1);

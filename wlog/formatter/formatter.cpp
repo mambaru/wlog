@@ -69,7 +69,7 @@ bool formatter::date( std::ostream& os, const time_point& tp, const formatter_op
     return false;
 
   time_t ts = time_point::clock::to_time_t(tp);
-  struct tm t1;
+  tm t1;
   localtime_r(&ts, &t1);
 
   const char* old_locale=nullptr;
@@ -168,7 +168,7 @@ bool formatter::time( std::ostream& os, const time_point& tp, const formatter_op
   if ( hdr.time == nullptr )
   {
     time_t ts = time_point::clock::to_time_t(tp);
-    struct tm t1;
+    tm t1;
     localtime_r(&ts, &t1);
     char buf[100]={0};
     size_t pos=0;
@@ -250,7 +250,7 @@ bool formatter::fraction( std::ostream& os, const time_point& tp, const formatte
       if ( bool( opt.hide & hide_flags::seconds ) )
       {
         time_t ts = time_point::clock::to_time_t(tp);
-        struct tm t1;
+        tm t1;
         localtime_r(&ts, &t1);
         if ( !( opt.hide & hide_flags::minutes ) )
           os << t1.tm_sec;
