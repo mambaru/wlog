@@ -19,6 +19,7 @@ class stdout_writer final
 public:
   typedef stdout_writer_options options;
   ~stdout_writer();
+  stdout_writer(const stdout_writer&) = default;
   stdout_writer(const formatter_fun& fmt, const options& opt);
   void operator()(
     const time_point& tp,
