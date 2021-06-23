@@ -19,4 +19,8 @@ if (NOT WLOG_DISABLE_JSON)
   add_executable(test5 test5.cpp)
   wci_test(TARGET test5 COMMAND test5)
   target_link_libraries(test5 PUBLIC  wlog)
+
+  add_executable(test6 test6.cpp)
+  wci_test(TARGET test6 COMMAND test6)
+  target_link_libraries(test6 PUBLIC  wlog)
 endif()
