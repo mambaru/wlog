@@ -87,9 +87,7 @@ void formatter_options::finalize()
     for ( auto& c : this->color_map )
     {
       std::string& color = c.second;
-      if ( color.empty() ) continue;
-      if ( color.size() > 0 && color[0]=='\033' /*&& color[1]=='3' && color[2]=='3'*/)
-        continue;
+      if ( color.empty() || color[0]=='\033' ) continue;
       
       if ( std::isdigit(color[0]) )
       {

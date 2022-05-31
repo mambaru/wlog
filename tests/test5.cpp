@@ -2,7 +2,7 @@
 #include <wlog/load.hpp>
 #include <iostream>
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
   std::string jsonsrc;
   wlog::logger_options options;

@@ -1,2 +1,5 @@
 shiftTooManyBits:./examples/example1.cpp:26
 shiftTooManyBits:./examples/example_j.cpp:112
+unknownMacro:./examples/*
+unknownMacro:./tests/*
+unusedFunction:

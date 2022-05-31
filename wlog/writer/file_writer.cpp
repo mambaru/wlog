@@ -98,7 +98,6 @@ void file_writer::rotate_( std::ofstream& oflog)
 {
   oflog.close();
   
-  std::string old_name;
   if ( _contex.options.rotation > 0 )
   {
     if ( _contex.path_list.size() > size_t(_contex.options.rotation)  )
@@ -114,8 +113,7 @@ void file_writer::rotate_( std::ofstream& oflog)
 
     std::string cur_name = _contex.path_list.back();
     _contex.path_list.pop_back();
-    //old_name = _contex.options.path + ".old-" + std::to_string(_contex.rotation_counter);
-    old_name = _handlers.rotate_logname(_contex);
+    std::string old_name = _handlers.rotate_logname(_contex);
     _contex.path_list.push_back(old_name);
     if ( 0 != std::rename( cur_name.c_str(), old_name.c_str() ) )
     {
@@ -128,16 +126,6 @@ void file_writer::rotate_( std::ofstream& oflog)
   std::string path = _handlers.main_logname(_contex);
   _contex.path_list.push_back(path);
   oflog.open(path);
-  
-/*  
-  if ( _contex.options.rotation > 0 )
-  {
-    oflog << "Previous log: " << old_name << std::endl;
-    ++_contex.rotation_counter;
-  }
-*/
-
-  //oflog.open(_opt.path);
 }
 
 bool file_writer::rotate_if_( std::ofstream& oflog)
@@ -206,7 +194,6 @@ void file_writer::write_header(std::ostream& os, const context_type& contex)
      << "! Total Rotated: " << contex.rotation_counter << std::endl
      << "! Previous log: "  << contex.path_list.back()  << std::endl
      << "! -----------------------------------------" << std::endl;
-     
 }
   
 void file_writer::write_footer(std::ostream& os, const context_type& context)
@@ -226,7 +213,6 @@ std::string file_writer::rotate_logname(const context_type& contex)
   
   time_t now = time(nullptr);
   return expanse_path(contex.options.path, std::to_string(now));
-  
 }
 
 }
