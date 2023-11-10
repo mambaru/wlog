@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>wlog: Титульная страница</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
@@ -27,7 +27,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.17 -->
+<!-- Создано системой Doxygen 1.9.1 -->
 <script type="text/javascript" src="menudata.js"></script>
 <script type="text/javascript" src="menu.js"></script>
 <script type="text/javascript">
@@ -43,7 +43,7 @@ $(function() {
 <div class="title">wlog Документация</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a href="https://github.com/mambaru/wlog/tree/master"><object type="image/svg+xml" data="https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=master" style="pointer-events: none;">Build Status</object></a> <a href="https://github.com/mambaru/wlog/tree/mambaru"><object type="image/svg+xml" data="https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=mambaru" style="pointer-events: none;">Build Status</object></a> <a href="https://codecov.io/gh/mambaru/wlog"><object type="image/svg+xml" data="https://codecov.io/gh/mambaru/wlog/branch/master/graph/badge.svg" style="pointer-events: none;">codecov</object></a></p>
+<div class="textblock"><p><a class="anchor" id="md_Readme"></a><a href="https://github.com/mambaru/wlog/tree/master"><img src="https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=master" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/mambaru/wlog/tree/mambaru"><img src="https://github.com/mambaru/wlog/workflows/C++%20CI/badge.svg?branch=mambaru" alt="Build Status" style="pointer-events: none;" class="inline"/></a> <a href="https://codecov.io/gh/mambaru/wlog"><img src="https://codecov.io/gh/mambaru/wlog/branch/master/graph/badge.svg" alt="codecov" style="pointer-events: none;" class="inline"/></a></p>
 <p>Библиотека логирования и WFC-фреймворка, с большими возможностями кастомизации с помощью опций, обработчиков и конфигурационного файла в формате JSON.</p>
 <p><img src="https://i.imgur.com/xdC2tVt.png" alt="wlog" class="inline"/></p>
 <ul>
@@ -51,7 +51,7 @@ $(function() {
 <li>Репозитарий на <a href="https://github.com/mambaru/wlog">github.com</a>.</li>
 <li>Отчет <a href="https://mambaru.github.io/wlog/cov-report/index.html">coverage</a></li>
 </ul>
-<p>Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляется с помощью набора макросов, например: </p><div class="fragment"><div class="line"><span class="preprocessor">#define WLOG_ENABLE_DEBUG_LOG // Don&#39;t disable DEBUG and TRACE in Release</span></div>
+<p>Каждая строка лога состоит из временной отметки, имени лога (по умолчанию WLOG), типа сообщения и текста сообщения. Запись в лог осуществляется с помощью набора макросов, например: </p><div class="fragment"><div class="line"><span class="preprocessor">#define WLOG_ENABLE_DEBUG_LOG </span><span class="comment">// Don&#39;t disable DEBUG and TRACE in Release</span></div>
 <div class="line"> </div>
 <div class="line"><span class="preprocessor">#include &lt;wlog/wlog.hpp&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;wlog/init.hpp&gt;</span></div>
@@ -66,7 +66,7 @@ $(function() {
 <div class="line">  WLOG_TRACE( &quot;Example N&quot; &lt;&lt; 4 &lt;&lt; &quot; trace&quot; )</div>
 <div class="line">  return 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>По умолчанию сообщения DEBUG и TRACE отключаются на уровне препроцессора в Release режиме.</p>
+</div><!-- fragment --><p> По умолчанию сообщения DEBUG и TRACE отключаются на уровне препроцессора в Release режиме.</p>
 <h1><a class="anchor" id="autotoc_md0"></a>
 Системные требования и особенности</h1>
 <ul>
@@ -180,7 +180,7 @@ $(function() {
 <div class="line">  <span class="comment">// Но можем записать в лог финальное сообщение</span></div>
 <div class="line">  log( wlog::time_point::clock::now(), <span class="stringliteral">&quot;EXAMPLE4&quot;</span>, <span class="stringliteral">&quot;FINAL&quot;</span>, <span class="stringliteral">&quot;Bye!\n&quot;</span> );</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Это может быть полезно, если нужна гарантия, что сообщение будет последним в файле лога (например, в многопоточной среде, и/или много отладочных сообщений в деструкторах объектов)</p>
+</div><!-- fragment --><p> Это может быть полезно, если нужна гарантия, что сообщение будет последним в файле лога (например, в многопоточной среде, и/или много отладочных сообщений в деструкторах объектов)</p>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Использование</h1>
 <p>В каждом сообщении лога присутствуют четыре основные элемента, которые можно кастомизировать или скрывать:</p>
@@ -203,26 +203,26 @@ $(function() {
 </ul>
 <p>По умолчанию используется лог WLOG в соответствующем наборе макросов:</p>
 <div class="fragment"><div class="line"><span class="comment">//wlog/logging.hpp</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_ERROR(X)    WLOG_LOG_ERROR   ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_WARNING(X)  WLOG_LOG_WARNING ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_MESSAGE(X)  WLOG_LOG_MESSAGE ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_FATAL(X)    WLOG_LOG_FATAL   ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_BEGIN(X)    WLOG_LOG_BEGIN   ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_END(X)      WLOG_LOG_END     ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_DEBUG(X)    WLOG_LOG_DEBUG   ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_TRACE(X)    WLOG_LOG_TRACE   ( &quot;WLOG&quot;, X )</span></div>
-<div class="line"><span class="preprocessor">#define WLOG_PROGRESS(X) WLOG_LOG_PROGRESS( &quot;WLOG&quot;, X )</span></div>
-</div><!-- fragment --><p>Аналогичным образом можно сделать свой набор макросов для каждого лога. Если не устраивает предлагаемых сообщений, то можно задать свой, аналогично набору макросов для работы с syslog:</p>
+<div class="line"><span class="preprocessor">#define WLOG_ERROR(X)    WLOG_LOG_ERROR   ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line"><span class="preprocessor">#define WLOG_WARNING(X)  WLOG_LOG_WARNING ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line"><span class="preprocessor">#define WLOG_MESSAGE(X)  WLOG_LOG_MESSAGE ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line"><span class="preprocessor">#define WLOG_FATAL(X)    WLOG_LOG_FATAL   ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line"><span class="preprocessor">#define WLOG_BEGIN(X)    WLOG_LOG_BEGIN   ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line"><span class="preprocessor">#define WLOG_END(X)      WLOG_LOG_END     ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line"><span class="preprocessor">#define WLOG_DEBUG(X)    WLOG_LOG_DEBUG   ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line"><span class="preprocessor">#define WLOG_TRACE(X)    WLOG_LOG_TRACE   ( &quot;WLOG&quot;</span>, X )</div>
+<div class="line">#define WLOG_PROGRESS(X) WLOG_LOG_PROGRESS( &quot;WLOG&quot;, X )</div>
+</div><!-- fragment --><p> Аналогичным образом можно сделать свой набор макросов для каждого лога. Если не устраивает предлагаемых сообщений, то можно задать свой, аналогично набору макросов для работы с syslog:</p>
 <div class="fragment"><div class="line"><span class="comment">//wlog/logging.hpp</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_EMERG(X)   WLOG( &quot;SYSLOG&quot;, &quot;EMERG&quot;,   X)</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_ALERT(X)   WLOG( &quot;SYSLOG&quot;, &quot;ALERT&quot;,   X)</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_CRIT(X)    WLOG( &quot;SYSLOG&quot;, &quot;CRIT&quot;,    X)</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_ERR(X)     WLOG( &quot;SYSLOG&quot;, &quot;ERR&quot;,     X)</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_WARNING(X) WLOG( &quot;SYSLOG&quot;, &quot;WARNING&quot;, X)</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_NOTICE(X)  WLOG( &quot;SYSLOG&quot;, &quot;NOTICE&quot;,  X)</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_INFO(X)    WLOG( &quot;SYSLOG&quot;, &quot;INFO&quot;,    X)</span></div>
-<div class="line"><span class="preprocessor">#define WSYSLOG_DEBUG(X)   WLOG( &quot;SYSLOG&quot;, &quot;DEBUG&quot;,   X)</span></div>
-</div><!-- fragment --><p>Пример использования: </p><div class="fragment"><div class="line">WLOG_MESSAGE(<span class="stringliteral">&quot;Это &quot;</span> &lt;&lt; 10 &lt;&lt; <span class="stringliteral">&quot; сообщение&quot;</span> )</div>
+<div class="line"><span class="preprocessor">#define WSYSLOG_EMERG(X)   WLOG( &quot;SYSLOG&quot;</span>, &quot;EMERG&quot;,   X)</div>
+<div class="line"><span class="preprocessor">#define WSYSLOG_ALERT(X)   WLOG( &quot;SYSLOG&quot;</span>, &quot;ALERT&quot;,   X)</div>
+<div class="line"><span class="preprocessor">#define WSYSLOG_CRIT(X)    WLOG( &quot;SYSLOG&quot;</span>, &quot;CRIT&quot;,    X)</div>
+<div class="line"><span class="preprocessor">#define WSYSLOG_ERR(X)     WLOG( &quot;SYSLOG&quot;</span>, &quot;ERR&quot;,     X)</div>
+<div class="line"><span class="preprocessor">#define WSYSLOG_WARNING(X) WLOG( &quot;SYSLOG&quot;</span>, &quot;WARNING&quot;, X)</div>
+<div class="line"><span class="preprocessor">#define WSYSLOG_NOTICE(X)  WLOG( &quot;SYSLOG&quot;</span>, &quot;NOTICE&quot;,  X)</div>
+<div class="line"><span class="preprocessor">#define WSYSLOG_INFO(X)    WLOG( &quot;SYSLOG&quot;</span>, &quot;INFO&quot;,    X)</div>
+<div class="line">#define WSYSLOG_DEBUG(X)   WLOG( &quot;SYSLOG&quot;, &quot;DEBUG&quot;,   X)</div>
+</div><!-- fragment --><p> Пример использования: </p><div class="fragment"><div class="line">WLOG_MESSAGE(<span class="stringliteral">&quot;Это &quot;</span> &lt;&lt; 10 &lt;&lt; <span class="stringliteral">&quot; сообщение&quot;</span> )</div>
 <div class="line">WLOG_ERROR(&quot;Это &quot; &lt;&lt; 25 &lt;&lt; &quot; ошибка&quot; )</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md7"></a>
 Конфигурирование</h1>
@@ -291,66 +291,66 @@ $(function() {
 <div class="line">  <span class="comment">/* Индивидуальные настройки для логов и типов сообщений */</span></div>
 <div class="line">  <span class="stringliteral">&quot;customize&quot;</span>: [ <span class="comment">/* рассмотрим далее */</span> ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Минимальная конфигурация: </p><div class="fragment"><div class="line">{}</div>
-</div><!-- fragment --><p>В этом случае запись в файл и syslog не производится, а вывод только в <code>std::cout</code> в цвете. Чтобы отключить раскраску: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Минимальная конфигурация: </p><div class="fragment"><div class="line">{}</div>
+</div><!-- fragment --><p> В этом случае запись в файл и syslog не производится, а вывод только в <code>std::cout</code> в цвете. Чтобы отключить раскраску: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;stdout&quot;</span>: {</div>
 <div class="line">    <span class="stringliteral">&quot;colorized&quot;</span>: <span class="stringliteral">&quot;none&quot;</span>,</div>
 <div class="line">  }</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Для записи в файл достаточно указать путь: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Для записи в файл достаточно указать путь: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>:<span class="stringliteral">&quot;/path/to/log/file.log&quot;</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Чтобы запретить вывод в stdout, а в файл выводить в цвете: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Чтобы запретить вывод в stdout, а в файл выводить в цвете: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>:<span class="stringliteral">&quot;/path/to/log/file.log&quot;</span></div>
 <div class="line">  <span class="stringliteral">&quot;colorized&quot;</span>: <span class="stringliteral">&quot;none&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;stdout&quot;</span>: {</div>
 <div class="line">    <span class="stringliteral">&quot;name&quot;</span>:<span class="stringliteral">&quot;#&quot;</span></div>
 <div class="line">  }</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Чтобы запретить запись сообщений конкретного лога или типов сообщений всех логов, нужно перечислить их в массиве <code>deny</code>, например для того чтобы отфильтровать "мусор" в Debug режиме: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Чтобы запретить запись сообщений конкретного лога или типов сообщений всех логов, нужно перечислить их в массиве <code>deny</code>, например для того чтобы отфильтровать "мусор" в Debug режиме: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;deny&quot;</span>: [<span class="stringliteral">&quot;DEBUG&quot;</span>, <span class="stringliteral">&quot;TRACE&quot;</span>]</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Чтобы разрешить запись сообщений конкретного лога или некоторые типы сообщений, нужно перечислить их в массиве <code>allow</code>, например для того чтобы разрешить только сообщения лога MYLOG, и сообщения ERROR остальных логов: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Чтобы разрешить запись сообщений конкретного лога или некоторые типы сообщений, нужно перечислить их в массиве <code>allow</code>, например для того чтобы разрешить только сообщения лога MYLOG, и сообщения ERROR остальных логов: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;allow&quot;</span>: [<span class="stringliteral">&quot;MYLOG&quot;</span>, <span class="stringliteral">&quot;ERROR&quot;</span>]</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Ускорить запись в лог примерно в три раза, но без гарантий в случае аварийных падений: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Ускорить запись в лог примерно в три раза, но без гарантий в случае аварийных падений: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;sync&quot;</span>: <span class="keyword">false</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
+</div><!-- fragment --> <h2><a class="anchor" id="autotoc_md8"></a>
 Настройки ротации</h2>
 <p>По умолчанию запись происходит в один и тот же файл, без ограничений. Чтобы при каждом запуске запись происходила с начала файла: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;startup_rotate&quot;</span>: <span class="keyword">true</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Чтобы при этом сохранялся лог от предыдущего запуска в файле <code>/path/to/log/file.log.old-0</code>: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Чтобы при этом сохранялся лог от предыдущего запуска в файле <code>/path/to/log/file.log.old-0</code>: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;startup_rotate&quot;</span>: <span class="keyword">true</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;rotation&quot;</span>: 1</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Без указанных ограничений на размер или время, значения <code>rotation</code> больше единицы не дают эффекта. Для обнуления файла при достижении заданного размера (1МБ): </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Без указанных ограничений на размер или время, значения <code>rotation</code> больше единицы не дают эффекта. Для обнуления файла при достижении заданного размера (1МБ): </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;size_limit&quot;</span>: 1048576</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>В следующий конфигурации при запуске, запись будет продолжена в указанный лог, но при достижении размера в 1МБ файл будет переименован '/path/to/log/file.log.old-0' и запись начнется с начала файла: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> В следующий конфигурации при запуске, запись будет продолжена в указанный лог, но при достижении размера в 1МБ файл будет переименован '/path/to/log/file.log.old-0' и запись начнется с начала файла: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;size_limit&quot;</span>: 1048576,</div>
 <div class="line">  <span class="stringliteral">&quot;rotation&quot;</span>: 1</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Запись в новый файл при запуске и сохранении истории в 10 файлов, с размером не более 1 МБ каждый: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Запись в новый файл при запуске и сохранении истории в 10 файлов, с размером не более 1 МБ каждый: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;startup_rotate&quot;</span>: <span class="keyword">true</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;size_limit&quot;</span>: 1048576,</div>
 <div class="line">  <span class="stringliteral">&quot;rotation&quot;</span>: 10</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Посуточная ротация файлов с историей за месяц: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Посуточная ротация файлов с историей за месяц: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;time_limit&quot;</span>: 86400,</div>
 <div class="line">  <span class="stringliteral">&quot;rotation&quot;</span>: 30</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Посекундные срезы (например при трассировании трафика при большой нагрузке ): </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Посекундные срезы (например при трассировании трафика при большой нагрузке ): </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;startup_rotate&quot;</span>: <span class="keyword">true</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;time_limit&quot;</span>: 1,</div>
@@ -537,7 +537,7 @@ $(function() {
 <div class="line">    }</div>
 <div class="line">  ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Здесь в основной файл будет производиться без ротации, а в file-Debug.log ограничение в 1МБ. Также запрещаем выводить эти сообщения в stdout, и отключаем синхронную запись для ускорения. Если не указывать путь, то запись будет вестись в основной файл. Чтобы отладочные сообщения выводить только на экран, а все остальные только в файл: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Здесь в основной файл будет производиться без ротации, а в file-Debug.log ограничение в 1МБ. Также запрещаем выводить эти сообщения в stdout, и отключаем синхронную запись для ускорения. Если не указывать путь, то запись будет вестись в основной файл. Чтобы отладочные сообщения выводить только на экран, а все остальные только в файл: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="stringliteral">&quot;path&quot;</span>: <span class="stringliteral">&quot;/path/to/log/file.log&quot;</span>,</div>
 <div class="line">  <span class="stringliteral">&quot;stdout&quot;</span>:{<span class="stringliteral">&quot;name&quot;</span>: <span class="stringliteral">&quot;#&quot;</span>}</div>
 <div class="line">  <span class="stringliteral">&quot;customize&quot;</span>: [</div>
@@ -548,7 +548,7 @@ $(function() {
 <div class="line">  }</div>
 <div class="line">  ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Можно выводить все сообщения лога в отдельный файл, или каждый тип сообщений по разным файлам указав в знак $ вместо пути: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p> Можно выводить все сообщения лога в отдельный файл, или каждый тип сообщений по разным файлам указав в знак $ вместо пути: </p><div class="fragment"><div class="line">{</div>
 <div class="line">  <span class="comment">/* запрещаем DEBUG и TRACE сообщения</span></div>
 <div class="line"><span class="comment">  &quot;deny&quot;: [&quot;DEBUG&quot;, &quot;TRACE&quot;],</span></div>
 <div class="line"><span class="comment">  &quot;path&quot;: &quot;/path/to/log/file.log&quot;,</span></div>
@@ -573,7 +573,7 @@ $(function() {
 <div class="line">    }</div>
 <div class="line">  ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>Обратите внимание все сообщения заблокированные <code>deny</code> в секции <code>customize</code>, не отбрасываются, поэтому сообщения PROGRESS будут писаться в основной лог, если не сделать отдельную кастомизацию.</p>
+</div><!-- fragment --><p> Обратите внимание все сообщения заблокированные <code>deny</code> в секции <code>customize</code>, не отбрасываются, поэтому сообщения PROGRESS будут писаться в основной лог, если не сделать отдельную кастомизацию.</p>
 <h2><a class="anchor" id="autotoc_md13"></a>
 настройки syslog</h2>
 <p>Для записи в syslog достаточно задать имя в соответствующей секции конфигурации, однако в этом случае в syslog будут писаться все сообщения всех логов, что и в основной файл, а не только лога SYSLOG. Чтобы исправить это: </p><div class="fragment"><div class="line">{</div>
@@ -613,37 +613,37 @@ $(function() {
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone"></th><th class="markdownTableHeadNone"></th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">black </td><td class="markdownTableBodyNone">30  </td></tr>
+<td class="markdownTableBodyNone">black   </td><td class="markdownTableBodyNone">30    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">red </td><td class="markdownTableBodyNone">31  </td></tr>
+<td class="markdownTableBodyNone">red   </td><td class="markdownTableBodyNone">31    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">green </td><td class="markdownTableBodyNone">32  </td></tr>
+<td class="markdownTableBodyNone">green   </td><td class="markdownTableBodyNone">32    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">brown </td><td class="markdownTableBodyNone">33  </td></tr>
+<td class="markdownTableBodyNone">brown   </td><td class="markdownTableBodyNone">33    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">blue </td><td class="markdownTableBodyNone">34  </td></tr>
+<td class="markdownTableBodyNone">blue   </td><td class="markdownTableBodyNone">34    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">magenta </td><td class="markdownTableBodyNone">35  </td></tr>
+<td class="markdownTableBodyNone">magenta   </td><td class="markdownTableBodyNone">35    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">cyan </td><td class="markdownTableBodyNone">36  </td></tr>
+<td class="markdownTableBodyNone">cyan   </td><td class="markdownTableBodyNone">36    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">gray </td><td class="markdownTableBodyNone">37  </td></tr>
+<td class="markdownTableBodyNone">gray   </td><td class="markdownTableBodyNone">37    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">dark_gray </td><td class="markdownTableBodyNone">90  </td></tr>
+<td class="markdownTableBodyNone">dark_gray   </td><td class="markdownTableBodyNone">90    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">light_red </td><td class="markdownTableBodyNone">91  </td></tr>
+<td class="markdownTableBodyNone">light_red   </td><td class="markdownTableBodyNone">91    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">light_green </td><td class="markdownTableBodyNone">92  </td></tr>
+<td class="markdownTableBodyNone">light_green   </td><td class="markdownTableBodyNone">92    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">yellow </td><td class="markdownTableBodyNone">93  </td></tr>
+<td class="markdownTableBodyNone">yellow   </td><td class="markdownTableBodyNone">93    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">light_blue </td><td class="markdownTableBodyNone">94  </td></tr>
+<td class="markdownTableBodyNone">light_blue   </td><td class="markdownTableBodyNone">94    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">light_magenta </td><td class="markdownTableBodyNone">95  </td></tr>
+<td class="markdownTableBodyNone">light_magenta   </td><td class="markdownTableBodyNone">95    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">light_cyan </td><td class="markdownTableBodyNone">96  </td></tr>
+<td class="markdownTableBodyNone">light_cyan   </td><td class="markdownTableBodyNone">96    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">white </td><td class="markdownTableBodyNone">97  </td></tr>
+<td class="markdownTableBodyNone">white   </td><td class="markdownTableBodyNone">97   </td></tr>
 </table>
 <p>Раскрашиваем имя лога MYLOG в пурпурный цвет :</p>
 <div class="fragment"><div class="line">{</div>
@@ -666,9 +666,7 @@ $(function() {
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Создано системой &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.17
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
