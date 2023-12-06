@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(wlog)
+project(wlog VERSION "0.9.8")
 
 include(cmake/ci.cmake)
 
@@ -45,7 +45,7 @@ if ( NOT MSVC )
 endif()
 
 add_library(wlog ${source_list} )
-target_include_directories(wlog PUBLIC ${wlog_SOURCE_DIR} )
+target_include_directories(wlog PUBLIC $<BUILD_INTERFACE:${wlog_SOURCE_DIR}> )
 if (NOT WLOG_DISABLE_JSON)
   target_link_libraries(wlog PUBLIC faslib wjson)
 endif()
@@ -62,14 +62,5 @@ if ( BUILD_TESTING )
   endif()
 endif()
 
-set(CPACK_PACKAGE_NAME "wlog")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "9")
-set(CPACK_PACKAGE_VERSION_PATCH "4")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/Readme.md")
-set(CPACK_PACKAGE_CONTACT "migashko@gmail.com")
 
-install(DIRECTORY wlog DESTINATION include FILES_MATCHING PATTERN "*.hpp" )
-install(TARGETS wlog LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-include(CPack)
+include(cmake/install.cmake)

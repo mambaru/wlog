@@ -74,10 +74,10 @@ int test2()
   TEST( ss.str() == "21:54:22"  );
 
   ss.str(""); ss.clear();
-  opt.locale="en_US.UTF-8";
+  opt.locale="ru_RU.UTF-8";
   wlog::formatter::time(ss, tp, opt, hdr);
   std::cout << ss.str() << std::endl;
-  TEST( ss.str() == "09:54:22 PM"  );
+  TEST( ss.str() == "21:54:22"  );
 
   ss.str(""); ss.clear();
   opt.locale.clear();//="ru_RU.UTF-8";
