@@ -12,6 +12,9 @@
 
 namespace wlog{
 
+extern mutex_type log_mutex;
+extern logger_fun global_writer;
+
 logstream global_log(const std::string& name, const std::string& ident);
 stdstream global_cout();
 stdstream global_clog();
