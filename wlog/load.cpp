@@ -54,7 +54,8 @@ logger_options load(const std::string& src, std::string* err)
   logger_options opt;
   if ( load(src, &opt, err) )
     return opt;
-  return logger_options();
+  opt = logger_options();
+  return opt;
 }
 
 std::string dump(const logger_options& opt)
